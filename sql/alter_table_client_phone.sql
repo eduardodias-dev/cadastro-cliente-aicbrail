@@ -1,0 +1,1 @@
+ALTER TABLE client_phone CHANGE COLUMN `NUMBER` `number` int;

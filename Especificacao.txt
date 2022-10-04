@@ -1,0 +1,12 @@
+Integração galax pay com assist.me
+
+1 - A aplicação deve pesquisar os clientes que estejam inadimplentes diariamente, e remover os seus registros da assist.me, porque
+eles não podem estar inadimplentes lá.
+2 - A aplicação deve pesquisar os clientes que estejam em dia e adicioná-los ao sistema da assist.me
+------------------------------------------------------------------------------------------------------
+
+1 - Diariamente devem ser recuperados os clientes que não estejam adimplentes e um a um deve verificar se o cadastro existe, se não
+existir não é necessário fazer nada. Se existir, remover.
+
+2 - Diariamente devem ser recuperados os cliente que estejam adimplentes e um a um deve verificar se o cadastro existe na assist.me,
+se não existir, cadastrar. Se existir, não deve fazer nada.

@@ -1,0 +1,39 @@
+CREATE TABLE client(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_galaxpay VARCHAR(255) NULL,
+	name VARCHAR(255) NOT NULL,
+	document VARCHAR(14) NULL,
+	status VARCHAR(255) NOT NULL, 
+	createdAt DATETIME NOT NULL,
+	updatedAt DATETIME NOT NULL
+);
+
+CREATE TABLE client_phone(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	client_id INT NULL,
+	NUMBER INT NOT NULL,
+	
+	FOREIGN KEY (client_id) REFERENCES client(id)
+);
+
+CREATE TABLE client_email(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	client_id INT NULL,
+	address VARCHAR(255) NOT NULL,
+	
+	FOREIGN KEY (client_id) REFERENCES client(id)
+);
+
+CREATE TABLE client_address(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	client_id INT NULL,
+	zipcode VARCHAR(8) NOT NULL,
+	street VARCHAR(255) NOT NULL,
+	number VARCHAR(255) NOT NULL,
+	complement VARCHAR(255) NULL,
+	neighborhood VARCHAR(255) NOT NULL,
+	city VARCHAR(255) NOT NULL,
+	state VARCHAR(2) NOT NULL,
+	
+	FOREIGN KEY (client_id) REFERENCES client(id)
+);
