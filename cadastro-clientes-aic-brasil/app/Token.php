@@ -12,4 +12,5 @@ class Token extends Model
     protected $primarkykey = 'access_token';
     public $incrementing = false;
     protected $keyType = 'string';
+    protected $guarded = [];
 }

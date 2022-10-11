@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Integration;
 
+use App\Token;
+use Exception;
 use Illuminate\Support\Facades\Http;
 use App\Services\Integration\IIntegrationConfigService;
-use App\Token;
 
 class ClientSenderIntegrationService implements IClientSenderIntegrationService{
 
@@ -21,10 +22,54 @@ class ClientSenderIntegrationService implements IClientSenderIntegrationService{
         $filter['order'] = $orderby;
         $filter['startAt'] = $startAt;
 
-        $token_object = $this->getToken("customer.read");
+        $token_object = $this->getToken("customers.read");
 
         $response = Http::withToken($token_object['access_token'])
                         ->get($configs['URL'].'/customers', $filter);
+
+        return $response;
+    }
+
+    public function getClientFromSenderServiceById(int $galaxPayId){
+        $configs = $this->integrationService->getSenderServiceConfig();
+
+        $filter['limit'] = 100;
+        $filter['startAt'] = 0;
+        $filter['galaxPayIds'] = $galaxPayId;
+
+        // die(print_r($filter));
+        $token_object = $this->getToken("customers.read");
+
+        $response = Http::withToken($token_object['access_token'])
+                        ->get($configs['URL'].'/customers', $filter);
+
+        return $response;
+    }
+
+    public function getClientSubscriptions(int $startAt, int $limit, array $filter){
+        $configs = $this->integrationService->getSenderServiceConfig();
+
+        $filter['startAt'] = $startAt;
+        $filter['limit'] = $limit;
+
+        $token_object = $this->getToken("subscriptions.read");
+
+        $response = Http::withToken($token_object['access_token'])
+                        ->get($configs['URL'].'/subscriptions', $filter);
+
+        return $response;
+    }
+
+    public function getPlans(int $startAt, int $limit, array $filter){
+        $configs = $this->integrationService->getSenderServiceConfig();
+
+        $filter['startAt'] = $startAt;
+        $filter['limit'] = $limit;
+
+        $token_object = $this->getToken("plans.read");
+
+        $response = Http::withToken($token_object['access_token'])
+                        ->get($configs['URL'].'/plans', $filter);
 
         return $response;
     }
@@ -46,6 +91,7 @@ class ClientSenderIntegrationService implements IClientSenderIntegrationService{
 
     private function requestTokenFromExternalService(string $scopes){
         $configs = $this->integrationService->getSenderServiceConfig();
+
         $request = Http::withBasicAuth($configs['galaxID'], $configs['galaxHash'])
                         ->post($configs['URL'].'/token',
                         [
@@ -53,6 +99,9 @@ class ClientSenderIntegrationService implements IClientSenderIntegrationService{
                             "scope"      => $scopes
                         ]);
 
+        if($request->successful() == false){
+            throw new Exception("Não foi possível recuperar o token\n". json_encode($request->json()["error"]["message"]));
+        }
         $expires_in = intval($request['expires_in']);
 
         $token = new Token;

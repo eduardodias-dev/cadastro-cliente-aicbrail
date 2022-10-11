@@ -15,8 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('clients');
 });
 
 Route::get('/home/{name?}', "SiteController@home");
-Route::get('/clients', [SiteController::class, 'clients']);
+Route::get('/clients', [SiteController::class, 'clients'])->name('client.list');
+Route::get('/clients/{id}', [SiteController::class, 'clientById'])->name('client.detail');
+Route::get('/plans', [SiteController::class, 'getPlans'])->name('plans.list');
+Route::post('/plans', [SiteController::class, 'addPlan'])->name('plans.add');
+Route::post('/plans/activate', [SiteController::class, 'activatePlan'])->name('plans.activate');

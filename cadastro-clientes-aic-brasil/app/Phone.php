@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Phone extends Model
 {
     //
-    protected $table = "client_phone";
+    protected $table = "cliente_phone";
     public $timestamps = false;
+    protected $guarded = [];
 }

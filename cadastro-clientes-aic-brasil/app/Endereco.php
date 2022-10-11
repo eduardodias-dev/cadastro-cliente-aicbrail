@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Email extends Model
+class Endereco extends Model
 {
     //
-    protected $table = "cliente_email";
+    protected $table = 'cliente_endereco';
     public $timestamps = false;
     protected $guarded = [];
 }

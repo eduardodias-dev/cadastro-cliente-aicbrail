@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
-    protected $table = "client";
+    protected $table = "cliente";
     protected $primaryKey = "id";
     // public $incrementing = true;
     // protected $keyType = 'string';
@@ -14,5 +14,5 @@ class Cliente extends Model
     // public $timestamps = false;
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
-
+    protected $guarded = [];
 }

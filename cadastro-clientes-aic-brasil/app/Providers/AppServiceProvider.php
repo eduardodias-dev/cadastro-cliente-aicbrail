@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Services\ClientIntegrationService;
-use App\Services\IClientIntegrationService;
-use App\Services\Integration\IntegrationService;
-use App\Services\Integration\IIntegrationService;
+use App\Services\Integration\ClientSenderIntegrationService;
+use App\Services\Integration\IClientSenderIntegrationService;
+use App\Services\Integration\IntegrationConfigService;
+use App\Services\Integration\IIntegrationConfigService;
+use App\Services\IPlanoDBService;
+use App\Services\PlanoDBService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
         //
         $this->app->bind(IIntegrationConfigService::class, IntegrationConfigService::class);
         $this->app->bind(IClientSenderIntegrationService::class, ClientSenderIntegrationService::class);
+        $this->app->bind(IPlanoDBService::class, PlanoDBService::class);
     }
 
     /**
