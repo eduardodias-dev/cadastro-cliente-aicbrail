@@ -16,13 +16,10 @@
     </head>
     <body>
         <main class="container">
-            <h1>Clientes</h1>
-            <h3>Filtro</h3>
+            <h1>Assinaturas</h1>
+            {{-- <h3>Filtro</h3>
             <form method="GET" class="form-inline">
-                <label class="ml-2">Email:</label>
-                <input type="text" name="emails" value="" class="form-control ml-1"/>
-
-                <label class="ml-2">Documento:</label>
+                <label class="ml-2">Id GalaxPay:</label>
                 <input type="text" name="documents" value="" class="form-control ml-1"/>
 
                 <label class="ml-2">Status:</label>
@@ -34,50 +31,45 @@
                     <option value="withoutSubscriptionOrCharge">Não possui assinatura</option>
                 </select>
 
+                <label class="ml-2">Plano:</label>
+                <select name="planGalaxPayIds" class="form-control ml-1" value="" multiple>
+                    <option value="">Selecione...</option>
+                    @foreach($plans as $plan)
+                        <option value="{{$plan['id_galaxpay']}}">{{$plan['nome']}}</option>
+                    @endforeach
+                </select>
+
                 <label class="ml-2">Data Criação:</label>
                 <input type="date" name="createdAtFrom" value="" class="form-control ml-1" />
 
-                <br />
-                <br />
-                <br />
                 <button type="submit" class="btn btn-outline-info ml-2">Filtrar</button>
-            </form><br/>
-            @if (isset($clients) && count($clients) > 0)
+            </form><br/> --}}
+            @if (isset($subscriptions) && count($subscriptions) > 0)
                 <table class="table table-responsive table-striped table-bordered" id="table-clientes" class="display">
                     <thead>
                     <tr class="table-info">
-                        <th>Id</th>
                         <th>Id GalaxPay</th>
-                        <th>Nome</th>
+                        <th>Cliente</th>
                         <th>Documento</th>
                         <th>Criado em</th>
-                        <th>Status</th>
-                        <th>Detalhes</th>
+                        <th>Status Assinatura</th>
+                        <th>Status Cliente</th>
                         <th>Emails</th>
-                        <th>Contatos</th>
                         <th>Ações</th>
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach ($clients as $client)
+                        @foreach ($subscriptions as $subscription)
                             <tr>
-                                <td>{{$client['myId']}}</td>
-                                <td>{{$client['galaxPayId']}}</td>
-                                <td>Maria</td>
-                                <td>{{$client['document']}}</td>
-                                <td>{{$client['createdAt']}}</td>
-                                <td>{{getClientStatusDescription($client['status'])}}</td>
+                                <td>{{$subscription['galaxPayId']}}</td>
+                                <td>{{$subscription['Customer']['name']}}</td>
+                                <td>{{$subscription['Customer']['document']}}</td>
+                                <td>{{$subscription['createdAt']}}</td>
+                                <td>{{getSubscriptionStatusDescription($subscription['status'])}}</td>
+                                <td>Preencher</td>
+                                <td>{{implode(', ', $subscription['Customer']['emails'])}}</td>
                                 <td>
-                                    @isset($client['ExtraFields'])
-                                        @foreach($client['ExtraFields'] as $field)
-                                            <b>{{str_replace('_',' ', str_replace('CP_', '', $field['tagName']))}}</b>: {{$field['tagValue']}}<br/>
-                                        @endforeach
-                                    @endisset
-                                </td>
-                                <td>{{implode(', ', $client['emails'])}}</td>
-                                <td>{{implode(', ', $client['phones'])}}</td>
-                                <td>
-                                    <a href="{{route('client.detail', ['id' => $client['galaxPayId']])}}" class="btn btn-outline-info ml-2">Detalhe</a>
+                                    <a href="{{route('subscription.detail', ['id' => $subscription['galaxPayId']])}}" class="btn btn-outline-info ml-2">Detalhe</a>
                                 </td>
 
                             </tr>

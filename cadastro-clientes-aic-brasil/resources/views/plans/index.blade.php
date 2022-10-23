@@ -18,38 +18,46 @@
         <main class="container">
             <h1>Planos</h1>
 
+
             @if (isset($plans) && count($plans) > 0)
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" id="table-planos" class="display">
                         <thead>
                         <tr class="table-info">
-                            <th>Id</th>
                             <th>Id GalaxPay</th>
                             <th>Nome</th>
+                            <th>Ativo</th>
                             <th>Ações</th>
                         </tr>
                         </thead>
                         <tbody>
                             @foreach ($plans as $plan)
                                 <tr>
-                                    <td>{{$plan['myId']}}</td>
-                                    <td>{{$plan['galaxPayId']}}</td>
-                                    <td>{{$plan['name']}}</td>
-
+                                    <td>{{$plan['id_galaxpay']}}</td>
+                                    <td>{{$plan['nome']}}</td>
                                     <td>
-                                        <form action="{{route('plans.add')}}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="galaxPayId" value="{{$plan['galaxPayId']}}" />
-                                            <input type="hidden" name="name" value="{{$plan['name']}}" />
+                                        @if($plan['ativo'])
+                                            <span style="color: blue;">Ativo</span>
+                                        @else
+                                            <span style="color: red;">Inativo</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if(!$plan['ativo'])
+                                            <form action="{{route('plans.activate')}}" method="POST" class="form-inline">
+                                                @csrf
+                                                <input type="hidden" name="galaxPayId" value="{{$plan['id_galaxpay']}}" />
 
-                                            <button type="submit" class="btn btn-sm btn-outline-primary ml-2">Adicionar à base</button>
-                                        </form>
-                                        <form action="{{route('plans.activate')}}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="galaxPayId" value="{{$plan['galaxPayId']}}" />
+                                                <button type="submit" class="btn btn-sm btn-outline-success ml-2">Ativar</a>
+                                            </form>
+                                        @else
+                                            <form action="{{route('plans.deactivate')}}" method="POST" class="form-inline">
+                                                @csrf
+                                                <input type="hidden" name="galaxPayId" value="{{$plan['id_galaxpay']}}" />
 
-                                            <button type="submit" class="btn btn-sm btn-outline-success ml-2">Ativar</a>
-                                        </form>
+                                                <button type="submit" class="btn btn-sm btn-outline-danger ml-2">Desativar</a>
+                                            </form>
+                                        @endif
                                     </td>
 
                                 </tr>
@@ -59,6 +67,20 @@
                 </div>
 
             @endif
+            <h3>Adicionar Plano GalaxPay</h3>
+            <form action="{{route('plans.add')}}" method="POST">
+                @csrf
+                <select name="galaxPayId" class="form-control ml-1" value="">
+                    @isset($galaxPayPlans)
+                        @foreach($galaxPayPlans as $plan)
+                            @if(!in_array($plan['galaxPayId'], $addedPlans))
+                                <option value="{{$plan['galaxPayId']}}">{{$plan['galaxPayId']}} - {{$plan['name']}}</option>
+                            @endif
+                        @endforeach
+                    @endisset
+                </select>
+                <button type="submit" class="btn btn-sm btn-outline-primary ml-2">Adicionar à base</button>
+            </form>
         </main>
         <script>
             $(document).ready( function () {

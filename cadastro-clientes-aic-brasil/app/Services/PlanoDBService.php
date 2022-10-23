@@ -7,7 +7,11 @@ use App\Services\IPlanoDBService;
 
 class PlanoDBService implements IPlanoDBService{
     public function getPlans(array $filter){
-        return Plano::where($filter);
+        if(count($filter) > 0){
+            return Plano::where($filter)->get();
+        }
+        else
+            return Plano::all();
     }
     public function getPlanById(int $id){
         return Plano::find($id);
