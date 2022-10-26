@@ -11,4 +11,5 @@ interface IClienteDBService {
     public function updateClient($client);
     public function deleteCliente(int $id);
     public function getClientById(int $id);
+    public function addClientFromSubscription($subscription);
 }

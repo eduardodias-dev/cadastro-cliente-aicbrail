@@ -12,7 +12,7 @@
     </head>
     <body>
         <main class="container">
-            <h1>Cliente</h1>
+            <h1>Cliente (Galax Pay)</h1>
             <br/>
             <a href="/clients" class="btn btn-outline-info ml-2">Voltar</a>
             @isset($client)
@@ -28,14 +28,12 @@
                         </tr>
                             <tr>
                                 {{-- <td>{{$client['name']}}</td> --}}
-                                <td>{{$client['nome']}}</td>
-                                <td>{{$client['documento']}}</td>
-                                <td>{{date_format(date_create($client['criadoEm']),"d/m/Y")}}</td>
+                                <td>{{$client['name']}}</td>
+                                <td>{{$client['document']}}</td>
+                                <td>{{date_format(date_create($client['createdAt']),"d/m/Y")}}</td>
                                 <td>{{getClientStatusDescription($client['status'])}}</td>
                                 <td>{{implode(', ', $client['emails'])}}</td>
-                                <td>{{implode(', ', $client['telefones'])}}</td>
-                                {{-- <td></td>
-                                <td></td> --}}
+                                <td>{{implode(', ', $client['phones'])}}</td>
                             </tr>
                     </table>
                 </div>
@@ -44,34 +42,10 @@
                         <h4>Informações</h4>
                     </div>
                     <div class="card-body">
-                        @isset($client['endereco'])
-                            <h4>Endereço:</h4>
-                            <b>Rua:</b> {{$client['endereco']['rua']}}, {{$client['endereco']['numero']}} {{$client['endereco']['complemento']}}<br>
-                            <b>Bairro:</b> {{$client['endereco']['bairro']}}<br>
-                            <b>Cidade:</b> {{$client['endereco']['cidade']}}/{{$client['endereco']['estado']}}<br>
-                            <b>CEP:</b> {{$client['endereco']['cep']}}
-                        @endisset
                         @isset($client['ExtraFields'])
                             @foreach($client['ExtraFields'] as $field)
                                 <b>{{str_replace('_',' ', str_replace('CP_', '', $field['tagName']))}}</b>: {{$field['tagValue']}}<br/>
                             @endforeach
-                        @endisset
-                    </div>
-                </div>
-                <div class="card mt-3">
-                    <div class="card-header">
-                        <h4>Dados Veículo:</h4>
-                    </div>
-                    <div class="card-body">
-                        @isset($client['veiculo'])
-                            <b>Chassi:</b> {{$client['veiculo']['chassi']}}<br>
-                            <b>Placa:</b> {{$client['veiculo']['placa']}}<br>
-                            <b>Renavam:</b> {{$client['veiculo']['renavam']}}<br>
-                            <b>Tipo:</b> {{$client['veiculo']['tipo']}}<br>
-                            <b>Ano:</b> {{$client['veiculo']['anoFabricacao']}}/{{$client['veiculo']['anoModelo']}}<br>
-                            <b>Marca:</b> {{$client['veiculo']['marca']}}<br>
-                            <b>Modelo:</b> {{$client['veiculo']['modelo']}}<br>
-                            <b>Cor:</b> {{$client['veiculo']['cor']}}<br>
                         @endisset
                     </div>
                 </div>
@@ -107,13 +81,6 @@
                     </table>
                 </div>
             @endisset
-            <form action="{{route('client.integrate')}}" method="post" class="mt-3">
-                @csrf
-                <input type="hidden" name="id" value="{{$client['id']}}" />
-                <input type="hidden" name="id_galaxpay" value="{{$client['id_galaxpay']}}" />
-
-                <button type="submit" class="btn btn-warning">Enviar para Serviço</button>
-            </form>
         </main>
     </body>
 </html>

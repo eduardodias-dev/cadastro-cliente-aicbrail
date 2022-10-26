@@ -16,7 +16,7 @@
     </head>
     <body>
         <main class="container">
-            <h1>Clientes</h1>
+            <h1>Clientes (GalaxPay)</h1>
             <h3>Filtro</h3>
             <form method="GET" class="form-inline">
                 <label class="ml-2">Email:</label>
@@ -42,7 +42,7 @@
                 <br />
                 <button type="submit" class="btn btn-outline-info ml-2">Filtrar</button>
             </form><br/>
-            {{-- @if (isset($clients) && count($clients) > 0) --}}
+            @if (isset($clients) && count($clients) > 0)
                 <table class="table table-responsive table-striped table-bordered" id="table-clientes" class="display">
                     <thead>
                     <tr class="table-info">
@@ -61,13 +61,13 @@
                     <tbody>
                         @foreach ($clients as $client)
                             <tr>
-                                <td>{{$client['id']}}</td>
-                                <td>{{$client['id_galaxpay']}}</td>
-                                <td>{{$client['nome']}}</td>
-                                <td>{{$client['documento']}}</td>
-                                <td>{{$client['criadoEm']}}</td>
+                                <td>{{$client['myId']}}</td>
+                                <td>{{$client['galaxPayId']}}</td>
+                                <td>Maria</td>
+                                <td>{{$client['document']}}</td>
+                                <td>{{$client['createdAt']}}</td>
                                 <td>{{getClientStatusDescription($client['status'])}}</td>
-                                {{-- <td>
+                                <td>
                                     @isset($client['ExtraFields'])
                                         @foreach($client['ExtraFields'] as $field)
                                             <b>{{str_replace('_',' ', str_replace('CP_', '', $field['tagName']))}}</b>: {{$field['tagValue']}}<br/>
@@ -75,18 +75,18 @@
                                     @endisset
                                 </td>
                                 <td>{{implode(', ', $client['emails'])}}</td>
-                                <td>{{implode(', ', $client['phones'])}}</td> --}}
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>{{implode(', ', $client['phones'])}}</td>
                                 <td>
-                                    <a href="{{route('client.detail', ['id' => $client['id']])}}" class="btn btn-outline-info ml-2">Detalhe</a>
+                                    <a href="{{route('customer.detail', ['id' => $client['galaxPayId']])}}" class="btn btn-outline-info ml-2">Detalhe</a>
                                 </td>
+
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-            {{-- @endif --}}
+            @else
+
+            @endif
         </main>
         <script>
             $(document).ready( function () {

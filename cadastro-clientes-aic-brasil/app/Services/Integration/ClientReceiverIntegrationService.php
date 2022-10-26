@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Http;
 
 class ClientReceiverIntegrationService implements IClientReceiverIntegrationService {
     private $integrationConfigService;
+    private const PLANO_CODIGO = 'TST01';
+    private const PLANO_TIPO_VEICULO = 'VEICULO';
+
     public function __construct(IIntegrationConfigService $iIntegrationConfigService)
     {
         $this->integrationConfigService = $iIntegrationConfigService;
@@ -32,7 +35,7 @@ class ClientReceiverIntegrationService implements IClientReceiverIntegrationServ
         $enderecoClientDB = Endereco::where(['client_id' => $clientDB['id']])->first();
         $veiculoClientDB = Veiculo::where(['client_id' => $clientDB['id']])->first();
 
-        $requestClient['planoCodigo'] = 'TST01';
+        $requestClient['planoCodigo'] = self::PLANO_CODIGO;
         $requestClient['beneficiarioCpf'] = $clientDB['documento'];
         $requestClient['beneficiarioNome'] = $clientDB['nome'];
         $requestClient['beneficiarioDataNascimento'] = $clientDB['dataNascimento'];
@@ -45,7 +48,7 @@ class ClientReceiverIntegrationService implements IClientReceiverIntegrationServ
         $requestClient['beneficiarioEnderecoBairro'] = $enderecoClientDB['bairro'];
         $requestClient['beneficiarioEnderecoCidade'] = $enderecoClientDB['cidade'];
         $requestClient['beneficiarioEnderecoEstado'] = $enderecoClientDB['estado'];
-        $requestClient['tipo'] = 'VEICULO';
+        $requestClient['tipo'] = self::PLANO_TIPO_VEICULO;
         $requestClient['veiculoChassi'] = $veiculoClientDB['chassi'];
         $requestClient['veiculoPlaca'] = $veiculoClientDB['placa'];
         $requestClient['veiculoRenavam'] = $veiculoClientDB['renavam'];
@@ -62,6 +65,7 @@ class ClientReceiverIntegrationService implements IClientReceiverIntegrationServ
         $requestClient["senha"] = $configs["senha"];
         $requestClient["clienteCNPJ"] = $configs["clienteCNPJ"];
 
+        die(print_r($requestClient));
         $response = Http::asForm()->post($configs['URL'].'cadastroService/incluir', $requestClient);
 
         if($response->failed())

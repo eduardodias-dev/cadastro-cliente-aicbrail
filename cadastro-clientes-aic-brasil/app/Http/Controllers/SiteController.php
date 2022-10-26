@@ -2,20 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Integration\IClientSenderIntegrationService;
-use App\Services\IPlanoDBService;
 use Exception;
 use Illuminate\Http\Request;
+use App\Services\IPlanoDBService;
+use App\Services\IClienteDBService;
+use App\Services\Integration\IClientSenderIntegrationService;
+use App\Services\Integration\IClientReceiverIntegrationService;
 
 class SiteController extends Controller
 {
     //
     private $clientIntegrationService = null;
     private $planoDBservice = null;
+    private $clienteDBservice = null;
+    private $clientReceiverIntegrationService;
     public function __construct(IClientSenderIntegrationService $iClientIntegrationService,
-                                IPlanoDBService $planoDBservice){
+                                IPlanoDBService $planoDBservice,
+                                IClienteDBService $clienteDBservice,
+                                IClientReceiverIntegrationService $iClientReceiverIntegrationService){
         $this->clientIntegrationService = $iClientIntegrationService;
         $this->planoDBservice = $planoDBservice;
+        $this->clienteDBservice = $clienteDBservice;
+        $this->clientReceiverIntegrationService = $iClientReceiverIntegrationService;
     }
 
     public function home(Request $request){
@@ -23,24 +31,40 @@ class SiteController extends Controller
     }
 
     public function clients(Request $request){
+        $arrayRequest = $request->toArray();
+        $clients = $this->clienteDBservice->getClients($arrayRequest);
+
+        return view('clients.index', ['clients' => $clients, 'request' => $arrayRequest]);
+    }
+
+    public function clientById(int $id){
+        $client = $this->clienteDBservice->getClientById($id);
+
+        if(!isset($client) || empty($client)){
+            throw new Exception("Não foi possível recuperar o cliente. \n");
+        }
+        return view('clients.detail', ['client' => $client]);
+    }
+
+    public function customers(Request $request){
         // die(print_r($request->toArray()));
         $arrayRequest = $request->toArray();
         $response = $this->clientIntegrationService->getClientsFromSenderService(100, 'createdAt.desc', 0, $arrayRequest);
 
-        return view('clients.index', ['clients' => $response->json()['Customers'], 'request' => $arrayRequest]);
+        return view('customers.index', ['clients' => $response->json()['Customers'], 'request' => $arrayRequest]);
     }
 
-    public function clientById(int $id){
+    public function customerById(int $id){
         $response = $this->clientIntegrationService->getClientFromSenderServiceById($id);
         if($response->successful() == false || count($response->json()['Customers']) <= 0){
             throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->error()));
         }
 
 
-        $client = $response->json()['Customers'][0];
-        $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['customerGalaxPayIds' => $client['galaxPayId']]);
+        $customer = $response->json()['Customers'][0];
+        $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['customerGalaxPayIds' => $customer['galaxPayId']]);
 
-        return view('clients.detail', ['client' => $client, 'subscriptions' => $response->json()['Subscriptions']]);
+        return view('customers.detail', ['client' => $customer, 'subscriptions' => $response->json()['Subscriptions']]);
     }
 
     public function getPlans(Request $request){
@@ -86,15 +110,60 @@ class SiteController extends Controller
     }
 
     public function subscriptionById(int $id){
-        $response = $this->clientIntegrationService->getClientFromSenderServiceById($id);
+        $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['galaxPayIds' => $id]);
+        if($response->successful() == false || count($response->json()['Subscriptions']) <= 0){
+            throw new Exception("Não foi possível recuperar a assinatura. \n".json_encode($response->error()));
+        }
+
+        $subscriptions = $response->json()['Subscriptions'];
+        $clientId = $subscriptions[0]['Customer']['galaxPayId'];
+        $response = $this->clientIntegrationService->getClientFromSenderServiceById($clientId);
+        die(json_encode($response));
+        if($response->successful() == false || count($response->json()['Customers']) <= 0){
+
+            throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->error()));
+        }
+
+        $client = $response->json()['Customer'][0];
+
+        return view('subscriptions.detail', ['client' => $client, 'subscriptions' => $subscriptions]);
+    }
+
+    public function addSubscriptionById(int $id){
+        $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['galaxPayIds' => $id]);
+        if($response->successful() == false || count($response->json()['Customers']) <= 0){
+            die(print_r($response));
+            throw new Exception("Não foi possível recuperar a assinatura. \n".json_encode($response->error()));
+        }
+        $subscriptions = $response->json()['Subscriptions'];
+
+        $savedData = $this->clienteDBservice->addClientFromSubscription($subscriptions[0]);
+
+        $response = $this->clientIntegrationService->getClientFromSenderServiceById($subscriptions[0]['Customer']['galaxPayId']);
+
+        if($response->successful() == false || count($response->json()['Customers']) <= 0){
+
+            throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->error()));
+        }
+
+        $client = $response->json()['Customer'][0];
+
+        return view('subscriptions.detail', ['client' => $client, 'subscriptions' => $subscriptions]);
+    }
+
+    public function integrateClientFromGalaxPay(Request $request){
+        $galaxPayId = $request['id_galaxpay'];
+
+        $response = $this->clientIntegrationService->getClientFromSenderServiceById($galaxPayId);
         if($response->successful() == false || count($response->json()['Customers']) <= 0){
             throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->error()));
         }
 
+        $customer = $response->json()['Customers'][0];
 
-        $client = $response->json()['Customers'][0];
-        $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['customerGalaxPayIds' => $client['galaxPayId']]);
+        $savedData = $this->clientReceiverIntegrationService->addBeneficiaryVehicle($customer);
 
-        return view('clients.detail', ['client' => $client, 'subscriptions' => $response->json()['Subscriptions']]);
+        // return redirect()->route('client.detail', ['id' => $request['id']]);
+        return json_encode($savedData);
     }
 }

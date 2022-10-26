@@ -4,11 +4,15 @@ namespace App\Services;
 
 use App\Cliente;
 use App\Veiculo;
+use App\Endereco;
+use App\Telefone;
 use App\Dependente;
+use App\Email;
 use App\Residencia;
 use App\Services\IClienteDBService;
 
 class ClienteDBService implements IClienteDBService{
+
     public function addClient($client){
         $newclient = new Cliente;
 
@@ -100,6 +104,94 @@ class ClienteDBService implements IClienteDBService{
         return $client->delete();
     }
     public function getClientById(int $id){
-        return Cliente::find($id);
+        $client = Cliente::find($id);
+
+        if(!empty($client)){
+            $filter = ['client_id' => $client['id']];
+            $emails = Email::where($filter)->get();
+
+            foreach($emails as $email){
+                if(!isset($client['emails']))
+                    $client['emails'] = array($email->endereco);
+                else
+                    array_push($client['emails'], $email->endereco);
+            }
+            $telefones = Telefone::where($filter)->get();
+            foreach($telefones as $telefone){
+                if(!isset($client['telefones']))
+                    $client['telefones'] = array($telefone->numero);
+                else
+                    array_push($client['telefones'], $telefone->numero);
+            }
+
+            $endereco = Endereco::where($filter)->first();
+            $client['endereco'] = $endereco;
+
+            $veiculo = Veiculo::where($filter)->first();
+
+            if(!empty($veiculo)){
+                $client['veiculo'] = $veiculo;
+            }
+        }
+
+        return $client;
+    }
+
+    public function addClientFromSubscription($subscription){
+        $customer = $subscription['Customer'];
+
+        $newclient = new Cliente;
+        $newclient['id_galaxPay'] = $customer['galaxPayId'];
+        $newclient['nome'] = $customer['name'];
+        $newclient['documento'] = $customer['document'];
+        $newclient['status'] = $customer['status'];
+        $newclient['sexo'] = 'Masculino';
+        //$newclient['dataNascimento'] = $customer['dataNascimento'];
+        $newclient['dataNascimento'] = date_create();
+        $newclient['criadoEm'] = date_create();
+        $newclient['atualizadoEm'] = date_create();
+
+        $newclient->save();
+
+        if(isset($customer['Address']) && !empty($customer['Address'])){
+            $address = $customer['Address'];
+
+            $newAddress = new Endereco;
+
+            $newAddress['client_id'] = $newclient->id;
+            $newAddress['cep'] = $address['zipCode'];
+            $newAddress['rua'] = $address['street'];
+            $newAddress['numero'] = $address['number'];
+            $newAddress['complemento'] = $address['complement'];
+            $newAddress['bairro'] = $address['neighborhood'];
+            $newAddress['cidade'] = $address['city'];
+            $newAddress['estado'] = $address['state'];
+
+            $newAddress->save();
+        }
+
+        if(isset($customer['phones']) && !empty($customer['phones'])){
+            foreach($customer['phones'] as $phone){
+                $newTelefone = new Telefone;
+
+                $newTelefone['client_id'] = $newclient->id;
+                $newTelefone['numero'] = $phone;
+
+                $newTelefone->save();
+            }
+        }
+
+        if(isset($customer['emails']) && !empty($customer['emails'])){
+            foreach($customer['emails'] as $email){
+                $newEmail = new Email;
+
+                $newEmail['client_id'] = $newclient->id;
+                $newEmail['endereco'] = $email;
+
+                $newEmail->save();
+            }
+        }
+
+        return 1;
     }
 }
