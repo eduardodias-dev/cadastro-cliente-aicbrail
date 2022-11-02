@@ -12,10 +12,8 @@
     </head>
     <body>
         <main class="container">
-            <h1>Cliente</h1>
-            <h3>Filtro</h3>
-            <br/>
-            <a href="/clients" class="btn btn-outline-info ml-2">Voltar</a>
+            <h1>Assinatura Cliente</h1>
+            <a href="/subscriptions" class="btn btn-outline-info ml-2">Voltar</a>
             @isset($client)
                 <div class="table-responsive ">
                     <table class="table table-striped table-bordered">
@@ -61,6 +59,7 @@
                             <th>Periodicidade</th>
                             <th>Data 1° Pagamento</th>
                             <th>Status</th>
+                            <th>Ações</th>
                         </tr>
                         @foreach ($subscriptions as $subscription)
                             <tr>
@@ -77,11 +76,21 @@
                                 <td>{{getPeriodicity($subscription['periodicity'])}}</td>
                                 <td>{{$subscription['firstPayDayDate']}}</td>
                                 <td>{{getSubscriptionStatusDescription($subscription['status'])}}</td>
+                                <td>
+                                    <form action="{{route('subscription.add')}}" method="post">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{$subscription['galaxPayId']}}" />
+                                        {{-- <input type="hidden" name="id_galaxpay" value="{{$client['id_galaxpay']}}" /> --}}
+
+                                        <button type="submit" class="btn btn-warning">Enviar para banco de dados</button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </table>
                 </div>
             @endisset
+
         </main>
     </body>
 </html>

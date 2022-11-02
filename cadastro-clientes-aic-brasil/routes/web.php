@@ -30,3 +30,4 @@ Route::post('/plans', [SiteController::class, 'addPlan'])->name('plans.add');
 Route::post('/plans/activate', [SiteController::class, 'activatePlan'])->name('plans.activate');
 Route::post('/plans/deactivate', [SiteController::class, 'deactivatePlan'])->name('plans.deactivate');
 Route::post('/client/integrate', [SiteController::class, 'integrateClientFromGalaxPay'])->name('client.integrate');
+Route::post('/subscription/add', [SiteController::class, 'addSubscriptionById'])->name('subscription.add');

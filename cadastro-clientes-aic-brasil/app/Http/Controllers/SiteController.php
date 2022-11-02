@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Cliente;
+use App\LogIntegracao;
 use Exception;
 use Illuminate\Http\Request;
 use App\Services\IPlanoDBService;
@@ -43,7 +45,9 @@ class SiteController extends Controller
         if(!isset($client) || empty($client)){
             throw new Exception("Não foi possível recuperar o cliente. \n");
         }
-        return view('clients.detail', ['client' => $client]);
+        $logs = LogIntegracao::where(['client_id'=> $client['id']])->orderBy('id', 'desc')->get();
+
+        return view('clients.detail', ['client' => $client, 'logs'=>$logs]);
     }
 
     public function customers(Request $request){
@@ -116,22 +120,24 @@ class SiteController extends Controller
         }
 
         $subscriptions = $response->json()['Subscriptions'];
+
         $clientId = $subscriptions[0]['Customer']['galaxPayId'];
         $response = $this->clientIntegrationService->getClientFromSenderServiceById($clientId);
-        die(json_encode($response));
+
         if($response->successful() == false || count($response->json()['Customers']) <= 0){
 
             throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->error()));
         }
 
-        $client = $response->json()['Customer'][0];
+        $client = $response->json()['Customers'][0];
 
         return view('subscriptions.detail', ['client' => $client, 'subscriptions' => $subscriptions]);
     }
 
-    public function addSubscriptionById(int $id){
+    public function addSubscriptionById(Request $request){
+        $id = $request['id'];
         $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['galaxPayIds' => $id]);
-        if($response->successful() == false || count($response->json()['Customers']) <= 0){
+        if($response->successful() == false || count($response->json()['Subscriptions']) <= 0){
             die(print_r($response));
             throw new Exception("Não foi possível recuperar a assinatura. \n".json_encode($response->error()));
         }
@@ -146,7 +152,7 @@ class SiteController extends Controller
             throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->error()));
         }
 
-        $client = $response->json()['Customer'][0];
+        $client = $response->json()['Customers'][0];
 
         return view('subscriptions.detail', ['client' => $client, 'subscriptions' => $subscriptions]);
     }
@@ -160,10 +166,34 @@ class SiteController extends Controller
         }
 
         $customer = $response->json()['Customers'][0];
+        $log = new LogIntegracao;
 
-        $savedData = $this->clientReceiverIntegrationService->addBeneficiaryVehicle($customer);
+        if($customer['status'] == 'active'){
+            $savedData = $this->clientReceiverIntegrationService->addBeneficiaryVehicle($customer);
+            $log['acao'] = 'Adicionar';
+        }
+        else{
+            $savedData = $this->clientReceiverIntegrationService->removeBeneficiaryVehicle($customer);
+            $log['acao'] = 'Remover';
+        }
 
-        // return redirect()->route('client.detail', ['id' => $request['id']]);
-        return json_encode($savedData);
+        $client = Cliente::where(['id_galaxpay' => $galaxPayId])->first();
+
+        $log['data_integracao'] = date_create('now');
+        $log['resultado'] = json_encode($savedData);
+        $log['client_id'] = $client['id'];
+
+        $log->save();
+
+        if(isset($savedData['codigo'])){
+            $client['codigo_logica'] = $savedData['codigo'];
+        }
+        $client['status'] = $customer['status'];
+        $client->save();
+
+        session()->flash('dados_integracao', $savedData['retorno']);
+
+        return redirect()->route('client.detail', ['id' => $request['id']]);
     }
+
 }

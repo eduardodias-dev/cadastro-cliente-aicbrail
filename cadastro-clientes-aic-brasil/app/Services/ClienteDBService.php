@@ -79,7 +79,7 @@ class ClienteDBService implements IClienteDBService{
         $newVeiculo['cambio'] = $veiculo['veiculoCambio'];
         $newVeiculo['fipeCodigo'] = $veiculo['veiculoFipeCodigo'];
         $newVeiculo['fipeValor'] = $veiculo['veiculoFipeValor'];
-        $newVeiculo['cliente_id'] = $client['cliente_id'];
+        $newVeiculo['client_id'] = isset($client['cliente_id']) ? $client['cliente_id'] : $client['id'];
 
         $newVeiculo->save();
     }
@@ -109,20 +109,20 @@ class ClienteDBService implements IClienteDBService{
         if(!empty($client)){
             $filter = ['client_id' => $client['id']];
             $emails = Email::where($filter)->get();
+            if(!isset($client['emails']) && count($emails) > 0)
+                $client['emails'] = $emails[0]->endereco;
 
-            foreach($emails as $email){
-                if(!isset($client['emails']))
-                    $client['emails'] = array($email->endereco);
-                else
-                    array_push($client['emails'], $email->endereco);
-            }
+            // foreach($emails as $email){
+            //     if(!isset($client['emails']))
+            //         $client['emails'] = array($email->endereco);
+            //     else
+            //         array_push($client['emails'], $email->endereco);
+            // }
+
             $telefones = Telefone::where($filter)->get();
-            foreach($telefones as $telefone){
-                if(!isset($client['telefones']))
-                    $client['telefones'] = array($telefone->numero);
-                else
-                    array_push($client['telefones'], $telefone->numero);
-            }
+            if(!isset($client['telefones']) && count($telefones) > 0)
+                $client['telefones'] = $telefones[0]->numero;
+
 
             $endereco = Endereco::where($filter)->first();
             $client['endereco'] = $endereco;
@@ -140,14 +140,16 @@ class ClienteDBService implements IClienteDBService{
     public function addClientFromSubscription($subscription){
         $customer = $subscription['Customer'];
 
-        $newclient = new Cliente;
+        $newclient = Cliente::where(['id_galaxpay' => $customer['galaxPayId']])->first();
+        if($newclient == null)
+            $newclient = new Cliente;
+
         $newclient['id_galaxPay'] = $customer['galaxPayId'];
         $newclient['nome'] = $customer['name'];
         $newclient['documento'] = $customer['document'];
-        $newclient['status'] = $customer['status'];
-        $newclient['sexo'] = 'Masculino';
-        //$newclient['dataNascimento'] = $customer['dataNascimento'];
-        $newclient['dataNascimento'] = date_create();
+        $newclient['status'] = isset($subscription['status']) ? $subscription['status'] : 'unknown';
+        $newclient['sexo'] = $this->getValueFromExtraFields("CP_SEXO", $subscription);
+        $newclient['dataNascimento'] = date_create_from_format('d/m/Y', $this->getValueFromExtraFields("CP_DATA_DE_NASCIMENTO", $subscription));
         $newclient['criadoEm'] = date_create();
         $newclient['atualizadoEm'] = date_create();
 
@@ -156,7 +158,9 @@ class ClienteDBService implements IClienteDBService{
         if(isset($customer['Address']) && !empty($customer['Address'])){
             $address = $customer['Address'];
 
-            $newAddress = new Endereco;
+            $newAddress = Endereco::where(['client_id' => $newclient->id])->first();
+            if($newAddress == null)
+                $newAddress = new Endereco;
 
             $newAddress['client_id'] = $newclient->id;
             $newAddress['cep'] = $address['zipCode'];
@@ -172,26 +176,80 @@ class ClienteDBService implements IClienteDBService{
 
         if(isset($customer['phones']) && !empty($customer['phones'])){
             foreach($customer['phones'] as $phone){
-                $newTelefone = new Telefone;
 
-                $newTelefone['client_id'] = $newclient->id;
-                $newTelefone['numero'] = $phone;
+                $telefoneExistent = Telefone::where(['client_id' => $newclient->id, 'numero' => $phone])->first();
+                if($telefoneExistent == null){
+                    $newTelefone = new Telefone;
 
-                $newTelefone->save();
+                    $newTelefone['client_id'] = $newclient->id;
+                    $newTelefone['numero'] = $phone;
+
+                    $newTelefone->save();
+                }
             }
         }
 
         if(isset($customer['emails']) && !empty($customer['emails'])){
             foreach($customer['emails'] as $email){
-                $newEmail = new Email;
 
-                $newEmail['client_id'] = $newclient->id;
-                $newEmail['endereco'] = $email;
+                $emailExistent = Email::where(['client_id' => $newclient->id, 'endereco' => $email])->first();
+                if($emailExistent == null){
+                    $newEmail = new Email;
 
-                $newEmail->save();
+                    $newEmail['client_id'] = $newclient->id;
+                    $newEmail['endereco'] = $email;
+
+                    $newEmail->save();
+                }
             }
         }
 
+        $placa_chassi_renavam = $this->getValueFromExtraFields('CP_PLACA_CHASSI_E_RENAVAM', $subscription);
+
+        $veiculoExistent = Veiculo::where(['placa' => explode(' ', $placa_chassi_renavam)])->first();
+        if($veiculoExistent == null){
+            $veiculo = $this->getVehicleFromExtraFields($subscription);
+            $this->addClientVeiculo($newclient, $veiculo);
+        }
+
+
         return 1;
+    }
+
+    protected function getValueFromExtraFields($tagName, $subscription){
+        $value = "";
+        foreach($subscription['Customer']['ExtraFields'] as $extrafield)
+        {
+            if($extrafield['tagName'] == $tagName){
+                $value = $extrafield['tagValue'];
+            }
+        }
+
+        return $value;
+    }
+    protected function getVehicleFromExtraFields($subscription){
+        $extrafields = array();
+
+        foreach($subscription['Customer']['ExtraFields'] as $extrafield)
+        {
+            $extrafields[$extrafield['tagName']] = $extrafield['tagValue'];
+        }
+
+        $placa_chassi_renavam = explode(' ', $extrafields['CP_PLACA_CHASSI_E_RENAVAM']);
+
+        $veiculo['veiculoChassi'] = $placa_chassi_renavam[1];
+        $veiculo['veiculoPlaca'] = $placa_chassi_renavam[0];
+        $veiculo['veiculoRenavam'] = $placa_chassi_renavam[2];
+        $veiculo['veiculoTipo'] = 'Automovel';
+        $veiculo['veiculoAnoFabricacao'] = $extrafields['CP_ANO_MODELO'];
+        $veiculo['veiculoAnoModelo'] = $extrafields['CP_ANO_MODELO'];
+        $veiculo['veiculoMarca'] = isset($extrafields['CP_']) ? $extrafields['CP_MARCA'] : 'Não Informado';
+        $veiculo['veiculoModelo'] = isset($extrafields['CP_MODELO']) ? $extrafields['CP_MODELO'] : 'Não Informado';
+        $veiculo['veiculoCor'] = isset($extrafields['CP_COR']) ? $extrafields['CP_COR'] : 'Não Informado';
+        $veiculo['veiculoCambio'] = isset($extrafields['CP_CAMBIO']) ? $extrafields['CP_CAMBIO'] : 'Não Informado';
+        $veiculo['veiculoFipeCodigo'] = isset($extrafields['CP_FIPE_CODIGO']) ? $extrafields['CP_FIPE_CODIGO'] : 'Não Informado';
+        $veiculo['veiculoFipeValor'] = isset($extrafields['CP_FIPE_VALOR']) ? $extrafields['CP_FIPE_VALOR'] : 'Não Informado';
+
+        return $veiculo;
     }
 }

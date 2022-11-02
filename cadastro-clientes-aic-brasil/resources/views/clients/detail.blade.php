@@ -15,6 +15,12 @@
             <h1>Cliente</h1>
             <br/>
             <a href="/clients" class="btn btn-outline-info ml-2">Voltar</a>
+            @if (session()->has('dados_integracao'))
+                <div class="alert alert-primary">
+                    Resultado da integração:
+                    {{ session('dados_integracao') }}
+                </div>
+            @endif
             @isset($client)
                 <div class="table-responsive ">
                     <table class="table table-striped table-bordered">
@@ -32,8 +38,8 @@
                                 <td>{{$client['documento']}}</td>
                                 <td>{{date_format(date_create($client['criadoEm']),"d/m/Y")}}</td>
                                 <td>{{getClientStatusDescription($client['status'])}}</td>
-                                <td>{{implode(', ', $client['emails'])}}</td>
-                                <td>{{implode(', ', $client['telefones'])}}</td>
+                                <td>{{$client['emails']}}</td>
+                                <td>{{$client['telefones']}}</td>
                                 {{-- <td></td>
                                 <td></td> --}}
                             </tr>
@@ -107,6 +113,36 @@
                     </table>
                 </div>
             @endisset
+            <h4>Log Integração(Lógica):</h4>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered" id="table-clientes" class="display">
+                    <thead>
+                    <tr class="table-info">
+                        <th>Id</th>
+                        <th>Resultado Integração</th>
+                        <th>Ação Realizada</th>
+                        <th>Data Integração</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @isset($logs)
+                            @foreach ($logs as $log)
+                                <tr>
+                                    <td>{{$log['id']}}</td>
+                                    <td>{{$log['resultado']}}</td>
+                                    <td>{{$log['acao']}}</td>
+                                    <td>{{date_format(date_create($log['data_integracao']), 'd/m/Y H:i:s')}}</td>
+                                </tr>
+                            @endforeach
+                        @endisset
+                        @empty($logs)
+                            <tr>
+                                <td class="text-center" colspan="4">Nenhum registro encontrado.</td>
+                            </tr>
+                        @endempty
+                    </tbody>
+                </table>
+            </div>
             <form action="{{route('client.integrate')}}" method="post" class="mt-3">
                 @csrf
                 <input type="hidden" name="id" value="{{$client['id']}}" />

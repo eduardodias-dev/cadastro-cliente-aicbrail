@@ -42,21 +42,18 @@
                 <br />
                 <button type="submit" class="btn btn-outline-info ml-2">Filtrar</button>
             </form><br/>
-            {{-- @if (isset($clients) && count($clients) > 0) --}}
-                <table class="table table-responsive table-striped table-bordered" id="table-clientes" class="display">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered" id="table-clientes" class="display">
                     <thead>
-                    <tr class="table-info">
-                        <th>Id</th>
-                        <th>Id GalaxPay</th>
-                        <th>Nome</th>
-                        <th>Documento</th>
-                        <th>Criado em</th>
-                        <th>Status</th>
-                        <th>Detalhes</th>
-                        <th>Emails</th>
-                        <th>Contatos</th>
-                        <th>Ações</th>
-                    </tr>
+                        <tr class="table-info">
+                            <th>Id</th>
+                            <th>Id GalaxPay</th>
+                            <th>Nome</th>
+                            <th>Documento</th>
+                            <th>Criado em</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
                     </thead>
                     <tbody>
                         @foreach ($clients as $client)
@@ -76,9 +73,6 @@
                                 </td>
                                 <td>{{implode(', ', $client['emails'])}}</td>
                                 <td>{{implode(', ', $client['phones'])}}</td> --}}
-                                <td></td>
-                                <td></td>
-                                <td></td>
                                 <td>
                                     <a href="{{route('client.detail', ['id' => $client['id']])}}" class="btn btn-outline-info ml-2">Detalhe</a>
                                 </td>
@@ -86,7 +80,7 @@
                         @endforeach
                     </tbody>
                 </table>
-            {{-- @endif --}}
+            </div>
         </main>
         <script>
             $(document).ready( function () {

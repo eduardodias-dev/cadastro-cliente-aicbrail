@@ -12,7 +12,7 @@ class Cliente extends Model
     // protected $keyType = 'string';
     //created_at, updated_at
     // public $timestamps = false;
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
+    const CREATED_AT = 'criadoEm';
+    const UPDATED_AT = 'atualizadoEm';
     protected $guarded = [];
 }

@@ -65,8 +65,26 @@ class ClientReceiverIntegrationService implements IClientReceiverIntegrationServ
         $requestClient["senha"] = $configs["senha"];
         $requestClient["clienteCNPJ"] = $configs["clienteCNPJ"];
 
-        die(print_r($requestClient));
         $response = Http::asForm()->post($configs['URL'].'cadastroService/incluir', $requestClient);
+
+        if($response->failed())
+            throw new Exception($response->json());
+
+        return $response->json();
+    }
+
+    public function removeBeneficiaryVehicle($client){
+        $clientDB = Cliente::where(['id_galaxpay' => $client['galaxPayId']])->first();
+
+        $requestClient['codigo'] = $clientDB['codigo'];
+        $configs = $this->integrationConfigService->getReceiverServiceConfig();
+
+        $requestClient["usuario"] = $configs["usuario"];
+        $requestClient["senha"] = $configs["senha"];
+        $requestClient["clienteCNPJ"] = $configs["clienteCNPJ"];
+
+        // die(print_r($requestClient));
+        $response = Http::asForm()->post($configs['URL'].'cadastroService/remover', $requestClient);
 
         if($response->failed())
             throw new Exception($response->json());
