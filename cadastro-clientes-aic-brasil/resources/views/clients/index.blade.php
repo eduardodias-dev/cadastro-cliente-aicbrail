@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Lista Clientes</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
@@ -15,9 +15,9 @@
 
     </head>
     <body>
-        <main class="container">
+        <main class="container px-5">
             <h1>Clientes</h1>
-            <h3>Filtro</h3>
+            {{-- <h3>Filtro</h3>
             <form method="GET" class="form-inline">
                 <label class="ml-2">Email:</label>
                 <input type="text" name="emails" value="" class="form-control ml-1"/>
@@ -40,7 +40,7 @@
                 <br />
                 <br />
                 <br />
-                <button type="submit" class="btn btn-outline-info ml-2">Filtrar</button>
+                <button type="submit" class="btn btn-outline-info ml-2">Filtrar</button> --}}
             </form><br/>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered" id="table-clientes" class="display">
@@ -52,6 +52,7 @@
                             <th>Documento</th>
                             <th>Criado em</th>
                             <th>Status</th>
+                            <th>Codigo Lógica</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -64,6 +65,7 @@
                                 <td>{{$client['documento']}}</td>
                                 <td>{{$client['criadoEm']}}</td>
                                 <td>{{getClientStatusDescription($client['status'])}}</td>
+                                <td>{{$client['codigo_logica']}}</td>
                                 {{-- <td>
                                     @isset($client['ExtraFields'])
                                         @foreach($client['ExtraFields'] as $field)

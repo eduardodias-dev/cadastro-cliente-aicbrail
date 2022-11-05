@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Cliente;
 use App\LogIntegracao;
-use Exception;
 use Illuminate\Http\Request;
 use App\Services\IPlanoDBService;
+use Illuminate\Support\Facades\DB;
 use App\Services\IClienteDBService;
 use App\Services\Integration\IClientSenderIntegrationService;
 use App\Services\Integration\IClientReceiverIntegrationService;
@@ -166,34 +167,104 @@ class SiteController extends Controller
         }
 
         $customer = $response->json()['Customers'][0];
-        $log = new LogIntegracao;
+        $return = $this->sendToService($customer);
 
-        if($customer['status'] == 'active'){
-            $savedData = $this->clientReceiverIntegrationService->addBeneficiaryVehicle($customer);
-            $log['acao'] = 'Adicionar';
-        }
-        else{
-            $savedData = $this->clientReceiverIntegrationService->removeBeneficiaryVehicle($customer);
-            $log['acao'] = 'Remover';
-        }
-
-        $client = Cliente::where(['id_galaxpay' => $galaxPayId])->first();
-
-        $log['data_integracao'] = date_create('now');
-        $log['resultado'] = json_encode($savedData);
-        $log['client_id'] = $client['id'];
-
-        $log->save();
-
-        if(isset($savedData['codigo'])){
-            $client['codigo_logica'] = $savedData['codigo'];
-        }
-        $client['status'] = $customer['status'];
-        $client->save();
-
-        session()->flash('dados_integracao', $savedData['retorno']);
+        session()->flash('dados_integracao', $return);
 
         return redirect()->route('client.detail', ['id' => $request['id']]);
     }
 
+    public function integrateSubscriptionsInBatch(){
+        $ontem = date_format(date_create("Yesterday"),'d/m/Y');
+        $hoje = date_format(date_create("today"),'Y-m-d');
+
+        $response = $this->clientIntegrationService->getClientSubscriptions(0, 100,
+                                            [
+                                                'createdOrUpdatedAtFrom' => $ontem,
+                                                'createdOrUpdatedAtTo' => $hoje,
+                                            ]);
+
+
+        if($response->successful() == false){
+            throw new Exception("Não foi possível recuperar a assinatura. \n".json_encode($response->error()));
+        }
+
+        $subscriptions = $response->json()['Subscriptions'];
+        foreach($subscriptions as $subscription){
+            $savedData = $this->clienteDBservice->addClientFromSubscription($subscription);
+
+            $response = $this->clientIntegrationService->getClientFromSenderServiceById($subscription['Customer']['galaxPayId']);
+
+            if($response->successful() == false || count($response->json()['Customers']) <= 0){
+
+                throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->error()));
+            }
+
+            $response = $this->clientIntegrationService->getClientFromSenderServiceById($subscription['Customer']['galaxPayId']);
+            if($response->successful() == false || count($response->json()['Customers']) <= 0){
+                throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->error()));
+            }
+
+            $customer = $response->json()['Customers'][0];
+
+            $return = $this->sendToService($customer);
+
+        }
+        session()->flash('dados_batch', "Finalizado processamento de ".count($subscriptions)." registros");
+
+        return redirect()->route('logs.list');
+    }
+
+    public function getLogs(){
+        $list = DB::select("SELECT c.id `client_id`, c.nome, c.documento, c.`status`, c.codigo_logica, i.resultado,i.acao,"
+        ." data_integracao"
+        ." FROM cliente c "
+        ." INNER JOIN log_integracao i ON i.client_id = c.id"
+        ." ORDER BY i.data_integracao DESC");
+
+        $logs = array_map(function($obj){
+            return (array)$obj;
+        }, $list);
+
+        return view('logs.index', ['logs' => $logs]);
+
+    }
+
+    private function sendToService($customer){
+        $log = new LogIntegracao;
+        $client = Cliente::where(['id_galaxpay' => $customer['galaxPayId']])->first();
+
+        $savedData = null;
+        if($customer['status'] == 'active'){
+            if($client['codigo_logica'] == null){
+                $savedData = $this->clientReceiverIntegrationService->addBeneficiaryVehicle($customer);
+                $log['acao'] = 'Adicionar';
+            }
+        }
+        else{
+            if($client['codigo_logica'] != null){
+                $savedData = $this->clientReceiverIntegrationService->removeBeneficiaryVehicle($customer);
+                $log['acao'] = 'Remover';
+                $client['codigo_logica'] = null;
+            }
+        }
+        if($savedData != null){
+            $log['data_integracao'] = date_create('now');
+            $log['resultado'] = json_encode($savedData);
+            $log['client_id'] = $client['id'];
+
+            $log->save();
+
+            if(isset($savedData['codigo'])){
+                $client['codigo_logica'] = $savedData['codigo'];
+            }
+
+            $client['status'] = $customer['status'];
+            $client->save();
+            return $savedData['retorno'];
+        }
+        else{
+            return 'Dados não alterados.';
+        }
+    }
 }

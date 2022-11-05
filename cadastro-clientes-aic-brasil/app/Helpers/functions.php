@@ -61,3 +61,15 @@ function getPeriodicity($value){
     return $description;
 
 }
+
+function getDateInBRFormat(string $date){
+    $date = date_create($date);
+
+    return date_format($date->setTimezone(new DateTimeZone("GMT-03:00")), 'd/m/Y');
+}
+
+function getDateTimeInBRFormat(string $date){
+    $date = date_create($date);
+
+    return date_format($date->setTimezone(new DateTimeZone("GMT-03:00")), 'd/m/Y H:i:s');
+}

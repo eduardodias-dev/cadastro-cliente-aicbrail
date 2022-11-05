@@ -4,14 +4,14 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Detalhe Assinatura</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     </head>
     <body>
-        <main class="container">
+        <main class="container px-5">
             <h1>Assinatura Cliente</h1>
             <a href="/subscriptions" class="btn btn-outline-info ml-2">Voltar</a>
             @isset($client)

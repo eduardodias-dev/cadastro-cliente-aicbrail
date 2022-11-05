@@ -76,7 +76,7 @@ class ClientReceiverIntegrationService implements IClientReceiverIntegrationServ
     public function removeBeneficiaryVehicle($client){
         $clientDB = Cliente::where(['id_galaxpay' => $client['galaxPayId']])->first();
 
-        $requestClient['codigo'] = $clientDB['codigo'];
+        $requestClient['codigo'] = $clientDB['codigo_logica'];
         $configs = $this->integrationConfigService->getReceiverServiceConfig();
 
         $requestClient["usuario"] = $configs["usuario"];

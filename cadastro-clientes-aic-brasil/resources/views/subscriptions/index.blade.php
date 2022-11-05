@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Lista Assinaturas</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 
     </head>
     <body>
-        <main class="container">
+        <main class="container px-5">
             <h1>Assinaturas</h1>
             {{-- <h3>Filtro</h3>
             <form method="GET" class="form-inline">

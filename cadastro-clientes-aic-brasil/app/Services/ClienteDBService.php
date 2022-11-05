@@ -235,16 +235,17 @@ class ClienteDBService implements IClienteDBService{
             $extrafields[$extrafield['tagName']] = $extrafield['tagValue'];
         }
 
-        $placa_chassi_renavam = explode(' ', $extrafields['CP_PLACA_CHASSI_E_RENAVAM']);
+        $placa_chassi_renavam = explode(' ', isset($extrafields['CP_PLACA_CHASSI_E_RENAVAM'])?$extrafields['CP_PLACA_CHASSI_E_RENAVAM'] : "");
+        $ano_fabricacao_modelo = explode('/', isset($extrafields['CP_ANO_DE_FABRICACAO'])?$extrafields['CP_ANO_DE_FABRICACAO'] : "");
 
-        $veiculo['veiculoChassi'] = $placa_chassi_renavam[1];
-        $veiculo['veiculoPlaca'] = $placa_chassi_renavam[0];
-        $veiculo['veiculoRenavam'] = $placa_chassi_renavam[2];
-        $veiculo['veiculoTipo'] = 'Automovel';
-        $veiculo['veiculoAnoFabricacao'] = $extrafields['CP_ANO_MODELO'];
-        $veiculo['veiculoAnoModelo'] = $extrafields['CP_ANO_MODELO'];
-        $veiculo['veiculoMarca'] = isset($extrafields['CP_']) ? $extrafields['CP_MARCA'] : 'Não Informado';
-        $veiculo['veiculoModelo'] = isset($extrafields['CP_MODELO']) ? $extrafields['CP_MODELO'] : 'Não Informado';
+        $veiculo['veiculoChassi'] = isset($extrafields['CP_CHASSI']) ? $extrafields['CP_CHASSI'] : 'Não Informado';;
+        $veiculo['veiculoPlaca'] = isset($placa_chassi_renavam[0]) && !empty($placa_chassi_renavam[0]) ? $placa_chassi_renavam[0] : 'Não Informado';
+        $veiculo['veiculoRenavam'] = isset($placa_chassi_renavam[1]) && !empty($placa_chassi_renavam[1]) ? $placa_chassi_renavam[1] : 'Não Informado';
+        $veiculo['veiculoTipo'] = isset($extrafields['CP_TIPO_DO_VEICULO']) ? $extrafields['CP_TIPO_DO_VEICULO'] : 'Não Informado';
+        $veiculo['veiculoAnoFabricacao'] = isset($ano_fabricacao_modelo[0]) && !empty($ano_fabricacao_modelo[0]) ? $ano_fabricacao_modelo[0] : 0;
+        $veiculo['veiculoAnoModelo'] = isset($ano_fabricacao_modelo[1]) && !empty($ano_fabricacao_modelo[1]) ? $ano_fabricacao_modelo[1] : 0;
+        $veiculo['veiculoMarca'] = isset($extrafields['CP_MARCA_TIPO']) ? $extrafields['CP_MARCA_TIPO'] : 'Não Informado';
+        $veiculo['veiculoModelo'] = isset($extrafields['CP_ANO_MODELO']) ? $extrafields['CP_ANO_MODELO'] : 'Não Informado';
         $veiculo['veiculoCor'] = isset($extrafields['CP_COR']) ? $extrafields['CP_COR'] : 'Não Informado';
         $veiculo['veiculoCambio'] = isset($extrafields['CP_CAMBIO']) ? $extrafields['CP_CAMBIO'] : 'Não Informado';
         $veiculo['veiculoFipeCodigo'] = isset($extrafields['CP_FIPE_CODIGO']) ? $extrafields['CP_FIPE_CODIGO'] : 'Não Informado';
