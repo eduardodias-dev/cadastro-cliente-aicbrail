@@ -215,6 +215,20 @@ class SiteController extends Controller
         return redirect()->route('logs.list');
     }
 
+    public function integrateDelayedClientsInBatch(){
+        $response = $this->clientIntegrationService->getClientsFromSenderService(100, 'createdAt.desc', 0, array(
+            'status' => 'delayed'
+        ));
+
+        $customers = $response->json()['Customers'];
+        foreach($customers as $customer){
+            $this->sendToService($customer);
+        }
+        session()->flash('dados_batch', "Finalizado processamento de ".count($customers)." registros");
+
+        return redirect()->route('logs.list');
+    }
+
     public function getLogs(){
         $list = DB::select("SELECT c.id `client_id`, c.nome, c.documento, c.`status`, c.codigo_logica, i.resultado,i.acao,"
         ." data_integracao"

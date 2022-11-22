@@ -32,4 +32,5 @@ Route::post('/plans/deactivate', [SiteController::class, 'deactivatePlan'])->nam
 Route::post('/client/integrate', [SiteController::class, 'integrateClientFromGalaxPay'])->name('client.integrate');
 Route::post('/subscription/add', [SiteController::class, 'addSubscriptionById'])->name('subscription.add');
 Route::get('/batch', [SiteController::class, 'integrateSubscriptionsInBatch'])->name('subscription.integrate');
+Route::get('/batch/inactive', [SiteController::class, 'integrateDelayedClientsInBatch']);
 Route::get('/logs', [SiteController::class, 'getLogs'])->name('logs.list');
