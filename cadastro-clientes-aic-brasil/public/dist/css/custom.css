@@ -1,0 +1,22 @@
+table{
+    border-collapse: collapse;
+}
+.align-center{
+    text-align: center;
+}
+.align-right{
+    text-align: right;
+}
+.align-left{
+    text-align: left;
+}
+
+.valign-middle{
+    vertical-align: middle;
+}
+.valign-top{
+    vertical-align: top;
+}
+.valign-bottom{
+    vertical-align: bottom;
+}

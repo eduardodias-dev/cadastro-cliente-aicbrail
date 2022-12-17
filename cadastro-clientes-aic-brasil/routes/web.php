@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,23 +15,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect('clients');
-});
+Route::get('/', "SiteController@home");
 
-Route::get('/home/{name?}', "SiteController@home");
-Route::get('/clients', [SiteController::class, 'clients'])->name('client.list');
-Route::get('/clients/{id}', [SiteController::class, 'clientById'])->name('client.detail');
-Route::get('/customers', [SiteController::class, 'customers'])->name('customer.list');
-Route::get('/customers/{id}', [SiteController::class, 'customerById'])->name('customer.detail');
-Route::get('/subscriptions', [SiteController::class, 'subscriptions'])->name('subscriptions.list');
-Route::get('/subscriptions/{id:int}', [SiteController::class, 'subscriptionById'])->name('subscription.detail');
-Route::get('/plans', [SiteController::class, 'getPlans'])->name('plans.list');
-Route::post('/plans', [SiteController::class, 'addPlan'])->name('plans.add');
-Route::post('/plans/activate', [SiteController::class, 'activatePlan'])->name('plans.activate');
-Route::post('/plans/deactivate', [SiteController::class, 'deactivatePlan'])->name('plans.deactivate');
-Route::post('/client/integrate', [SiteController::class, 'integrateClientFromGalaxPay'])->name('client.integrate');
-Route::post('/subscription/add', [SiteController::class, 'addSubscriptionById'])->name('subscription.add');
-Route::get('/batch', [SiteController::class, 'integrateSubscriptionsInBatch'])->name('subscription.integrate');
-Route::get('/batch/inactive', [SiteController::class, 'integrateDelayedClientsInBatch']);
-Route::get('/logs', [SiteController::class, 'getLogs'])->name('logs.list');
+Route::prefix("admin")->group(function(){
+    Route::get('/clients', [AdminController::class, 'clients'])->name('client.list');
+    Route::get('/clients/{id}', [AdminController::class, 'clientById'])->name('client.detail');
+    Route::get('/customers', [AdminController::class, 'customers'])->name('customer.list');
+    Route::get('/customers/{id}', [AdminController::class, 'customerById'])->name('customer.detail');
+    Route::get('/subscriptions', [AdminController::class, 'subscriptions'])->name('subscriptions.list');
+    Route::get('/subscriptions/{id:int}', [AdminController::class, 'subscriptionById'])->name('subscription.detail');
+    Route::get('/plans', [AdminController::class, 'getPlans'])->name('plans.list');
+    Route::post('/plans', [AdminController::class, 'addPlan'])->name('plans.add');
+    Route::post('/plans/activate', [AdminController::class, 'activatePlan'])->name('plans.activate');
+    Route::post('/plans/deactivate', [AdminController::class, 'deactivatePlan'])->name('plans.deactivate');
+    Route::post('/client/integrate', [AdminController::class, 'integrateClientFromGalaxPay'])->name('client.integrate');
+    Route::post('/subscription/add', [AdminController::class, 'addSubscriptionById'])->name('subscription.add');
+    Route::get('/batch', [AdminController::class, 'integrateSubscriptionsInBatch'])->name('subscription.integrate');
+    Route::get('/batch/inactive', [AdminController::class, 'integrateDelayedClientsInBatch']);
+    Route::get('/logs', [AdminController::class, 'getLogs'])->name('logs.list');
+});

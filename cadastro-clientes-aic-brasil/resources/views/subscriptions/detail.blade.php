@@ -1,96 +1,86 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('templates.index')
+@section('title', 'Detalhe Assinatura')
 
-        <title>Detalhe Assinatura</title>
-
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    </head>
-    <body>
-        <main class="container px-5">
-            <h1>Assinatura Cliente</h1>
-            <a href="/subscriptions" class="btn btn-outline-info ml-2">Voltar</a>
-            @isset($client)
-                <div class="table-responsive ">
-                    <table class="table table-striped table-bordered">
+@section('content')
+    <main class="container px-5">
+        <h1>Assinatura Cliente</h1>
+        <a href="/subscriptions" class="btn btn-outline-info ml-2">Voltar</a>
+        @isset($client)
+            <div class="table-responsive ">
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Documento</th>
+                        <th>Criado em</th>
+                        <th>Status</th>
+                        <th>Emails</th>
+                        <th>Contatos</th>
+                    </tr>
                         <tr>
-                            <th>Nome</th>
-                            <th>Documento</th>
-                            <th>Criado em</th>
-                            <th>Status</th>
-                            <th>Emails</th>
-                            <th>Contatos</th>
+                            {{-- <td>{{$client['name']}}</td> --}}
+                            <td>{{$client['name']}}</td>
+                            <td>{{$client['document']}}</td>
+                            <td>{{date_format(date_create($client['createdAt']),"d/m/Y")}}</td>
+                            <td>{{getClientStatusDescription($client['status'])}}</td>
+                            <td>{{implode(', ', $client['emails'])}}</td>
+                            <td>{{implode(', ', $client['phones'])}}</td>
                         </tr>
-                            <tr>
-                                {{-- <td>{{$client['name']}}</td> --}}
-                                <td>{{$client['name']}}</td>
-                                <td>{{$client['document']}}</td>
-                                <td>{{date_format(date_create($client['createdAt']),"d/m/Y")}}</td>
-                                <td>{{getClientStatusDescription($client['status'])}}</td>
-                                <td>{{implode(', ', $client['emails'])}}</td>
-                                <td>{{implode(', ', $client['phones'])}}</td>
-                            </tr>
-                    </table>
+                </table>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Informações</h4>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Informações</h4>
-                    </div>
-                    <div class="card-body">
-                        @isset($client['ExtraFields'])
-                            @foreach($client['ExtraFields'] as $field)
-                                <b>{{str_replace('_',' ', str_replace('CP_', '', $field['tagName']))}}</b>: {{$field['tagValue']}}<br/>
-                            @endforeach
-                        @endisset
-                    </div>
-                </div>
-            @endisset
-            @isset($subscriptions)
-                <h3>Assinaturas / Contratos</h3>
-                <div class="table-responsive ">
-                    <table class="table table-striped table-bordered">
-                        <tr>
-                            <th>Informações</th>
-                            <th>Valor</th>
-                            <th>Periodicidade</th>
-                            <th>Data 1° Pagamento</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                        @foreach ($subscriptions as $subscription)
-                            <tr>
-                                <td>
-                                    @isset($subscription['ExtraFields'])
-                                        @isset($subscription['ExtraFields'])
-                                            @foreach($subscription['ExtraFields'] as $field)
-                                                <b>{{str_replace('_',' ', str_replace('CP_', '', $field['tagName']))}}</b>: {{$field['tagValue']}}<br/>
-                                            @endforeach
-                                        @endisset
-                                    @endisset
-                                </td>
-                                <td>{{$subscription['value']}}</td>
-                                <td>{{getPeriodicity($subscription['periodicity'])}}</td>
-                                <td>{{$subscription['firstPayDayDate']}}</td>
-                                <td>{{getSubscriptionStatusDescription($subscription['status'])}}</td>
-                                <td>
-                                    <form action="{{route('subscription.add')}}" method="post">
-                                        @csrf
-                                        <input type="hidden" name="id" value="{{$subscription['galaxPayId']}}" />
-                                        {{-- <input type="hidden" name="id_galaxpay" value="{{$client['id_galaxpay']}}" /> --}}
-
-                                        <button type="submit" class="btn btn-warning">Enviar para banco de dados</button>
-                                    </form>
-                                </td>
-                            </tr>
+                <div class="card-body">
+                    @isset($client['ExtraFields'])
+                        @foreach($client['ExtraFields'] as $field)
+                            <b>{{str_replace('_',' ', str_replace('CP_', '', $field['tagName']))}}</b>: {{$field['tagValue']}}<br/>
                         @endforeach
-                    </table>
+                    @endisset
                 </div>
-            @endisset
+            </div>
+        @endisset
+        @isset($subscriptions)
+            <h3>Assinaturas / Contratos</h3>
+            <div class="table-responsive ">
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <th>Informações</th>
+                        <th>Valor</th>
+                        <th>Periodicidade</th>
+                        <th>Data 1° Pagamento</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                    @foreach ($subscriptions as $subscription)
+                        <tr>
+                            <td>
+                                @isset($subscription['ExtraFields'])
+                                    @isset($subscription['ExtraFields'])
+                                        @foreach($subscription['ExtraFields'] as $field)
+                                            <b>{{str_replace('_',' ', str_replace('CP_', '', $field['tagName']))}}</b>: {{$field['tagValue']}}<br/>
+                                        @endforeach
+                                    @endisset
+                                @endisset
+                            </td>
+                            <td>{{$subscription['value']}}</td>
+                            <td>{{getPeriodicity($subscription['periodicity'])}}</td>
+                            <td>{{$subscription['firstPayDayDate']}}</td>
+                            <td>{{getSubscriptionStatusDescription($subscription['status'])}}</td>
+                            <td>
+                                <form action="{{route('subscription.add')}}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{$subscription['galaxPayId']}}" />
+                                    {{-- <input type="hidden" name="id_galaxpay" value="{{$client['id_galaxpay']}}" /> --}}
 
-        </main>
-    </body>
-</html>
+                                    <button type="submit" class="btn btn-warning">Enviar para banco de dados</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
+        @endisset
+
+    </main>
+@endsection
