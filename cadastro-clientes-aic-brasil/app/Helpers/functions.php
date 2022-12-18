@@ -73,3 +73,9 @@ function getDateTimeInBRFormat(string $date){
 
     return date_format($date->setTimezone(new DateTimeZone("GMT-03:00")), 'd/m/Y H:i:s');
 }
+
+function getRetorno($jsonResult){
+    $arrResult = json_decode($jsonResult['resultado'], true);
+
+    return isset($arrResult['retorno']) ? $arrResult['retorno'] : "";
+}

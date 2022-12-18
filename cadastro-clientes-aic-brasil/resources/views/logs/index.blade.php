@@ -17,6 +17,7 @@
                     <table class="table table-responsive table-striped table-bordered" id="table-clientes" class="display">
                         <thead>
                         <tr class="table-info">
+                            <th>Id</th>
                             <th>Cliente</th>
                             <th>Documento</th>
                             <th>Status</th>
@@ -30,11 +31,12 @@
                         <tbody>
                             @foreach ($logs as $log)
                                 <tr>
+                                    <td>{{$log['id']}}</td>
                                     <td>{{$log['nome']}}</td>
                                     <td>{{$log['documento']}}</td>
                                     <td>{{getClientStatusDescription($log['status'])}}</td>
                                     <td>{{$log['codigo_logica']}}</td>
-                                    <td>{{json_decode($log['resultado'], true)['retorno']}}</td>
+                                    <td>{{getRetorno($log)}}</td>
                                     <td>{{$log['acao']}}</td>
                                     <td>{{getDateTimeInBRFormat($log['data_integracao'])}}</td>
                                     <td>
@@ -55,7 +57,7 @@
     <script>
         $(document).ready( function () {
             $('#table-clientes').DataTable({
-                order: [[6, 'desc']]
+                order: [[0, 'desc']]
             });
         } );
     </script>

@@ -15,6 +15,12 @@
                         {{ session('dados_integracao') }}
                     </div>
                 @endif
+                @if (session()->has('erro_integracao'))
+                    <div class="alert alert-danger">
+                        Erro ao executar integração:
+                        {{ session('erro_integracao') }}
+                    </div>
+                @endif
                 @isset($client)
                     <div class="table-responsive ">
                         <table class="table table-striped table-bordered">

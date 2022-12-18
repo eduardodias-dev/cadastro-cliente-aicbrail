@@ -53,7 +53,7 @@ class ClienteDBService implements IClienteDBService{
         $newResidencia['zona'] = $residencia['residenciaCpf'];
         $newResidencia['endereco'] = $residencia['residenciaNome'];
         $newResidencia['numero'] = $residencia['residenciaDataNascimento'];
-        $newResidencia['complemento'] = isset($residencia['residenciaSexo']) && !empty($residencia['residenciaSexo']) ? $residencia['residenciaSexo'] : "-";
+        $newResidencia['complemento'] = isset($residencia['residenciaComplemento']) && !empty($residencia['residenciaComplemento']) ? $residencia['residenciaComplemento'] : "-";
         $newResidencia['bairro'] = $residencia['residenciaBairro'];
         $newResidencia['cidade'] = $residencia['residenciaCidade'];
         $newResidencia['estado'] = $residencia['residenciaEstado'];
@@ -166,7 +166,7 @@ class ClienteDBService implements IClienteDBService{
             $newAddress['cep'] = $address['zipCode'];
             $newAddress['rua'] = $address['street'];
             $newAddress['numero'] = $address['number'];
-            $newAddress['complemento'] = $address['complement'];
+            $newAddress['complemento'] = isset($address['complement']) && !empty($address['complement']) ? $address['complement'] : "-";
             $newAddress['bairro'] = $address['neighborhood'];
             $newAddress['cidade'] = $address['city'];
             $newAddress['estado'] = $address['state'];

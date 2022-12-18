@@ -140,7 +140,7 @@ class AdminController extends Controller
         $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['galaxPayIds' => $id]);
         if($response->successful() == false || count($response->json()['Subscriptions']) <= 0){
             die(print_r($response));
-            throw new Exception("Não foi possível recuperar a assinatura. \n".json_encode($response->error()));
+            throw new Exception("Não foi possível recuperar a assinatura. \n".json_encode($response->json()));
         }
         $subscriptions = $response->json()['Subscriptions'];
 
@@ -150,7 +150,7 @@ class AdminController extends Controller
 
         if($response->successful() == false || count($response->json()['Customers']) <= 0){
 
-            throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->error()));
+            throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->json()));
         }
 
         $client = $response->json()['Customers'][0];
@@ -159,19 +159,26 @@ class AdminController extends Controller
     }
 
     public function integrateClientFromGalaxPay(Request $request){
-        $galaxPayId = $request['id_galaxpay'];
+        try{
+            $galaxPayId = $request['id_galaxpay'];
 
-        $response = $this->clientIntegrationService->getClientFromSenderServiceById($galaxPayId);
-        if($response->successful() == false || count($response->json()['Customers']) <= 0){
-            throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->error()));
+            $response = $this->clientIntegrationService->getClientFromSenderServiceById($galaxPayId);
+            if($response->successful() == false || count($response->json()['Customers']) <= 0){
+                throw new Exception("Não foi possível recuperar o cliente. \n".json_encode($response->json()));
+            }
+
+            $customer = $response->json()['Customers'][0];
+            $return = $this->sendToService($customer);
+
+            session()->flash('dados_integracao', $return);
+
+            return redirect()->route('client.detail', ['id' => $request['id']]);
+        }catch(Exception $e){
+
+            session()->flash('erro_integracao', $e->getMessage());
+
+            return redirect()->route('client.detail', ['id' => $request['id']]);
         }
-
-        $customer = $response->json()['Customers'][0];
-        $return = $this->sendToService($customer);
-
-        session()->flash('dados_integracao', $return);
-
-        return redirect()->route('client.detail', ['id' => $request['id']]);
     }
 
     public function integrateSubscriptionsInBatch(){
@@ -230,11 +237,11 @@ class AdminController extends Controller
     }
 
     public function getLogs(){
-        $list = DB::select("SELECT c.id `client_id`, c.nome, c.documento, c.`status`, c.codigo_logica, i.resultado,i.acao,"
+        $list = DB::select("SELECT i.id, c.id `client_id`, c.nome, c.documento, c.`status`, c.codigo_logica, i.resultado,i.acao,"
         ." data_integracao"
         ." FROM cliente c "
         ." INNER JOIN log_integracao i ON i.client_id = c.id"
-        ." ORDER BY i.data_integracao DESC");
+        ." ORDER BY i.id DESC");
 
         $logs = array_map(function($obj){
             return (array)$obj;
@@ -249,6 +256,7 @@ class AdminController extends Controller
         $client = Cliente::where(['id_galaxpay' => $customer['galaxPayId']])->first();
 
         $savedData = null;
+        $result = 'Dados não alterados.';
         if($customer['status'] == 'active'){
             if($client['codigo_logica'] == null){
                 $savedData = $this->clientReceiverIntegrationService->addBeneficiaryVehicle($customer);
@@ -275,10 +283,15 @@ class AdminController extends Controller
 
             $client['status'] = $customer['status'];
             $client->save();
-            return $savedData['retorno'];
+            $result = $savedData['retorno'];
         }
         else{
-            return 'Dados não alterados.';
+
+            $client['status'] = $customer['status'];
+            $client->save();
+
+            $result = "Status alterado. Não enviado para a Lógica.";
         }
+        return $result;
     }
 }
