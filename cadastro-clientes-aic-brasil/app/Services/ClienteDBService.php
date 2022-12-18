@@ -53,7 +53,7 @@ class ClienteDBService implements IClienteDBService{
         $newResidencia['zona'] = $residencia['residenciaCpf'];
         $newResidencia['endereco'] = $residencia['residenciaNome'];
         $newResidencia['numero'] = $residencia['residenciaDataNascimento'];
-        $newResidencia['complemento'] = $residencia['residenciaSexo'];
+        $newResidencia['complemento'] = isset($residencia['residenciaSexo']) && !empty($residencia['residenciaSexo']) ? $residencia['residenciaSexo'] : "-";
         $newResidencia['bairro'] = $residencia['residenciaBairro'];
         $newResidencia['cidade'] = $residencia['residenciaCidade'];
         $newResidencia['estado'] = $residencia['residenciaEstado'];
