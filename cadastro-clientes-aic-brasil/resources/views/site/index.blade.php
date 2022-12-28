@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>OnePage Bootstrap Template - Index</title>
+  <title>Bem-vindo à AIC Brasil</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -343,7 +343,7 @@
                 <li class="na">Massa ultricies mi</li>
               </ul>
               <div class="btn-wrap">
-                <a href="#" class="btn-buy">Quero esse</a>
+                <a href="{{route('site.checkout')}}" class="btn-buy">Quero esse</a>
               </div>
             </div>
           </div>
@@ -360,7 +360,7 @@
                 <li class="na">Massa ultricies mi</li>
               </ul>
               <div class="btn-wrap">
-                <a href="#" class="btn-buy">Quero esse</a>
+                <a href="{{route('site.checkout')}}" class="btn-buy">Quero esse</a>
               </div>
             </div>
           </div>
@@ -377,7 +377,7 @@
                 <li>Massa ultricies mi</li>
               </ul>
               <div class="btn-wrap">
-                <a href="#" class="btn-buy">Quero esse</a>
+                <a href="{{route('site.checkout')}}" class="btn-buy">Quero esse</a>
               </div>
             </div>
           </div>

@@ -79,3 +79,38 @@ function getRetorno($jsonResult){
 
     return isset($arrResult['retorno']) ? $arrResult['retorno'] : "";
 }
+
+function printEstadosAsOptions(){
+    $estados = [
+        'AC' => 'Acre',
+        'AL' => 'Alagoas',
+        'AM' => 'Amazonas',
+        'AP' => 'Amapá',
+        'BA' => 'Bahia',
+        'CE' => 'Ceará',
+        'DF' => 'Distrito Federal',
+        'ES' => 'Espirito Santo',
+        'GO' => 'Goiás',
+        'MA' => 'Maranhão',
+        'MT' => 'Mato Grosso',
+        'MS' => 'Mato Grosso do Sul',
+        'MG' => 'Minas Gerais',
+        'PA' => 'Pará',
+        'PB' => 'Paraíba',
+        'PR' => 'Paraná',
+        'PE' => 'Pernambuco',
+        'PI' => 'Piauí',
+        'RJ' => 'Rio de Janeiro',
+        'RN' => 'Rio Grande do Norte',
+        'RS' => 'Rio Grande do Sul',
+        'RO' => 'Rondonia',
+        'RR' => 'Roraima',
+        'SC' => 'Santa Catarina',
+        'SP' => 'São Paulo',
+        'TO' => 'Tocantins',
+    ];
+
+    foreach($estados as $sigla => $nome){
+        print "<option value='$sigla'>$nome</option>";
+    }
+}

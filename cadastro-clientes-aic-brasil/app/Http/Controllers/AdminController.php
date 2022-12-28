@@ -258,39 +258,42 @@ class AdminController extends Controller
         $savedData = null;
         $result = 'Dados não alterados.';
         if($customer['status'] == 'active'){
-            if($client['codigo_logica'] == null){
+            if($client->codigo_logica == null){
                 $savedData = $this->clientReceiverIntegrationService->addBeneficiaryVehicle($customer);
                 $log['acao'] = 'Adicionar';
             }
         }
         else{
-            if($client['codigo_logica'] != null){
+            if(isset($client->codigo_logica) && $client->codigo_logica != null){
                 $savedData = $this->clientReceiverIntegrationService->removeBeneficiaryVehicle($customer);
                 $log['acao'] = 'Remover';
-                $client['codigo_logica'] = null;
+                $client->codigo_logica = null;
             }
         }
         if($savedData != null){
             $log['data_integracao'] = date_create('now');
             $log['resultado'] = json_encode($savedData);
-            $log['client_id'] = $client['id'];
+            $log['client_id'] = $client->id;
 
             $log->save();
 
             if(isset($savedData['codigo'])){
-                $client['codigo_logica'] = $savedData['codigo'];
+                $client->codigo_logica = $savedData['codigo'];
             }
 
-            $client['status'] = $customer['status'];
+            $client->status = $customer['status'];
             $client->save();
             $result = $savedData['retorno'];
         }
         else{
+            if(isset($client) && !is_null($client)){
+                $client->status = $customer['status'];
+                //die(print_r($client));
+                $client->save();
 
-            $client['status'] = $customer['status'];
-            $client->save();
+                $result = "Status alterado. Não enviado para a Lógica.";
 
-            $result = "Status alterado. Não enviado para a Lógica.";
+            }
         }
         return $result;
     }

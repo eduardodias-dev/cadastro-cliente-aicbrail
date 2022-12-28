@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\SiteController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SiteController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', "SiteController@home");
 
-Route::prefix("admin")->group(function(){
+Route::prefix("admin")->middleware('auth')->group(function(){
     Route::get('/clients', [AdminController::class, 'clients'])->name('client.list');
     Route::get('/clients/{id}', [AdminController::class, 'clientById'])->name('client.detail');
     Route::get('/customers', [AdminController::class, 'customers'])->name('customer.list');
@@ -34,3 +35,8 @@ Route::prefix("admin")->group(function(){
     Route::get('/batch/inactive', [AdminController::class, 'integrateDelayedClientsInBatch']);
     Route::get('/logs', [AdminController::class, 'getLogs'])->name('logs.list');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/checkout', [SiteController::class, 'checkout'])->name('site.checkout');
