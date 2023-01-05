@@ -114,3 +114,9 @@ function printEstadosAsOptions(){
         print "<option value='$sigla'>$nome</option>";
     }
 }
+
+function format_number($number){
+    $formatted = number_format($number, 2, ',', '.');
+
+    return $formatted;
+}

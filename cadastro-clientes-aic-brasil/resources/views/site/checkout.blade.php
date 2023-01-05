@@ -10,23 +10,23 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="site/img/favicon.png" rel="icon">
-  <link href="site/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="/site/img/favicon.png" rel="icon">
+  <link href="/site/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="site/vendor/aos/aos.css" rel="stylesheet">
-  <link href="site/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="site/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="site/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="site/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="site/vendor/remixicon/remixicon.css" rel="stylesheet">
-  <link href="site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="/site/vendor/aos/aos.css" rel="stylesheet">
+  <link href="/site/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/site/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/site/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="/site/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="/site/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="/site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
-  <link href="site/css/style.css" rel="stylesheet">
+  <link href="/site/css/style.css" rel="stylesheet">
 
   <!-- =======================================================
   * Template Name: OnePage - v4.9.2
@@ -202,71 +202,27 @@
                                         <input type="checkbox" name="club_beneficio" id="{{$item->id}}">
                                         <label for="club_beneficio">{{$item->nome}}</label><br>
                                     @endforeach
-                                    {{-- <input type="checkbox" name="auxilio_cesta_basica" id="">
-                                    <label for="auxilio_cesta_basica">AUXÍLIO CESTA BÁSICA</label><br>
-                                    <input type="checkbox" name="emergencia_residencial" id="">
-                                    <label for="emergencia_residencial">EMERGÊNCIA RESIDENCIAL</label><br>
-                                    <input type="checkbox" name="funeral_completo" id="">
-                                    <label for="funeral_completo">FUNERAL COMPLETO</label><br>
-                                    <input type="checkbox" name="corretor_imob" id="">
-                                    <label for="corretor_imob">CORRETOR iMoB.</label><br>
-                                    <input type="checkbox" name="despachante_detran" id="">
-                                    <label for="despachante_detran">DESPACHANTE DETRAN</label><br>
-                                    <input type="checkbox" name="despachante_porte_arma" id="">
-                                    <label for="despachante_porte_arma">DESPACHANTE PORTE ARMA</label><br>
-                                    <input type="checkbox" name="sindico_prof_trainee" id="">
-                                    <label for="sindico_prof_trainee">SINDICO(A) PROF. TRAINEE</label><br>
-                                    <input type="checkbox" name="escola_faculdade" id="">
-                                    <label for="escola_faculdade">ESCOLA & FACULDADE</label><br>
-                                    <input type="checkbox" name="consultor_contabil" id="">
-                                    <label for="consultor_contabil">CONSULTOR CONTÁBIL</label><br>
-                                    <input type="checkbox" name="consultor_jurídico" id="">
-                                    <label for="consultor_jurídico">CONSULTOR JURÍDICO</label><br> --}}
                                 @endisset
                             </div>
                             <div class="form-group col-md-6">
                                 <h5>COBERTURA 24h (365 DIAS)</h5>
-                                <input type="checkbox" name="alagamento" id="">
-                                <label for="alagamento">ALAGAMENTO | ENCHENTE</label><br>
-                                <input type="checkbox" name="chaveiro" id="">
-                                <label for="chaveiro">CHAVEIRO AUTO | RESIDENCIAL</label><br>
-                                <input type="checkbox" name="furto_roubo_incendio" id="">
-                                <label for="furto_roubo_incendio">FURTO | ROUBO | INCÊNDIO</label><br>
-                                <input type="checkbox" name="guincho" id="">
-                                <label for="guincho">GUINCHO - REBOQUE.24h</label><br>
-                                <input type="checkbox" name="guarda" id="">
-                                <label for="guarda">GUARDA DO VEÍCULO</label><br>
-                                <input type="checkbox" name="pane_seca_eletrica" id="">
-                                <label for="pane_seca_eletrica">PANE SECA | ELÉTRICA</label><br>
-                                <input type="checkbox" name="pane_mecanica" id="">
-                                <label for="pane_mecanica">PANE MECÂNICA</label><br>
-                                <input type="checkbox" name="troca_pneus" id="">
-                                <label for="troca_pneus">TROCA DE PNEU(S)</label><br>
-                                <input type="checkbox" name="hospedagem_hotel" id="">
-                                <label for="hospedagem_hotel">HOSPEDAGEM: HOSTEL | HOTEL</label><br>
-                                <input type="checkbox" name="remocao_hospitalar" id="">
-                                <label for="remocao_hospitalar">REMOÇÃO HOSPITALAR</label><br>
-                                <input type="checkbox" name="translado_obito" id="">
-                                <label for="translado_obito">TRASLADO DE ÓBTO</label><br>
-                                <input type="checkbox" name="taxi_mobile" id="">
-                                <label for="taxi_mobile">TÁXI MOBILE</label><br>
+                                @isset($cobertura_24horas)
+                                    @foreach($cobertura_24horas as $item)
+                                        <input type="checkbox" name="cobertura_24horas" id="{{$item->id}}">
+                                        <label for="cobertura_24horas">{{$item->nome}}</label><br>
+                                    @endforeach
+                                @endisset
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <h5>COMPRAR SEGURO(S)</h5>
-                                <input type="checkbox" name="seguro_vida" id="">
-                                <label for="seguro_vida">ACIDENTE - VIDA</label><br>
-                                <input type="checkbox" name="seguro_auto" id="">
-                                <label for="seguro_auto">AUTO - VEÍCULOS</label><br>
-                                <input type="checkbox" name="seguro_comercial" id="">
-                                <label for="furto_roubo_incendio">COMERCIAL</label><br>
-                                <input type="checkbox" name="seguro_residencial" id="">
-                                <label for="seguro_residencial">RESIDENCIAL</label><br>
-                                <input type="checkbox" name="seguro_pbgl" id="">
-                                <label for="seguro_pbgl">PGBL - VGBL</label><br>
-                                <input type="checkbox" name="seguro_viagem" id="">
-                                <label for="seguro_viagem">FÉRIAS - VIAGEM</label><br>
+                                @isset($comprar_seguros)
+                                    @foreach($comprar_seguros as $item)
+                                        <input type="checkbox" name="comprar_seguros" id="{{$item->id}}">
+                                        <label for="comprar_seguros">{{$item->nome}}</label><br>
+                                    @endforeach
+                                @endisset
                             </div>
                             <div class="form-group col-md-6">
                                 <h5 for="comprar_protecao_veicular">COMPRAR PROTEÇÃO VEICULAR</h5>
@@ -374,8 +330,8 @@
                 </div>
                 <div class="col-md-4 px-5">
                     <h5>Plano Selecionado:</h5>
-                    <h3>GPS BLOCK + REBOQ.24h</h3>
-                    <h2>R$ 99,99 / Mês</h2>
+                    <h3>{{$plano->nome}}</h3>
+                    <h2>R$ {{format_number($plano->preco)}} / Mês</h2>
                     <small>*no Boleto/PIX</small><br>
                     <a href="#">Mais formas de pagamento</a>
                     <hr>
@@ -463,16 +419,16 @@
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
-  <script src="site/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="site/vendor/aos/aos.js"></script>
-  <script src="site/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="site/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="site/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="site/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="site/vendor/php-email-form/validate.js"></script>
+  <script src="/site/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="/site/vendor/aos/aos.js"></script>
+  <script src="/site/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/site/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="/site/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="/site/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="/site/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="site/js/main.js"></script>
+  <script src="/site/js/main.js"></script>
 
 </body>
 

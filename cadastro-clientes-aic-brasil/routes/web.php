@@ -39,4 +39,4 @@ Route::prefix("admin")->middleware('auth')->group(function(){
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/checkout', [SiteController::class, 'checkout'])->name('site.checkout');
+Route::get('/checkout/{id_plano}', [SiteController::class, 'checkout'])->name('site.checkout');
