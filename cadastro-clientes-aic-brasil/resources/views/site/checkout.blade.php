@@ -197,28 +197,32 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <h5>Club de Benefício</h5>
-                                <input type="checkbox" name="anti_multas" id="">
-                                <label for="anti_multas">ANTI-MULTAS (RECURSO)</label><br>
-                                <input type="checkbox" name="auxilio_cesta_basica" id="">
-                                <label for="auxilio_cesta_basica">AUXÍLIO CESTA BÁSICA</label><br>
-                                <input type="checkbox" name="emergencia_residencial" id="">
-                                <label for="emergencia_residencial">EMERGÊNCIA RESIDENCIAL</label><br>
-                                <input type="checkbox" name="funeral_completo" id="">
-                                <label for="funeral_completo">FUNERAL COMPLETO</label><br>
-                                <input type="checkbox" name="corretor_imob" id="">
-                                <label for="corretor_imob">CORRETOR iMoB.</label><br>
-                                <input type="checkbox" name="despachante_detran" id="">
-                                <label for="despachante_detran">DESPACHANTE DETRAN</label><br>
-                                <input type="checkbox" name="despachante_porte_arma" id="">
-                                <label for="despachante_porte_arma">DESPACHANTE PORTE ARMA</label><br>
-                                <input type="checkbox" name="sindico_prof_trainee" id="">
-                                <label for="sindico_prof_trainee">SINDICO(A) PROF. TRAINEE</label><br>
-                                <input type="checkbox" name="escola_faculdade" id="">
-                                <label for="escola_faculdade">ESCOLA & FACULDADE</label><br>
-                                <input type="checkbox" name="consultor_contabil" id="">
-                                <label for="consultor_contabil">CONSULTOR CONTÁBIL</label><br>
-                                <input type="checkbox" name="consultor_jurídico" id="">
-                                <label for="consultor_jurídico">CONSULTOR JURÍDICO</label><br>
+                                @isset($club_beneficio)
+                                    @foreach ($club_beneficio as $item)
+                                        <input type="checkbox" name="club_beneficio" id="{{$item->id}}">
+                                        <label for="club_beneficio">{{$item->nome}}</label><br>
+                                    @endforeach
+                                    {{-- <input type="checkbox" name="auxilio_cesta_basica" id="">
+                                    <label for="auxilio_cesta_basica">AUXÍLIO CESTA BÁSICA</label><br>
+                                    <input type="checkbox" name="emergencia_residencial" id="">
+                                    <label for="emergencia_residencial">EMERGÊNCIA RESIDENCIAL</label><br>
+                                    <input type="checkbox" name="funeral_completo" id="">
+                                    <label for="funeral_completo">FUNERAL COMPLETO</label><br>
+                                    <input type="checkbox" name="corretor_imob" id="">
+                                    <label for="corretor_imob">CORRETOR iMoB.</label><br>
+                                    <input type="checkbox" name="despachante_detran" id="">
+                                    <label for="despachante_detran">DESPACHANTE DETRAN</label><br>
+                                    <input type="checkbox" name="despachante_porte_arma" id="">
+                                    <label for="despachante_porte_arma">DESPACHANTE PORTE ARMA</label><br>
+                                    <input type="checkbox" name="sindico_prof_trainee" id="">
+                                    <label for="sindico_prof_trainee">SINDICO(A) PROF. TRAINEE</label><br>
+                                    <input type="checkbox" name="escola_faculdade" id="">
+                                    <label for="escola_faculdade">ESCOLA & FACULDADE</label><br>
+                                    <input type="checkbox" name="consultor_contabil" id="">
+                                    <label for="consultor_contabil">CONSULTOR CONTÁBIL</label><br>
+                                    <input type="checkbox" name="consultor_jurídico" id="">
+                                    <label for="consultor_jurídico">CONSULTOR JURÍDICO</label><br> --}}
+                                @endisset
                             </div>
                             <div class="form-group col-md-6">
                                 <h5>COBERTURA 24h (365 DIAS)</h5>
