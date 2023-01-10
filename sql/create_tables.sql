@@ -37,3 +37,9 @@ CREATE TABLE client_address(
 	
 	FOREIGN KEY (client_id) REFERENCES client(id)
 );
+
+CREATE TABLE tipo_adicional_assinatura(
+	id INT NOT NULL PRIMARY KEY,
+	nome VARCHAR(250) NOT NULL,
+	ativo BIT
+)

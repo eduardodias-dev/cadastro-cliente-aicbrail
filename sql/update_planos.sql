@@ -1,0 +1,1 @@
+UPDATE plano SET ativo_Venda = 1 WHERE id IN (2,4)
