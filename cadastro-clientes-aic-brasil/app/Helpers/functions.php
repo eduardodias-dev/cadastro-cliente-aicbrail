@@ -120,3 +120,4 @@ function format_number($number){
 
     return $formatted;
 }
+

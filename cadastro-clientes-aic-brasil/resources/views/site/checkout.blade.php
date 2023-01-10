@@ -24,6 +24,7 @@
   <link href="/site/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="/site/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="/site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/site/vendor/datetimepicker/bootstrap-datetimepicker.min.css">
 
   <!-- Template Main CSS File -->
   <link href="/site/css/style.css" rel="stylesheet">
@@ -67,7 +68,8 @@
         <div class="main-form mt-2">
             <div class="row">
                 <div class="col-md-6">
-                    <form id="form-checkout" method="POST">
+                    <form id="form-checkout" method="POST" action="{{route('checkout.post')}}">
+                        @csrf
                         <div class="form-group">
                             <div class="mb-1">
                                 <label class="">Tipo de cadastro</label>
@@ -89,8 +91,8 @@
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-8">
-                                <label for="cpf">CPF</label>
-                                <input type="cpf" name="cpf" id="" class="form-control">
+                                <label for="cpfcnpj">CPF</label>
+                                <input type="cpfcnpj" name="cpfcnpj" id="" class="form-control">
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -159,15 +161,15 @@
                                 <label for="sexo">Sexo</label>
                                 <select name="sexo" class="form-control">
                                     <option value="" class="">Selecione</option>
-                                    <option value="1">Sim</option>
-                                    <option value="0">Não</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Feminino</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="datanasc">Data de Nascimento</label>
-                                <input type="datanasc" name="datanasc" id="" class="form-control">
+                                <input type="date" name="datanasc" id="" class="form-control">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="estado_civil">Estado Civil</label>
@@ -199,8 +201,8 @@
                                 <h5>Club de Benefício</h5>
                                 @isset($club_beneficio)
                                     @foreach ($club_beneficio as $item)
-                                        <input type="checkbox" name="club_beneficio" id="{{$item->id}}">
-                                        <label for="club_beneficio">{{$item->nome}}</label><br>
+                                        <input type="checkbox" name="club_beneficio[]" value="{{$item->id}}">
+                                        <label for="club_beneficio[]">{{$item->nome}}</label><br>
                                     @endforeach
                                 @endisset
                             </div>
@@ -208,8 +210,8 @@
                                 <h5>COBERTURA 24h (365 DIAS)</h5>
                                 @isset($cobertura_24horas)
                                     @foreach($cobertura_24horas as $item)
-                                        <input type="checkbox" name="cobertura_24horas" id="{{$item->id}}">
-                                        <label for="cobertura_24horas">{{$item->nome}}</label><br>
+                                        <input type="checkbox" name="cobertura_24horas[]" value="{{$item->id}}">
+                                        <label for="cobertura_24horas[]">{{$item->nome}}</label><br>
                                     @endforeach
                                 @endisset
                             </div>
@@ -219,8 +221,8 @@
                                 <h5>COMPRAR SEGURO(S)</h5>
                                 @isset($comprar_seguros)
                                     @foreach($comprar_seguros as $item)
-                                        <input type="checkbox" name="comprar_seguros" id="{{$item->id}}">
-                                        <label for="comprar_seguros">{{$item->nome}}</label><br>
+                                        <input type="checkbox" name="comprar_seguros[]" value="{{$item->id}}">
+                                        <label for="comprar_seguros[]">{{$item->nome}}</label><br>
                                     @endforeach
                                 @endisset
                             </div>
@@ -426,6 +428,7 @@
   <script src="/site/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="/site/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="/site/vendor/php-email-form/validate.js"></script>
+  <script src="/site/vendor/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 
   <!-- Template Main JS File -->
   <script src="/site/js/main.js"></script>
