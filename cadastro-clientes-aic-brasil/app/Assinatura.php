@@ -12,7 +12,7 @@ class Assinatura extends Model
     // protected $keyType = 'string';
     //created_at, updated_at
     // public $timestamps = false;
-    const CREATED_AT = 'criadoEm';
-    const UPDATED_AT = 'atualizadoEm';
+    const CREATED_AT = 'criado_em';
+    const UPDATED_AT = 'atualizado_em';
     protected $guarded = [];
 }

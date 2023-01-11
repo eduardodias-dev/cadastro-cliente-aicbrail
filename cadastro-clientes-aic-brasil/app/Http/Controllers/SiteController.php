@@ -6,12 +6,14 @@ use App\Email;
 use App\Plano;
 use Exception;
 use App\Cliente;
+use App\Veiculo;
 use App\Endereco;
 use App\Telefone;
 use App\Assinatura;
 use Illuminate\Http\Request;
 use App\Adicionais_Assinatura;
 use Illuminate\Support\Facades\DB;
+use App\Assinatura_Adicionais_Assinatura;
 use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller
@@ -38,7 +40,10 @@ class SiteController extends Controller
     public function checkout_post(Request $request)
     {
         $data = $request->all();
+        // die(json_encode($data));
         $validation = $this->validarCliente($data);
+        $plano = Plano::find($data['plan_id']);
+        $data['valor_calculado'] = $plano->preco;
 
         if($validation->fails()){
             return response()->json([
@@ -49,17 +54,24 @@ class SiteController extends Controller
             );
         }
 
-
-        if($this->adicionarCliente($data) >= 1){
-            return response()->json([
-                'success' => true,
-                'message' => 'Adicionado com sucesso!'
-            ]);
+        $savedClient = $this->adicionarCliente($data);
+        if($savedClient != null){
+            if($this->adicionarAssinatura($data, $savedClient->id, $data['plan_id']))
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Adicionado com sucesso!'
+                ]);
+            else
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ops... Ocorreu um erro ao salvar sua assinatura, por favor entre em contato com o suporte.',
+                    ]
+                );
         }
         else{
             return response()->json([
                 'success' => false,
-                'message' => 'Ops... Ocorreu um erro ao salvar sua assinatura, por favor entre em contato com o suporte.',
+                'message' => 'Ops... Ocorreu um erro ao salvar seu cadastro, por favor entre em contato com o suporte.',
                 ]
             );
         }
@@ -68,8 +80,6 @@ class SiteController extends Controller
     private function adicionarCliente($data)
     {
         DB::beginTransaction();
-        $result = 0;
-
         try{
             $newCliente = new Cliente;
 
@@ -83,7 +93,9 @@ class SiteController extends Controller
             $result = $newCliente->save();
 
             if(!$result)
-                return 0;
+                return null;
+
+            $data['client_id'] = $newCliente->id;
 
             $clienteEmail = new Email;
             $clienteEmail->client_id = $newCliente->id;
@@ -105,13 +117,35 @@ class SiteController extends Controller
             $clienteTelefone->client_id = $newCliente->id;
             $clienteTelefone->numero = $data['celular'];
             $clienteTelefone->save();
+
+            $veiculo = new Veiculo;
+
+            $veiculo->client_id = $newCliente->id;
+            $veiculo->chassi = $data['chassi'];
+            $veiculo->placa = $data['placa_veiculo'];
+            $veiculo->renavam = $data['renavam'];
+            $veiculo->tipo = $data['tipo_veiculo'];
+            $veiculo->anoFabricacao = $data['ano_fabricacao'];
+            $veiculo->anoModelo = $data['ano_fabricacao'];
+            $veiculo->marca = $data['marca_veiculo'];
+            $veiculo->modelo = $data['modelo_veiculo'];
+            $veiculo->cor = $data['cor_veiculo'];
+            $veiculo->cambio = "";
+            $veiculo->fipeCodigo = "";
+            $veiculo->fipeValor = "";
+
+            $veiculo->save();
+
             DB::commit();
+
+            return $newCliente;
         }catch(Exception $e){
-            $result = 0;
+
             DB::rollback();
+            throw $e;
         }
 
-        return $result;
+        return null;
     }
 
     private function validarCliente($request){
@@ -134,19 +168,65 @@ class SiteController extends Controller
         ];
     }
 
-    private function adicionarAssinatura($data){
-        $newAssinatura = new Assinatura;
-        $newAssinatura->plan_id = $data['plan_id'];
-        $newAssinatura->client_id = $data['client_id'];
-        $newAssinatura->valor = $data['valor_calculado'];
-        $newAssinatura->quantidade = $data['quantidade'];
-        $newAssinatura->periodidade = 'mensal';
-        $newAssinatura->status = 'pendente';
-        $newAssinatura->info_adicional = '';
-        $newAssinatura->adesao = date('now');
+    private function adicionarAssinatura($data, $client_id, $plan_id){
+        DB::beginTransaction();
+        $result = 0;
+        try{
 
-        $result = $newAssinatura->save();
+            $newAssinatura = new Assinatura;
+            $newAssinatura->plan_id = $plan_id;
+            $newAssinatura->client_id = $client_id;
+            $newAssinatura->valor = $data['valor_calculado'];
+            $newAssinatura->quantidade = 1;//$data['quantidade'];
+            $newAssinatura->periodicidade = 'mensal';
+            $newAssinatura->status = 'pendente';
+            $newAssinatura->info_adicional = '';
+            $newAssinatura->adesao = date('Y-m-d H:i:s');
+            $newAssinatura->cobertura_terceiros = $data['cobertura_terceiros'];
+            $newAssinatura->melhor_vencimento = $data['melhor_vencimento'];
+            $newAssinatura->protecao_veicular = $data['comprar_protecao_veicular'];
 
-        //Todo: Adicionais Assinatura
+            $result = $newAssinatura->save();
+
+            $beneficios = $data['club_beneficio'];
+            foreach($beneficios as $item){
+                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
+                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
+                $adicionalAssinatura->adicional_assinatura_id = $item;
+                $adicionalAssinatura->deletado = false;
+
+                $adicionalAssinatura->save();
+            }
+
+            $coberturas = $data['cobertura_24horas'];
+            foreach($coberturas as $item){
+                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
+                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
+                $adicionalAssinatura->adicional_assinatura_id = $item;
+                $adicionalAssinatura->deletado = false;
+
+                $adicionalAssinatura->save();
+            }
+
+            $seguros = $data['comprar_seguros'];
+            foreach($seguros as $item){
+                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
+                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
+                $adicionalAssinatura->adicional_assinatura_id = $item;
+                $adicionalAssinatura->deletado = false;
+
+                $adicionalAssinatura->save();
+            }
+
+            DB::commit();
+
+        }catch(Exception $e){
+            $result = 0;
+            DB::rollBack();
+
+            throw $e;
+        }
+
+        return $result;
     }
 }

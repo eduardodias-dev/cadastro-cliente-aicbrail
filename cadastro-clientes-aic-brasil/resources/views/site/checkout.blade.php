@@ -70,6 +70,7 @@
                 <div class="col-md-6">
                     <form id="form-checkout" method="POST" action="{{route('checkout.post')}}">
                         @csrf
+                        <input type="hidden" value="{{$plano->id}}" name="plan_id" />
                         <div class="form-group">
                             <div class="mb-1">
                                 <label class="">Tipo de cadastro</label>
@@ -177,6 +178,8 @@
                                     <option value="" class="">Selecione</option>
                                     <option value="1">Solteiro</option>
                                     <option value="2">Casado</option>
+                                    <option value="3">Divorciado</option>
+                                    <option value="3">União Estável</option>
                                 </select>
                             </div>
                         </div>
