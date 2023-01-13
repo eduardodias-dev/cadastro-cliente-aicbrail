@@ -12,6 +12,7 @@ use App\Telefone;
 use App\Assinatura;
 use Illuminate\Http\Request;
 use App\Adicionais_Assinatura;
+use App\Services\GalaxPayService;
 use Illuminate\Support\Facades\DB;
 use App\Assinatura_Adicionais_Assinatura;
 use Illuminate\Support\Facades\Validator;
@@ -56,11 +57,16 @@ class SiteController extends Controller
 
         $savedClient = $this->adicionarCliente($data);
         if($savedClient != null){
-            if($this->adicionarAssinatura($data, $savedClient->id, $data['plan_id']))
+            $savedSubscription = $this->adicionarAssinatura($data, $savedClient->id, $data['plan_id']);
+            if($savedSubscription != null){
+                $service = new GalaxPayService;
+                $service->CreateSubscription($savedSubscription->id, $savedClient->id, 'boleto');
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Adicionado com sucesso!'
                 ]);
+            }
             else
                 return response()->json([
                     'success' => false,
@@ -220,6 +226,7 @@ class SiteController extends Controller
 
             DB::commit();
 
+            return $newAssinatura;
         }catch(Exception $e){
             $result = 0;
             DB::rollBack();
@@ -227,6 +234,6 @@ class SiteController extends Controller
             throw $e;
         }
 
-        return $result;
+        return null;
     }
 }

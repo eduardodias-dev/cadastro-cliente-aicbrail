@@ -121,3 +121,8 @@ function format_number($number){
     return $formatted;
 }
 
+function removeSpecialCharacters($val){
+    $cleaned = preg_replace('/[^a-zA-Z0-9]/', '', $val);
+
+    return $cleaned;
+}
