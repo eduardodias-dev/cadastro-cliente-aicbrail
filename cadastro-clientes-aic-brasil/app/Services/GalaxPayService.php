@@ -15,7 +15,7 @@ class GalaxPayService
         if(count($data) >= 1){
             $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
             $request_data = $this->BuildCreateSubscriptionRequest($data[0], $type, $card_data);
-            //die(json_encode($request_data));
+
             $token_object = GalaxPayConfigHelper::getToken("subscriptions.write");
 
             $response = Http::withToken($token_object['access_token'])
@@ -28,15 +28,15 @@ class GalaxPayService
             return null;
     }
 
-    private function BuildCreateSubscriptionRequest($data, $type = 'card', $card_data = null)
+    private function BuildCreateSubscriptionRequest($data, $type = 'creditcard', $card_data = null)
     {
-        if($type=='card' && $card_data == null){
+        if($type=='creditcard' && $card_data == null){
             return false;
         }
 
         $request = [];
 
-        $request['myId'] = $data->id_assinatura;
+        $request['myId'] = $data->codigo_assinatura;
         $request['value'] = $data->valor;
         $request['periodicity'] = $data->periodicidade;
         $request['quantity'] = $data->quantidade;
@@ -64,10 +64,10 @@ class GalaxPayService
         if($type == 'card')
             $request['PaymentMethodCreditCard'] = [
                 "Card" => [
-                    "number" =>  $data->card_number,
-                    "holder" =>  $data->card_holder,
-                    "expiresAt" =>  $data->card_expires_at,
-                    "cvv" =>  $data->card_cvv
+                    "number" =>  $data['card_number'],
+                    "holder" =>  $data['card_holder'],
+                    "expiresAt" =>  $data['card_expires_at'],
+                    "cvv" =>  $data['card_cvv']
                 ]
             ];
         // else if ($type == 'pix')

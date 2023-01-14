@@ -295,16 +295,6 @@
                                 <input type="text" name="cor_veiculo" id="" class="form-control">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="forma_pagamento">FORMA DE PAGAMENTO</label>
-                                <select name="forma_pagamento" class="form-control">
-                                    <option value="" class="">Selecione</option>
-                                    <option value="1">CARTÃO DE CRÉDITO</option>
-                                    <option value="2">BOLETO [PIX] BANCÁRIO</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
                                 <label for="melhor_vencimento">MELHOR VENCIMENTO</label>
                                 <select name="melhor_vencimento" class="form-control">
                                     <option value="" class="">Selecione</option>
@@ -313,6 +303,8 @@
                                     <option value="10">Dia 10</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="consultor_vendas">CONSULTOR(A) VENDA(S)</label>
                                 <select name="consultor_vendas" class="form-control">
@@ -324,6 +316,43 @@
                                     <option value="5">MONIQUE F. SANTOS</option>
                                     <option value="6">RAFAEL ELIAS</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="form-group col-md-12">
+                                <label for="forma_pagamento">FORMA DE PAGAMENTO</label>
+                                <select name="forma_pagamento" class="form-control forma_pagamento hide">
+                                    <option value="" class="">Selecione</option>
+                                    <option value="creditcard">CARTÃO DE CRÉDITO</option>
+                                    <option value="boleto">BOLETO BANCÁRIO</option>
+                                    <option value="pix">PIX</option>
+                                </select>
+                                <div class="campos_cartao mt-4" id="campos_cartao">
+                                    <hr>
+                                    <h4>Dados Cartão</h4>
+                                    <div class="row mt-2">
+                                        <div class="col-md-12">
+                                            <label for="card_number">Número</label>
+                                            <input type="text" name="card_number" id="" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-12">
+                                            <label for="card_holder">Titular do Cartão</label>
+                                            <input type="text" name="card_holder" id="" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-6">
+                                            <label for="card_expires_at">Data de Validade</label>
+                                            <input type="text" name="card_expires_at" id="" class="form-control">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="card_cvv">Código de Segurança</label>
+                                            <input type="text" name="card_cvv" id="" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row mt-4">
@@ -431,10 +460,12 @@
   <script src="/site/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="/site/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="/site/vendor/php-email-form/validate.js"></script>
+  <script src="/dist/js/jquery.min.js"></script>
   <script src="/site/vendor/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 
   <!-- Template Main JS File -->
   <script src="/site/js/main.js"></script>
+
 
 </body>
 

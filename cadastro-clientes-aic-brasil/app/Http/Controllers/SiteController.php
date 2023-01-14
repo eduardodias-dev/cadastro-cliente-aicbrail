@@ -60,7 +60,7 @@ class SiteController extends Controller
             $savedSubscription = $this->adicionarAssinatura($data, $savedClient->id, $data['plan_id']);
             if($savedSubscription != null){
                 $service = new GalaxPayService;
-                $service->CreateSubscription($savedSubscription->id, $savedClient->id, 'boleto');
+                $service->CreateSubscription($savedSubscription->id, $savedClient->id, $data['forma_pagamento'], $this->getCardData($data));
 
                 return response()->json([
                     'success' => true,
@@ -190,9 +190,12 @@ class SiteController extends Controller
             $newAssinatura->adesao = date('Y-m-d H:i:s');
             $newAssinatura->cobertura_terceiros = $data['cobertura_terceiros'];
             $newAssinatura->melhor_vencimento = $data['melhor_vencimento'];
+            $newAssinatura->tipo_pagamento = $data['forma_pagamento'];
             $newAssinatura->protecao_veicular = $data['comprar_protecao_veicular'];
 
             $result = $newAssinatura->save();
+
+            $newAssinatura->codigo_assinatura = $this->getCogigoAssinatura($newAssinatura);
 
             $beneficios = $data['club_beneficio'];
             foreach($beneficios as $item){
@@ -224,6 +227,8 @@ class SiteController extends Controller
                 $adicionalAssinatura->save();
             }
 
+            $newAssinatura->save();
+
             DB::commit();
 
             return $newAssinatura;
@@ -235,5 +240,20 @@ class SiteController extends Controller
         }
 
         return null;
+    }
+
+    private function getCardData($data){
+        $card_data = [
+            "card_number" => $data['card_number'],
+            "card_holder" => $data['card_holder'],
+            "card_expires_at" => $data['card_expires_at'],
+            "card_cvv" => $data['card_cvv']
+        ];
+
+        return $card_data;
+    }
+
+    private function getCogigoAssinatura($assinatura){
+        return "AICBR-".date_format(date_create($assinatura->adesao), "Ydm")."".$assinatura->id;
     }
 }
