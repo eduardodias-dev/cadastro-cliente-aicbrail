@@ -40,47 +40,71 @@ class SiteController extends Controller
 
     public function checkout_post(Request $request)
     {
-        $data = $request->all();
-        // die(json_encode($data));
-        $validation = $this->validarCliente($data);
-        $plano = Plano::find($data['plan_id']);
-        $data['valor_calculado'] = $plano->preco;
+        try{
+            $data = $request->all();
+            $validation = $this->validarCliente($data);
+            $plano = Plano::find($data['plan_id']);
+            $data['valor_calculado'] = $plano->preco;
 
-        if($validation->fails()){
-            return response()->json([
-                'success' => false,
-                'message' => 'Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)',
-                'errors' => json_encode($validation->errors())
-                ]
-            );
-        }
-
-        $savedClient = $this->adicionarCliente($data);
-        if($savedClient != null){
-            $savedSubscription = $this->adicionarAssinatura($data, $savedClient->id, $data['plan_id']);
-            if($savedSubscription != null){
-                $service = new GalaxPayService;
-                $service->CreateSubscription($savedSubscription->id, $savedClient->id, $data['forma_pagamento'], $this->getCardData($data));
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Adicionado com sucesso!'
-                ]);
-            }
-            else
+            if($validation->fails()){
                 return response()->json([
                     'success' => false,
-                    'message' => 'Ops... Ocorreu um erro ao salvar sua assinatura, por favor entre em contato com o suporte.',
+                    'message' => 'Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)',
+                    'errors' => json_encode($validation->errors())
                     ]
                 );
-        }
-        else{
+            }
+
+            $savedClient = $this->adicionarCliente($data);
+            if($savedClient != null){
+                $savedSubscription = $this->adicionarAssinatura($data, $savedClient->id, $data['plan_id']);
+                if($savedSubscription != null){
+                    $service = new GalaxPayService;
+                    $result = $service->CreateSubscription($savedSubscription->id, $savedClient->id, $data['forma_pagamento'], $this->getCardData($data));
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Adicionado com sucesso!',
+                        'result' => json_encode($result->json())
+                    ]);
+                }
+                else
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Ops... Ocorreu um erro ao salvar sua assinatura, por favor entre em contato com o suporte.',
+                        ]
+                    );
+            }
+            else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ops... Ocorreu um erro ao salvar seu cadastro, por favor entre em contato com o suporte.',
+                    ]
+                );
+            }
+        }catch(Exception $e){
             return response()->json([
                 'success' => false,
                 'message' => 'Ops... Ocorreu um erro ao salvar seu cadastro, por favor entre em contato com o suporte.',
+                'exception' => $e->getMessage()
                 ]
             );
         }
+    }
+
+    public function view_order(Request $request){
+        return view('site.vieworder');
+    }
+
+    public function view_order_post(Request $request){
+        $ordercode = $request->get('search');
+        $result = DB::select('SELECT * from V_Assinaturas_detalhe where codigo_assinatura = ?', [$ordercode]);
+        $error = count($result) <= 0;
+        $data = null;
+        if(!$error)
+            $data = $result[0];
+
+        return view('site.order_partial', ['subscription' => (array)$data, 'error' => $error]);
     }
 
     private function adicionarCliente($data)

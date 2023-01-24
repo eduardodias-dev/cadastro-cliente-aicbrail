@@ -24,7 +24,8 @@
   <link href="/site/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="/site/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="/site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/site/vendor/datetimepicker/bootstrap-datetimepicker.min.css">
+  {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.14/combined/css/gijgo.min.css"> --}}
+  <link rel="stylesheet" href="/dist/plugins/datetimepicker/jquery.datetimepicker.min.css" />
 
   <!-- Template Main CSS File -->
   <link href="/site/css/style.css" rel="stylesheet">
@@ -36,7 +37,47 @@
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
 </head>
+<!-- Modal -->
+<div class="modal fade modal-lg" id="modal-checkout" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          {{-- <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1> --}}
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="text-center" id="box-carregando" style=" padding: 20px;">
+                <i class='bx bx-loader-alt bx-spin bx-rotate-180 text-center' style="font-size: 50px; color: #1264d0" ></i>
+                <h5 class="text-center">Aguarde, Estamos processando seu pedido.</h5>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+  <div class="modal fade modal-lg" id="modal-result" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          {{-- <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1> --}}
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div id="box-sucesso" class="text-center" style=" padding: 20px;">
+                <i class='bx bxs-check-circle ' style="font-size: 50px; color: #03a803;" ></i>
+                <div class="mensagem">
 
+                </div>
+            </div>
+            <div id="box-erro" class="text-center" style=" padding: 20px;">
+                <i class='bx bxs-error-circle ' style="font-size: 50px; color: #a80303;" ></i>
+                <div class="mensagem">
+
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 <body>
 
   <!-- ======= Header ======= -->
@@ -53,7 +94,7 @@
           <li><a class="nav-link scrollto" href="#services">Serviços</a></li>
           <li><a class="nav-link scrollto" href="#pricing">Planos</a></li>
           <li><a class="nav-link scrollto" href="#contact">Contato</a></li>
-          <li><a class="getstarted scrollto" href="#about">Get Started</a></li>
+          <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -68,10 +109,10 @@
         <div class="main-form mt-2">
             <div class="row">
                 <div class="col-md-6">
-                    <form id="form-checkout" method="POST" action="{{route('checkout.post')}}">
+                    <form id="form-checkout" method="POST" action="{{route('checkout.post', ['id_plano' => $plano->id])}}">
                         @csrf
                         <input type="hidden" value="{{$plano->id}}" name="plan_id" />
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <div class="mb-1">
                                 <label class="">Tipo de cadastro</label>
                             </div>
@@ -79,66 +120,66 @@
                                 <input type="radio" name="tipo_cadastro" value="1" id=""> Pessoa Física
                                 <input type="radio" name="tipo_cadastro" value="2" id=""> Pessoa Jurídica
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
-                                <label for="email">E-mail</label>
-                                <input type="email" name="email" id="" class="form-control">
+                                <label for="email" class="required">E-mail</label>
+                                <input type="email" name="email" id="" class="form-control required" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="nome">Nome</label>
-                                <input type="nome" name="nome" id="" class="form-control">
+                                <label for="nome" class="required">Nome</label>
+                                <input type="text" name="nome" id="" class="form-control required">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-8">
-                                <label for="cpfcnpj">CPF</label>
-                                <input type="cpfcnpj" name="cpfcnpj" id="" class="form-control">
+                                <label for="cpfcnpj" class="required">CPF</label>
+                                <input type="text" name="cpfcnpj" id="" class="form-control required">
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="form-group col-md-6">
+                            {{-- <div class="form-group col-md-6">
                                 <label for="telefone">Telefone</label>
-                                <input type="telefone" name="telefone" id="" class="form-control">
-                            </div>
+                                <input type="text" name="telefone" id="" class="form-control required">
+                            </div> --}}
                             <div class="form-group col-md-6">
-                                <label for="celular">Celular</label>
-                                <input type="celular" name="celular" id="" class="form-control">
+                                <label for="celular" class="required">Celular</label>
+                                <input type="text" name="celular" id="" class="form-control required">
                             </div>
                         </div>
                         <h4 class="mt-2">Endereço</h4>
                         <div class="row mt-2">
                             <div class="form-group col-md-3">
-                                <label for="cep">CEP</label>
-                                <input type="cep" name="cep" id="" class="form-control">
+                                <label for="cep" class="required">CEP</label>
+                                <input type="text" name="cep" id="" class="form-control required">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="logradouro">Logradouro</label>
-                                <input type="logradouro" name="logradouro" id="" class="form-control">
+                                <label for="logradouro" class="required">Logradouro</label>
+                                <input type="text" name="logradouro" id="" class="form-control required" required>
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="numero">Número</label>
-                                <input type="numero" name="numero" id="" class="form-control">
+                                <label for="numero" class="required">Número</label>
+                                <input type="text" name="numero" id="" class="form-control required">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-4">
-                                <label for="complemento">Complemento</label>
-                                <input type="complemento" name="complemento" id="" class="form-control">
+                                <label for="complemento" class="required">Complemento</label>
+                                <input type="text" name="complemento" id="" class="form-control required">
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="bairro">Bairro</label>
-                                <input type="bairro" name="bairro" id="" class="form-control">
+                                <label for="bairro" class="required">Bairro</label>
+                                <input type="text" name="bairro" id="" class="form-control required">
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="cidade">Cidade</label>
-                                <input type="cidade" name="cidade" id="" class="form-control">
+                                <label for="cidade" class="required">Cidade</label>
+                                <input type="text" name="cidade" id="" class="form-control required">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-4">
-                                <label for="estado">Estado</label>
-                                <select name="estado" class="form-control">
+                                <label for="estado" class="required">Estado</label>
+                                <select name="estado" class="form-control required">
                                     <option value="" class="">Selecione</option>
                                     {{printEstadosAsOptions()}}
                                 </select>
@@ -169,12 +210,12 @@
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
-                                <label for="datanasc">Data de Nascimento</label>
-                                <input type="date" name="datanasc" id="" class="form-control">
+                                <label for="datanasc" class="required">Data de Nascimento</label>
+                                <input type="text" name="datanasc" id="datetimepicker" class="form-control required">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="estado_civil">Estado Civil</label>
-                                <select name="estado_civil" class="form-control">
+                                <label for="estado_civil" class="required">Estado Civil</label>
+                                <select name="estado_civil" class="form-control required">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">Solteiro</option>
                                     <option value="2">Casado</option>
@@ -248,8 +289,8 @@
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="tipo_veiculo">TIPO DO VEÍCULO</label>
-                                <select name="tipo_veiculo" class="form-control">
+                                <label for="tipo_veiculo" class="required">TIPO DO VEÍCULO</label>
+                                <select name="tipo_veiculo" class="form-control required">
                                     <option value="" class="">Selecione</option>
                                     <option value="AUTOMOVEL">AUTOMOVEL</option>
                                     <option value="MOTOCICLETA">MOTOCICLETA</option>
@@ -261,42 +302,42 @@
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
-                                <label for="modelo_veiculo">MODELO DO VEÍCULO</label>
-                                <input type="text" name="modelo_veiculo" id="" class="form-control">
+                                <label for="modelo_veiculo" class="required">MODELO DO VEÍCULO</label>
+                                <input type="text" name="modelo_veiculo" id="" class="form-control required">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="marca_veiculo">MARCA DO VEÍCULO</label>
-                                <input type="text" name="marca_veiculo" id="" class="form-control">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="ano_fabricacao">ANO DE FABRICAÇÃO</label>
-                                <input type="text" name="ano_fabricacao" id="" class="form-control">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="placa_veiculo">PLACA</label>
-                                <input type="text" name="placa_veiculo" id="" class="form-control">
+                                <label for="marca_veiculo" class="required">MARCA DO VEÍCULO</label>
+                                <input type="text" name="marca_veiculo" id="" class="form-control required">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
-                                <label for="chassi">CHASSI</label>
-                                <input type="text" name="chassi" id="" class="form-control">
+                                <label for="ano_fabricacao" class="required">ANO DE FABRICAÇÃO</label>
+                                <input type="text" name="ano_fabricacao" id="" class="form-control required">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="renavam">RENAVAM</label>
-                                <input type="text" name="renavam" id="" class="form-control">
+                                <label for="placa_veiculo" class="required">PLACA</label>
+                                <input type="text" name="placa_veiculo" id="" class="form-control required">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
-                                <label for="cor_veiculo">COR DO VEÍCULO</label>
-                                <input type="text" name="cor_veiculo" id="" class="form-control">
+                                <label for="chassi" class="required">CHASSI</label>
+                                <input type="text" name="chassi" id="" class="form-control required">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="melhor_vencimento">MELHOR VENCIMENTO</label>
-                                <select name="melhor_vencimento" class="form-control">
+                                <label for="renavam" class="required">RENAVAM</label>
+                                <input type="text" name="renavam" id="" class="form-control required">
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="form-group col-md-6">
+                                <label for="cor_veiculo" class="required">COR DO VEÍCULO</label>
+                                <input type="text" name="cor_veiculo" id="" class="form-control required">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="melhor_vencimento" class="required">MELHOR VENCIMENTO</label>
+                                <select name="melhor_vencimento" class="form-control required">
                                     <option value="" class="">Selecione</option>
                                     <option value="5">Dia 05</option>
                                     <option value="7">Dia 07</option>
@@ -306,8 +347,9 @@
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
-                                <label for="consultor_vendas">CONSULTOR(A) VENDA(S)</label>
-                                <select name="consultor_vendas" class="form-control">
+                                <label for="consultor_vendas" class="required">CONSULTOR(A) VENDA(S)</label>
+                                <input type="hidden" name="consultor_vendas" value="2">
+                                {{-- <select name="consultor_vendas" class="form-control required">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">ADEMIR L. B. SILVA</option>
                                     <option value="2">JADSON SANTOS</option>
@@ -315,17 +357,16 @@
                                     <option value="4">JOYCE KELLY</option>
                                     <option value="5">MONIQUE F. SANTOS</option>
                                     <option value="6">RAFAEL ELIAS</option>
-                                </select>
+                                </select> --}}
                             </div>
                         </div>
                         <div class="row mt-4">
                             <div class="form-group col-md-12">
-                                <label for="forma_pagamento">FORMA DE PAGAMENTO</label>
-                                <select name="forma_pagamento" class="form-control forma_pagamento hide">
+                                <label for="forma_pagamento" class="required">FORMA DE PAGAMENTO</label>
+                                <select name="forma_pagamento" class="form-control forma_pagamento hide required">
                                     <option value="" class="">Selecione</option>
                                     <option value="creditcard">CARTÃO DE CRÉDITO</option>
-                                    <option value="boleto">BOLETO BANCÁRIO</option>
-                                    <option value="pix">PIX</option>
+                                    <option value="boleto">BOLETO BANCÁRIO/PIX</option>
                                 </select>
                                 <div class="campos_cartao mt-4" id="campos_cartao">
                                     <hr>
@@ -374,6 +415,7 @@
         </div>
     </div>
   </main><!-- End #main -->
+
 
   <!-- ======= Footer ======= -->
   <footer id="footer">
@@ -461,7 +503,9 @@
   <script src="/site/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="/site/vendor/php-email-form/validate.js"></script>
   <script src="/dist/js/jquery.min.js"></script>
-  <script src="/site/vendor/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+  <script src="/dist/plugins/inputmask/jquery.inputmask.min.js"></script>
+  <script src="/dist/plugins/datetimepicker/jquery.datetimepicker.full.js"></script>
+  {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.14/combined/js/gijgo.min.js"></script> --}}
 
   <!-- Template Main JS File -->
   <script src="/site/js/main.js"></script>

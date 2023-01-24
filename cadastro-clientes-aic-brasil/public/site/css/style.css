@@ -1934,4 +1934,29 @@ section {
   color: #fff;
   text-decoration: none;
 }
+/* style all input elements with a required attribute */
+label.required:after {
+	content: ' *';
+	color: red;
+  }
 
+input.required.error {
+  box-shadow: 1px 1px 5px rgba(200, 0, 0, 0.85);
+}
+
+/**
+ * style input elements that have a required
+ * attribute and a focus state
+ */
+input.required.error:focus {
+  border: 1px solid red;
+  outline: none;
+}
+
+/**
+ * style input elements that have a required
+ * attribute and a hover state
+ */
+input:required.error:hover, input.required.error:hover {
+  opacity: 1;
+}

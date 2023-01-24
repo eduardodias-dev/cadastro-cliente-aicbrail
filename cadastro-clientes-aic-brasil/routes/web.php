@@ -40,4 +40,6 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/checkout/{id_plano}', [SiteController::class, 'checkout'])->name('site.checkout');
-Route::post('/checkout', [SiteController::class, 'checkout_post'])->name('checkout.post');
+Route::post('/checkout/{id_plano}', [SiteController::class, 'checkout_post'])->name('checkout.post');
+Route::get('/vieworder', [SiteController::class, 'view_order'])->name('view.order');
+Route::post('/vieworder', [SiteController::class, 'view_order_post'])->name('view.order.post');

@@ -126,3 +126,32 @@ function removeSpecialCharacters($val){
 
     return $cleaned;
 }
+
+function getExpiresAt($data){
+    $arrayData = explode('/', $data, 2);
+    $year = "20".$arrayData[1];
+    $month = $arrayData[0];
+
+    return $year.'-'.$month;
+}
+
+function getClassByStatus($status){
+    $className = "";
+    switch($status){
+        case 'pendente':
+            $className = 'text-warning';
+            break;
+        case 'ativo':
+        case 'ativa':
+            $className = 'text-success';
+            break;
+        case 'cancelada':
+        case 'atrasada':
+            $className = 'text-danger';
+            break;
+        default:
+            $className = 'text-info';
+    }
+
+    return $className;
+}

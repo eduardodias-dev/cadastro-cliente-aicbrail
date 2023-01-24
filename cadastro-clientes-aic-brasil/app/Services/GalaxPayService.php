@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\LogIntegracao;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -21,7 +22,14 @@ class GalaxPayService
             $response = Http::withToken($token_object['access_token'])
                             ->post($configs['URL'].'/subscriptions', $request_data);
 
-            die(print_r($response->json()));
+            $log = new LogIntegracao;
+            $log->resultado = json_encode($response->json());
+            $log->acao = 'Adicionar Assinatura';
+            $log->data_integracao = date('Y-m-d H:i:s');
+            $log->client_id = $data[0]->id_cliente;
+
+            $log->save();
+
             return $response;
         }
         else
@@ -64,16 +72,16 @@ class GalaxPayService
         if($type == 'card')
             $request['PaymentMethodCreditCard'] = [
                 "Card" => [
-                    "number" =>  $data['card_number'],
+                    "number" =>  str_replace(' ', '', $data['card_number']),
                     "holder" =>  $data['card_holder'],
-                    "expiresAt" =>  $data['card_expires_at'],
+                    "expiresAt" =>  getExpiresAt($data['card_expires_at']),
                     "cvv" =>  $data['card_cvv']
                 ]
             ];
-        // else if ($type == 'pix')
-        //     $request['PaymentMethodPix'] = [
-        //         "instructions" => $data->info_adicional
-        //     ];
+        else if ($type == 'pix')
+            $request['PaymentMethodBoleto'] = [
+                "deadlineDays" => self::QTDE_DIAS_PRIMEIRO_PAGAMENTO
+            ];
 
         return $request;
     }

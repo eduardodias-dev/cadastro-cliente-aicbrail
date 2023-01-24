@@ -273,7 +273,13 @@
 
 })()
 
+var modalCheckout = new bootstrap.Modal('#modal-checkout');
+var modalResult = new bootstrap.Modal('#modal-result');
+var modalPesquisandoPedido = new bootstrap.Modal('#modal-pesquisando-pedido');
+
 jQuery(function() {
+    $('#box-sucesso, #box-erro').hide();
+
     $('#campos_cartao').hide('fast');
     $('.forma_pagamento').on('change', function(){
         var selecionada = $(this).val();
@@ -283,4 +289,163 @@ jQuery(function() {
             $('#campos_cartao').fadeOut('fast');
         }
     });
+
+    /** máscaras */
+    $('[name=celular]').inputmask('(99) 99999-9999');
+    $('[name=telefone]').inputmask('(99) 9999-9999');
+    $('[name=cpfcnpj]').inputmask('999.999.999-99');
+    $('[name=cep]').inputmask('99999-999');
+    $('[name=numero]').inputmask('9{1,}');
+    $('[name=ano_fabricacao]').inputmask('9999');
+    $('[name=placa_veiculo]').inputmask('aaa-*{4}');
+    $('[name=card_number]').inputmask('9999 9999 9999 9999');
+    $('[name=card_cvv]').inputmask('999');
+    $('[name=card_expires_at]').inputmask('99/99');
+
+    /**DateTime Picker */
+    $('#datetimepicker').datetimepicker({
+        format:'d/m/Y',
+        lang:'pt-BR',
+        i18n:{
+            'pt-BR': { //Português(Brasil)
+                    months: [
+                    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+                    ],
+                    dayOfWeekShort: [
+                    "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"
+                    ],
+                    dayOfWeek: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
+                },
+        }
+    });
+    $('#form-checkout').on('submit', (e) =>{
+        e.preventDefault();
+        var isValid = validarFormulario($(this));
+        if(!isValid) return;
+
+        var url = $(this).attr('action');
+        var form_data = $('#form-checkout').serialize();
+        var data = form_data;
+        var token = $('[name="_token"]').val();
+
+        $('#box-sucesso, #box-erro').hide()
+        modalCheckout.show();
+
+        $.ajax({
+            url: url,
+            data: data,
+            headers: {'X-CSRF-TOKEN': token},
+            method: 'POST'
+        })
+        .done(function(response) {
+            if(response.success && "result" in response){
+                var result = JSON.parse(response.result);
+                if("error" in result)
+                {
+                    $('#box-erro').fadeIn('fast');
+                    $('#box-erro .mensagem').html(result.error.message);
+                }
+                else{
+                    var mensagem = montaMensagem(response);
+                    $('#box-sucesso').fadeIn('fast');
+                    $('#box-sucesso .mensagem').html(mensagem);
+
+                    var dadosAssinatura = JSON.parse(response.result);
+                    var forma_pagamento = $('.forma_pagamento').val();
+                    var redirecionarPara = '';
+
+                    if(forma_pagamento == 'creditcard'){
+                        redirecionarPara = '/';
+                    }else
+                    {
+                        var linkBoleto = dadosAssinatura.Subscription.Transactions[0].Boleto.pdf;
+                        redirecionarPara = linkBoleto;
+                    }
+
+                    const myModalEl = document.getElementById('modal-result');
+                    myModalEl.addEventListener('hidden.bs.modal', (e) => redirecionar(redirecionarPara))
+                }
+            }else{
+                $('#box-erro').fadeIn('fast');
+                $('#box-erro .mensagem').html(response.message);
+            }
+        })
+        .fail(function(err) {
+            $('#box-erro').fadeIn('fast');
+            $('#box-erro .mensagem').html(result.message);
+        })
+        .always(function(){
+            var timeout = setTimeout(() => {
+                modalCheckout.hide();
+            },1000);
+            var timeout2 = setTimeout(() => {
+                modalResult.show();
+            },1000);
+        });
+    })
+
+    $('#btn-search-order').click(function(){
+        var token = $('[name="_token"]').val();
+        modalPesquisandoPedido.show();
+        $.ajax({
+            url: '/vieworder',
+            data: {'search': $('#search-order').val()},
+            headers: {'X-CSRF-TOKEN': token},
+            method: 'POST'
+        }).done(response => {
+            $('#resultado-pesquisa').html(response);
+        })
+        .fail( function(err) {
+            console.log(err);
+        })
+        .always(function(){
+            var timeout = setTimeout(() => {
+                modalPesquisandoPedido.hide();
+            },200);
+        });
+    });
+
+    function montaMensagem(response){
+        var dadosAssinatura = JSON.parse(response.result);
+        var forma_pagamento = $('.forma_pagamento').val();
+        var mensagem = "";
+        if(forma_pagamento == 'creditcard'){
+            mensagem = "<h5>Seu pedido de assinatura foi recebido com sucesso. Estamos aguardando a confirmação do pagamento junto à administradora de cartão e você deve receber um email em breve.</h5>";
+            mensagem += "<h5>Código do pedido: <b>"+dadosAssinatura.Subscription.myId+"</b></h5>";
+            mensagem += "<h5>Plano: <b>"+dadosAssinatura.Subscription.additionalInfo+"</b></h5>";
+            mensagem += "<h5>Titular: <b>"+dadosAssinatura.Subscription.Customer.name+"</b></h5>";
+        }else
+        {
+            mensagem = "<h5>Seu pedido de assinatura foi recebido com sucesso. Ao fechar você será redirecionado para a página de pagamento do boleto</h5>";
+            mensagem += "<h5>Código do pedido: <b>"+dadosAssinatura.Subscription.myId+"</b></h5>";
+            mensagem += "<h5>Plano: <b>"+dadosAssinatura.Subscription.additionalInfo+"</b></h5>";
+            mensagem += "<h5>Titular: <b>"+dadosAssinatura.Subscription.Customer.name+"</b></h5>";
+
+        }
+
+        return mensagem;
+    }
+
+    function redirecionar(url){
+        window.location.href = url;
+    }
+
+    function validarFormulario($form){
+
+        let isValid = true; // set the form's valid status to true
+
+        // validate each input field
+        $form.find("input.required").each(function() {
+            if ($(this).val() === "") {
+                isValid = false; // set the form's valid status to false
+                $(this).addClass("error"); // add an error class to the input
+                $(this).next(".error-message").text("Campo obrigatório."); // show an error message
+            } else {
+                $(this).removeClass("error"); // remove the error class
+                $(this).next(".error-message").text(""); // remove the error message
+            }
+        });
+
+        return isValid;
+    }
 })
