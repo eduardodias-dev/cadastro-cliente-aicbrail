@@ -42,16 +42,4 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="card ">
-        <div class="card-header">
-            <h4>Adquirido com o Plano:</h4>
-        </div>
-        <div class="card-body">
-            @foreach($adicionais_assinatura as $adicional)
-                <b>{{$adicional['nome_adicional']}}</b>
-            @endforeach
-        </div>
-    </div>
-</div>
 @endif
