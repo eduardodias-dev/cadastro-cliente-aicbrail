@@ -29,12 +29,13 @@ class SiteController extends Controller
         $club_beneficio = Adicionais_Assinatura::where(['id_tipo_adicional_assinatura'=> '1', 'ativo' => '1'])->get();
         $cobertura_24horas = Adicionais_Assinatura::where(['id_tipo_adicional_assinatura'=> '2', 'ativo' => '1'])->get();
         $comprar_seguros = Adicionais_Assinatura::where(['id_tipo_adicional_assinatura'=> '3', 'ativo' => '1'])->get();
-
+        $session_id = session()->getId();
         return view('site.checkout', [
                                         'club_beneficio' => $club_beneficio,
                                         'cobertura_24horas' => $cobertura_24horas,
                                         'comprar_seguros' => $comprar_seguros,
-                                        'plano' => $plano
+                                        'plano' => $plano,
+                                        'session_id' => $session_id
                                     ]);
     }
 

@@ -78,8 +78,41 @@
       </div>
     </div>
   </div>
+  <div class="modal fade modal-lg" id="modal-pesquisando-pedido" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          {{-- <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1> --}}
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="text-center" id="box-carregando" style=" padding: 20px;">
+                <i class='bx bx-loader-alt bx-spin bx-rotate-180 text-center' style="font-size: 50px; color: #1264d0" ></i>
+                <h5 class="text-center">Aguarde, Estamos pesquisando seu pedido.</h5>
+            </div>
+        </div>
+      </div>
+    </div>
+    </div>
 <body>
+    <input type="hidden" id="session_id" value="{{$session_id}}" />
+    <script type="text/javascript">
+        (function (a, b, c, d, e, f, g) {
 
+            a['CsdpObject'] = e; a[e] = a[e] || function () {
+
+            (a[e].q = a[e].q || []).push(arguments)
+
+            }, a[e].l = 1 * new Date(); f = b.createElement(c),
+
+            g = b.getElementsByTagName(c)[0]; f.async = 1; f.src = d; g.parentNode.insertBefore(f, g)
+
+        })(window, document, 'script', '//device.clearsale.com.br/p/fp.js', 'csdp');
+
+        csdp('app', 'GalaxPay');
+        var input = document.getElementById('session_id');
+        csdp('sessionid', input.value);
+    </script>
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center justify-content-between">
@@ -397,6 +430,14 @@
                             </div>
                         </div>
                         <div class="row mt-4">
+                            <div class="col-md-12">
+                                <input type="checkbox" name="agree_terms" required class="required">
+                                <label for="agree_terms">
+                                    Declaro que li e Aceito o <a href="https://drive.google.com/file/d/1Aswp__qhIh9amBNZ7uq11ArkMql1vLSa/view" target="_blank">Termo e condições de uso.</a>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-success">Avançar</button>
                             </div>
@@ -408,7 +449,6 @@
                     <h3>{{$plano->nome}}</h3>
                     <h2>R$ {{format_number($plano->preco)}} / Mês</h2>
                     <small>*no Boleto/PIX</small><br>
-                    <a href="#">Mais formas de pagamento</a>
                     <hr>
                 </div>
             </div>
