@@ -155,3 +155,9 @@ function getClassByStatus($status){
 
     return $className;
 }
+
+function getValorEmReal($val){
+    $strFormatted = number_format($val, 2, ',', '.');
+
+    return "R$ ".$strFormatted;
+}

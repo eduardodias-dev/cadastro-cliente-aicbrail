@@ -1,7 +1,9 @@
 @if($error)
 <div class="row">
-    <div class="alert alert-info" role="info">
-        Não foi encontrado nenhum pedido com esse código.
+    <div class="col-md-12">
+        <div class="alert alert-info" role="info">
+            Não foi encontrado nenhum pedido com esse código.
+        </div>
     </div>
 </div>
 @else
@@ -20,7 +22,7 @@
                 <b>Documento:</b> {{$subscription['documento']}}<br>
                 <b>Email:</b> {{$subscription['emails']}}<br>
                 <b>Telefone:</b> {{$subscription['telefone']}}<br>
-                <b>Valor:</b> {{$subscription['valor']}}<br>
+                <b>Valor:</b> {{getValorEmReal($subscription['valor'])}}<br>
                 <b>Periodicidade:</b> {{$subscription['periodicidade']}}<br>
                 <b>Quantidade:</b> {{$subscription['quantidade']}}<br>
                 <b>Info Adicional:</b> {{$subscription['info_adicional']}}<br>
@@ -38,6 +40,29 @@
                 <b>Bairro:</b> {{$subscription['bairro']}}<br>
                 <b>Cidade:</b> {{$subscription['cidade']}}/{{$subscription['estado']}}<br>
                 <b>CEP:</b> {{$subscription['cep']}}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header">
+                <h4>Adquirido com o Plano:</h4>
+            </div>
+            <div class="card-body">
+                <ul>
+                    @foreach($subscription['adicionais_assinatura'] as $grupo => $tipo)
+                        <li>
+                            <b>{{$grupo}}</b>
+                            <ul>
+                                @foreach($tipo as $adicional)
+                                    <li>{{$adicional['nome_adicional']}}</li>
+                                @endforeach
+                            </ul>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
         </div>
     </div>

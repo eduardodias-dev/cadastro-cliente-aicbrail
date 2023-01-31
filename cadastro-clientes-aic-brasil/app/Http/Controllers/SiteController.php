@@ -25,7 +25,6 @@ class SiteController extends Controller
 
     public function checkout(Request $request, $id_plano){
         $plano = Plano::find($id_plano);
-        // die(print_r($id_plano));
         $club_beneficio = Adicionais_Assinatura::where(['id_tipo_adicional_assinatura'=> '1', 'ativo' => '1'])->get();
         $cobertura_24horas = Adicionais_Assinatura::where(['id_tipo_adicional_assinatura'=> '2', 'ativo' => '1'])->get();
         $comprar_seguros = Adicionais_Assinatura::where(['id_tipo_adicional_assinatura'=> '3', 'ativo' => '1'])->get();
@@ -102,10 +101,25 @@ class SiteController extends Controller
         $result = DB::select('SELECT * from V_Assinaturas_detalhe where codigo_assinatura = ?', [$ordercode]);
         $error = count($result) <= 0;
         $data = null;
-        if(!$error)
-            $data = $result[0];
+        if(!$error){
+            $data = (array)$result[0];
+            $adicionais = DB::select('SELECT * FROM v_adicionais_Assinatura WHERE codigo_assinatura = ?', [$ordercode]);
 
-        return view('site.order_partial', ['subscription' => (array)$data, 'error' => $error]);
+            $transform_array = [];
+            $grouped_array = array();
+            foreach($adicionais as $adicional){
+                array_push($transform_array, (array)$adicional);
+            }
+
+            foreach($transform_array as $element){
+                $grouped_array[$element['tipo_adicional']][] = $element;
+            }
+
+            $data['adicionais_assinatura'] = $grouped_array;
+            // die(json_encode($data['adicionais_assinatura']));
+        }
+
+        return view('site.order_partial', ['subscription' => $data, 'error' => $error]);
     }
 
     private function adicionarCliente($data)

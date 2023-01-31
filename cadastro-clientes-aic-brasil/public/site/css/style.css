@@ -1960,3 +1960,9 @@ input.required.error:focus {
 input:required.error:hover, input.required.error:hover {
   opacity: 1;
 }
+
+.box-plano{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+}
