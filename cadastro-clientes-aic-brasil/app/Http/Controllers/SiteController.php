@@ -58,6 +58,7 @@ class SiteController extends Controller
             $savedClient = $this->adicionarCliente($data);
             if($savedClient != null){
                 $savedSubscription = $this->adicionarAssinatura($data, $savedClient->id, $data['plan_id']);
+
                 if($savedSubscription != null){
                     $service = new GalaxPayService;
                     $result = $service->CreateSubscription($savedSubscription->id, $savedClient->id, $data['forma_pagamento'], $this->getCardData($data));
@@ -238,19 +239,36 @@ class SiteController extends Controller
 
             $beneficios = $data['club_beneficio'];
             foreach($beneficios as $item){
+                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
+
                 $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
                 $adicionalAssinatura->assinatura_id = $newAssinatura->id;
                 $adicionalAssinatura->adicional_assinatura_id = $item;
                 $adicionalAssinatura->deletado = false;
 
+                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
                 $adicionalAssinatura->save();
             }
 
-            $coberturas = $data['cobertura_24horas'];
+            $coberturas = isset($data['cobertura_24horas']) ? $data['cobertura_24horas'] : [];
+
             foreach($coberturas as $item){
+                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
+
                 $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
                 $adicionalAssinatura->assinatura_id = $newAssinatura->id;
                 $adicionalAssinatura->adicional_assinatura_id = $item;
+                $adicionalAssinatura->deletado = false;
+
+                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
+                $adicionalAssinatura->save();
+            }
+
+            $cobertura_24horas_incluso_plano = Adicionais_Assinatura::where('incluso_nos_planos', 'LIKE', '%'.$plan_id.'%')->get();
+            foreach($cobertura_24horas_incluso_plano as $incluso){
+                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
+                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
+                $adicionalAssinatura->adicional_assinatura_id = $incluso->id;
                 $adicionalAssinatura->deletado = false;
 
                 $adicionalAssinatura->save();
@@ -258,11 +276,14 @@ class SiteController extends Controller
 
             $seguros = $data['comprar_seguros'];
             foreach($seguros as $item){
+                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
+
                 $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
                 $adicionalAssinatura->assinatura_id = $newAssinatura->id;
                 $adicionalAssinatura->adicional_assinatura_id = $item;
                 $adicionalAssinatura->deletado = false;
 
+                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
                 $adicionalAssinatura->save();
             }
 

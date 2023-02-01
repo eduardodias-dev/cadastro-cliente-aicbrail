@@ -114,19 +114,16 @@
         csdp('sessionid', input.value);
     </script>
   <!-- ======= Header ======= -->
-  <header id="header" class="fixed-top">
+  <header id="header" class="">
     <div class="container d-flex align-items-center justify-content-between">
 
-      <h1 class="logo"><a href="index.html">AIC Brasil</a></h1>
+      <h1 class="logo"><a href="/">AIC Brasil</a></h1>
       <!-- Uncomment below if you prefer to use an image logo -->
       <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-          <li><a class="nav-link scrollto" href="#services">Serviços</a></li>
-          <li><a class="nav-link scrollto" href="#pricing">Planos</a></li>
-          <li><a class="nav-link scrollto" href="#contact">Contato</a></li>
+          <li><a class="nav-link scrollto active" href="/">Home</a></li>
           <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
@@ -136,15 +133,16 @@
   </header><!-- End Header -->
 
   <main id="main" style="margin-top: 70px; background: #fafafa" class="py-1">
-    <div class="container py-5" style="background: white;border:">
+    <div class="container py-5" >
         <h1>CHECKOUT</h1>
 
         <div class="main-form mt-2">
-            <div class="row">
-                <div class="col-md-6">
+            <div class="row align-items-start">
+                <div class="col-md-6 p-5" style="background: white;">
                     <form id="form-checkout" method="POST" action="{{route('checkout.post', ['id_plano' => $plano->id])}}">
                         @csrf
                         <input type="hidden" value="{{$plano->id}}" name="plan_id" />
+                        <input type="hidden" value="{{$plano->preco}}" name="plan_price" />
                         {{-- <div class="form-group">
                             <div class="mb-1">
                                 <label class="">Tipo de cadastro</label>
@@ -278,8 +276,10 @@
                                 <h5>Club de Benefício</h5>
                                 @isset($club_beneficio)
                                     @foreach ($club_beneficio as $item)
-                                        <input type="checkbox" name="club_beneficio[]" value="{{$item->id}}">
-                                        <label for="club_beneficio[]">{{$item->nome}}</label><br>
+                                        <div>
+                                            <input type="checkbox" class="adicional_assinatura" name="club_beneficio[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
+                                            <label for="club_beneficio[]">{{$item->nome}}</label>
+                                        </div>
                                     @endforeach
                                 @endisset
                             </div>
@@ -287,8 +287,10 @@
                                 <h5>COBERTURA 24h (365 DIAS)</h5>
                                 @isset($cobertura_24horas)
                                     @foreach($cobertura_24horas as $item)
-                                        <input type="checkbox" name="cobertura_24horas[]" value="{{$item->id}}">
-                                        <label for="cobertura_24horas[]">{{$item->nome}}</label><br>
+                                        <div>
+                                            <input type="checkbox" class="adicional_assinatura" name="cobertura_24horas[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
+                                            <label for="cobertura_24horas[]">{{$item->nome}}</label>
+                                        </div>
                                     @endforeach
                                 @endisset
                             </div>
@@ -298,8 +300,10 @@
                                 <h5>COMPRAR SEGURO(S)</h5>
                                 @isset($comprar_seguros)
                                     @foreach($comprar_seguros as $item)
-                                        <input type="checkbox" name="comprar_seguros[]" value="{{$item->id}}">
-                                        <label for="comprar_seguros[]">{{$item->nome}}</label><br>
+                                        <div>
+                                            <input type="checkbox" class="adicional_assinatura" name="comprar_seguros[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
+                                            <label for="comprar_seguros[]">{{$item->nome}}</label>
+                                        </div>
                                     @endforeach
                                 @endisset
                             </div>
@@ -444,12 +448,25 @@
                         </div>
                     </form>
                 </div>
-                <div class="col-md-4 px-5">
+                <div class="col-md-6 p-5 sticky-top" style="background: white;">
                     <h5>Plano Selecionado:</h5>
                     <h3>{{$plano->nome}}</h3>
                     <h2>R$ {{format_number($plano->preco)}} / Mês</h2>
                     <small>*no Boleto/PIX</small><br>
                     <hr>
+                    <div class="adicionais_inclusos mb-3 pb-3" style="border-bottom: .5px solid #ccc;">
+                        <h5>Incluso no Plano:</h5>
+
+                    </div>
+
+                    <div class="adicionais_selecionados mb-3 pb-3" style="border-bottom: .5px solid #ccc;">
+                        <h5>Adicionais Selecionados:</h5>
+
+                    </div>
+                    <div class="row total">
+                        <h5>Total (Plano + Adicionais): <b>R$ <span class="preco_total">{{format_number($plano->preco)}}</span> / Mês</b></h5>
+
+                    </div>
                 </div>
             </div>
         </div>

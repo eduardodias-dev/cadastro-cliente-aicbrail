@@ -405,6 +405,76 @@ jQuery(function() {
         });
     });
 
+    $('.adicionais_selecionados').hide();
+    $('.adicionais_inclusos').hide();
+
+    $precoTotal = parseFloat($('[name=plan_price]').val());
+    $('.adicional_assinatura').on('click', function(){
+        $item = $(this);
+
+        $id = $item.val();
+        $nome = $item.data('nome');
+        $preco = $item.data('preco');
+        $incluso_plano = $item.data('incluso-plano');
+
+        if($item.is(':checked')){
+            $('.adicionais_selecionados').append('<div class="adicional_selecionado_'+$id+'">'+$nome+' - '+formatarPreco($preco)+'</div>');
+            $precoTotal += parseFloat($preco);
+        }else{
+            $('.adicionais_selecionados').find('.adicional_selecionado_'+$id+'').remove();
+            $precoTotal -= parseFloat($preco);
+        }
+
+        if($('.adicional_assinatura:checked').length < 1){
+            $('.adicionais_selecionados').hide();
+            $precoTotal = parseFloat($('[name=plan_price]').val());
+        }
+        else
+            $('.adicionais_selecionados').show();
+
+        $('.preco_total').html(formatarPreco($precoTotal));
+    });
+
+    function visualizarAdicionaisInclusos(){
+      $idPlanoSelecionado = $('[name=plan_id]').val();
+
+      $('.adicional_assinatura').each(function(index, item){
+        // console.log(item);
+        var incluso_plano = $(item).data('incluso-plano');
+
+        if(incluso_plano != undefined && incluso_plano != null && incluso_plano != ""){
+            var planos = String(incluso_plano).split(',');
+
+            if(planos.indexOf($idPlanoSelecionado) >= 0){
+                $(this).prop('checked', true);
+                $(this).prop('disabled', true);
+                AdicionarAdicionalInclusos($(this));
+            }
+        }
+      });
+    }
+
+    function AdicionarAdicionalInclusos($item){
+        $('.adicionais_inclusos').show();
+
+        $id = $item.val();
+        $nome = $item.data('nome');
+        $preco = $item.data('preco');
+        $incluso_plano = $item.data('incluso-plano');
+
+        $('.adicionais_inclusos').append('<div class="adicional_incluso_'+$id+'">'+$nome+'</div>');
+
+    }
+
+    function formatarPreco(price){
+        var precoFormatado = (price).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        });
+
+        return precoFormatado;
+    }
+    visualizarAdicionaisInclusos();
     function montaMensagem(response){
         var dadosAssinatura = JSON.parse(response.result);
         var forma_pagamento = $('.forma_pagamento').val();
