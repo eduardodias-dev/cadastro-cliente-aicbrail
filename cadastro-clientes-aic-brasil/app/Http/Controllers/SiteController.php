@@ -99,7 +99,7 @@ class SiteController extends Controller
 
     public function view_order_post(Request $request){
         $ordercode = $request->get('search');
-        $result = DB::select('SELECT * from V_Assinaturas_detalhe where codigo_assinatura = ?', [$ordercode]);
+        $result = DB::select('SELECT * from v_assinaturas_detalhe where codigo_assinatura = ?', [$ordercode]);
         $error = count($result) <= 0;
         $data = null;
         if(!$error){

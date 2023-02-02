@@ -12,7 +12,7 @@ class GalaxPayService
 
     public function CreateSubscription($assinatura_id, $client_id, $type = 'card', $card_data = null)
     {
-        $data = DB::select("SELECT * from V_Assinaturas_Integracao where id_assinatura = ? AND id_cliente = ?", [$assinatura_id, $client_id]);
+        $data = DB::select("SELECT * from v_assinaturas_integracao where id_assinatura = ? AND id_cliente = ?", [$assinatura_id, $client_id]);
         if(count($data) >= 1){
             $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
             $request_data = $this->BuildCreateSubscriptionRequest($data[0], $type, $card_data);
