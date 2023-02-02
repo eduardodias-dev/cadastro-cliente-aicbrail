@@ -65,8 +65,9 @@
     <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
       <div class="row justify-content-center">
         <div class="col-xl-7 col-lg-9 text-center">
-          <h1>AIC Brasil Seguros</h1>
-          <h2>Seguro que cabe no seu bolso.</h2>
+          <h1>AiC BRASIL - ASSISTÊNCIA 24h</h1>
+          <p>SEJA(M) BEM VINDO(A) AO GROUP AiC
+            BRASIL!!!</p>
         </div>
       </div>
       <div class="text-center">
@@ -118,28 +119,33 @@
 
         <div class="section-title">
           <h2>Sobre nós</h2>
-          <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. </p>
         </div>
 
         <div class="row content">
           <div class="col-lg-6">
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-              magna aliqua.
+                A <b>AIC BRASIL</b> NASCEU JUNTAMENTE COM O SÉCULO XXI, OU SEJA,
+                DESDE 01 DE JANEIRO DO ANO 2001, ESTAMOS PRESENTES NO
+                MERCADO E, COM A DEVIDA CONSTITUIÇÃO LEGAL EMPRESARIAL. NA
+                DATA DE 30/09/2014 DECIDIMOS, ENTÃO, EXPANDIR O(S) NEGÓCIO(S)
+                E, ASSIM POR DIANTE, ATENDER A TODO ESTADO BRASILEIRO.
             </p>
-            <ul>
-              <li><i class="ri-check-double-line"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat</li>
-              <li><i class="ri-check-double-line"></i> Duis aute irure dolor in reprehenderit in voluptate velit</li>
-              <li><i class="ri-check-double-line"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat</li>
-            </ul>
+            <p>
+                CONTE COM UMA EMPRESA SÉRIA, IDÔNEA E ÉTICA, ATUANTE NO MERCADO. Ei psiu, <b>#VEM SER, AiC BANK | AiC BRASIL!</b>
+            </p>
           </div>
           <div class="col-lg-6 pt-4 pt-lg-0">
             <p>
-              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-              culpa qui officia deserunt mollit anim id est laborum.
+                AQUI ESTÁ ALGUMAS DAS VANTAGENS <b>AiC BRASIL GROUP</b>:
             </p>
-            <a href="#" class="btn-learn-more">Learn More</a>
+            <ul>
+              <li><i class="ri-check-double-line"></i> ASSISTÊNCIA 24h, 365 DIAS</li>
+              <li><i class="ri-check-double-line"></i> CONTROLE TOTAL DA OPERAÇÃO</li>
+              <li><i class="ri-check-double-line"></i> SISTEMA TOTALMENTE INTEGRADO VIA <b>APP</b></li>
+              <li><i class="ri-check-double-line"></i> MONITIRAMENTO VIA, <b>SATÉLITE | GPS BLOCK</b></li>
+              <li><i class="ri-check-double-line"></i> RELATÓRIO(S) MAPS, PERIÓDICO(S)</li>
+            </ul>
+            <a href="#" class="btn-learn-more">Saiba Mais</a>
           </div>
         </div>
 
@@ -221,8 +227,7 @@
       <div class="container" data-aos="zoom-in">
         <div class="text-center">
           <h3>Fale conosco, será um prazer te atender!</h3>
-          <p> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          <a class="cta-btn" href="#">Quero falar com um consultor</a>
+          <a class="cta-btn" href="https://wa.me/553173482342?text=Quero%20saber%20mais%20sobre%20a%20AIC%20Brasil%20Assistência%2024h">Quero falar com um consultor</a>
         </div>
       </div>
     </section><!-- End Cta Section -->
@@ -306,48 +311,68 @@
         <div class="faq-list">
           <ul>
             <li data-aos="fade-up">
-              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-1">Non consectetur a erat nam at lectus urna duis? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-1">QUAL É O SITE DA AIC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-1" class="collapse show" data-bs-parent=".faq-list">
                 <p>
-                  Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.
+                    <a href="https://app.aicbrasil-ies.com.br/">https://app.aicbrasil-ies.com.br/</a>
                 </p>
               </div>
             </li>
 
             <li data-aos="fade-up" data-aos-delay="100">
-              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-2" class="collapsed">Feugiat scelerisque varius morbi enim nunc? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-2" class="collapsed">QUAL O TELEFONE DA AIC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-2" class="collapse" data-bs-parent=".faq-list">
                 <p>
-                  Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                    0800.348.2342
                 </p>
               </div>
             </li>
 
             <li data-aos="fade-up" data-aos-delay="200">
-              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-3" class="collapsed">Dolor sit amet consectetur adipiscing elit? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-3" class="collapsed">QUAL O E-MAIL DA AIC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-3" class="collapse" data-bs-parent=".faq-list">
                 <p>
-                  Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis
+                    aicbrasill@gmail.com
                 </p>
               </div>
             </li>
 
             <li data-aos="fade-up" data-aos-delay="300">
-              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-4" class="collapsed">Tempus quam pellentesque nec nam aliquam sem et tortor consequat? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-4" class="collapsed">QUAL O E-MAIL DA ESCOLA FACULDADE, AIC BRASIL? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-4" class="collapse" data-bs-parent=".faq-list">
                 <p>
-                  Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse in est ante in. Nunc vel risus commodo viverra maecenas accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis blandit turpis cursus in.
+                    contato@aicbrasil-ies.com.br
                 </p>
               </div>
             </li>
 
             <li data-aos="fade-up" data-aos-delay="400">
-              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-5" class="collapsed">Tortor vitae purus faucibus ornare. Varius vel pharetra vel turpis nunc eget lorem dolor? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-5" class="collapsed">QUEM PODE SER CLIENTE DA AIC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-5" class="collapse" data-bs-parent=".faq-list">
                 <p>
-                  Laoreet sit amet cursus sit amet dictum sit amet justo. Mauris vitae ultricies leo integer malesuada nunc vel. Tincidunt eget nullam non nisi est sit amet. Turpis nunc eget lorem dolor sed. Ut venenatis tellus in metus vulputate eu scelerisque.
+                    PESSOA(S) NATURAIS FÍSICA E, JURÍDICA.
                 </p>
               </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="400">
+                <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-6" class="collapsed">A AIC BRASIL, TEM APP?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+                <div id="faq-list-6" class="collapse" data-bs-parent=".faq-list">
+                  <p>
+                    SIM, É SÓ BAIXÁ-LO NO TEU Pc, TABLET OU TELEFONE.
+                  </p>
+                </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="400">
+                <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-7" class="collapsed">QUAL É O HORÁRIO DE FUNCIONAMENTO DA AIC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+                <div id="faq-list-7" class="collapse" data-bs-parent=".faq-list">
+                  <p>
+                    COMERCIAL, DAS 09h AS 21h<br>
+                    CRYPTO iMoB, DAS 09h AS 17h<br>
+                    JURÍDICO, DAS 09h AS 12h E, DAS 14h AS 17h
+                  </p>
+                </div>
             </li>
 
           </ul>
@@ -362,13 +387,7 @@
 
         <div class="section-title">
           <h2>Contato</h2>
-          <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
         </div>
-
-        <div>
-          <iframe style="border:0; width: 100%; height: 270px;"src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3751.1342895751795!2d-44.12877348474855!3d-19.91874508661006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa6ea8570979627%3A0x9ab5755169c423f9!2sR.%20Das%20Sempre-Vivas%2C%20181%20-%20Sapucaias%2C%20Contagem%20-%20MG%2C%2032071-128!5e0!3m2!1spt-BR!2sbr!4v1671315079757!5m2!1spt-BR!2sbr" allowfullscreen loading="lazy" frameborder=0></iframe>
-        </div>
-
         <div class="row mt-5">
 
           <div class="col-lg-4">
@@ -376,19 +395,20 @@
               <div class="address">
                 <i class="bi bi-geo-alt"></i>
                 <h4>Endereço:</h4>
-                <p>Rua das Sempre-Vivas 181, Sapucaia, Contagem/MG - CEP 32071-128</p>
+                <p>AV. RAJA GABAGLIA, nº.1617 5º andar, LUXEMBURGO, B.HORIZONTE/MG, CEP nº.30380-435, BRASIL|BR.</p>
               </div>
 
               <div class="email">
                 <i class="bi bi-envelope"></i>
                 <h4>Email:</h4>
-                <p>contato@aicbrasil-ies.com.br</p>
+                <p>AICBRASILL@GMAIL.COM</p>
               </div>
 
               <div class="phone">
                 <i class="bi bi-phone"></i>
                 <h4>Tel.:</h4>
                 <p>(31) 97348-2342</p>
+                <p>0800.348.2342</p>
               </div>
 
             </div>
@@ -396,7 +416,10 @@
           </div>
 
           <div class="col-lg-8 mt-5 mt-lg-0">
+            <iframe style="border:0; width: 100%; height: 300px;"src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3750.4299254177445!2d-43.96274068453904!3d-19.94841394403505!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa69798ff3f22ad%3A0x5d77e1965cf1c94d!2sAv.%20Raja%20Gab%C3%A1glia%2C%201617%20-%20Luxemburgo%2C%20Belo%20Horizonte%20-%20MG%2C%2030380-435!5e0!3m2!1spt-BR!2sbr!4v1675301377532!5m2!1spt-BR!2sbr" allowfullscreen loading="lazy" frameborder=0></iframe>
+            {{-- <iframe style="border:0; width: 100%; height: 270px;"src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3751.1342895751795!2d-44.12877348474855!3d-19.91874508661006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa6ea8570979627%3A0x9ab5755169c423f9!2sR.%20Das%20Sempre-Vivas%2C%20181%20-%20Sapucaias%2C%20Contagem%20-%20MG%2C%2032071-128!5e0!3m2!1spt-BR!2sbr!4v1671315079757!5m2!1spt-BR!2sbr" allowfullscreen loading="lazy" frameborder=0></iframe> --}}
 
+{{--
             <form action="forms/contact.php" method="post" role="form" class="php-email-form">
               <div class="row gy-2 gx-md-3">
                 <div class="col-md-6 form-group">
@@ -418,7 +441,7 @@
                 </div>
                 <div class="text-center col-12"><button type="submit">Enviar Mensagem</button></div>
               </div>
-            </form>
+            </form> --}}
 
           </div>
 
@@ -426,7 +449,11 @@
 
       </div>
     </section><!-- End Contact Section -->
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <a href="https://wa.me/553173482342?text=Quero%20saber%20mais%20sobre%20a%20AIC%20Brasil%20Assistência%2024h" style="position:fixed;width:60px;height:60px;bottom:80px;right:10px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
+    z-index:1000;" target="_blank">
+        <i style="margin-top:16px" class="fa fa-whatsapp"></i>
+    </a>
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
