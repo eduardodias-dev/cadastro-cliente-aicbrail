@@ -57,7 +57,7 @@ class GalaxPayService
             "name" => $data->nome_cliente,
             "document"=>removeSpecialCharacters($data->documento),
             "emails" => [ $data->emails ],
-            "phones"=> $data->telefone,
+            "phones"=> array( clean($data->telefone) ),
             "Address"=>[
                 "zipCode" => removeSpecialCharacters($data->cep),
                 "street" => $data->logradouro,

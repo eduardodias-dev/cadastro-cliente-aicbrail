@@ -134,7 +134,7 @@ class SiteController extends Controller
             $newCliente->documento = $data['cpfcnpj'];
             $newCliente->status = 'active';
             $newCliente->sexo = $data['sexo'];
-            $newCliente->dataNascimento = $data['datanasc'];
+            $newCliente->dataNascimento = date_create_from_format("d/m/Y", $data['datanasc']);
 
             $result = $newCliente->save();
 
@@ -237,7 +237,7 @@ class SiteController extends Controller
 
             $newAssinatura->codigo_assinatura = $this->getCogigoAssinatura($newAssinatura);
 
-            $beneficios = $data['club_beneficio'];
+            $beneficios = isset($data['club_beneficio']) ? $data['club_beneficio'] : [];
             foreach($beneficios as $item){
                 $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
 
@@ -274,7 +274,7 @@ class SiteController extends Controller
                 $adicionalAssinatura->save();
             }
 
-            $seguros = $data['comprar_seguros'];
+            $seguros = isset($data['comprar_seguros']) ? $data['comprar_seguros'] : [];
             foreach($seguros as $item){
                 $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
 
