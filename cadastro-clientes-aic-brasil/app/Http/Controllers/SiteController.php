@@ -104,7 +104,7 @@ class SiteController extends Controller
         $data = null;
         if(!$error){
             $data = (array)$result[0];
-            $adicionais = DB::select('SELECT * FROM v_adicionais_Assinatura WHERE codigo_assinatura = ?', [$ordercode]);
+            $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$ordercode]);
 
             $transform_array = [];
             $grouped_array = array();
@@ -150,7 +150,7 @@ class SiteController extends Controller
 
             $clienteEndereco = new Endereco;
             $clienteEndereco->client_id = $newCliente->id;
-            $clienteEndereco->cep = $data['cep'];
+            $clienteEndereco->cep = str_replace('-','',$data['cep']);
             $clienteEndereco->rua = $data['logradouro'];
             $clienteEndereco->numero = $data['numero'];
             $clienteEndereco->complemento = $data['complemento'];
