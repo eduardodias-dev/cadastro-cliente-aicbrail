@@ -132,7 +132,7 @@
     </div>
   </header><!-- End Header -->
 
-  <main id="main" style="margin-top: 70px; background: #fafafa" class="py-1">
+  <main id="main" style="margin-top: 0px; background: #fafafa" class="py-1">
     <div class="container py-5" >
         <h1>CHECKOUT</h1>
 
@@ -318,14 +318,6 @@
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
-                                <label for="cobertura_terceiros">COBERTURA DE 3º- TERCEIRO(S)</label>
-                                <select name="cobertura_terceiros" class="form-control">
-                                    <option value="" class="">Selecione</option>
-                                    <option value="1">Sim</option>
-                                    <option value="0">Não</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-6">
                                 <label for="tipo_veiculo" class="required">TIPO DO VEÍCULO</label>
                                 <select name="tipo_veiculo" class="form-control required">
                                     <option value="" class="">Selecione</option>
@@ -382,11 +374,11 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row mt-2">
+                        {{-- <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="consultor_vendas" class="required">CONSULTOR(A) VENDA(S)</label>
                                 <input type="hidden" name="consultor_vendas" value="2">
-                                {{-- <select name="consultor_vendas" class="form-control required">
+                                <select name="consultor_vendas" class="form-control required">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">ADEMIR L. B. SILVA</option>
                                     <option value="2">JADSON SANTOS</option>
@@ -394,9 +386,9 @@
                                     <option value="4">JOYCE KELLY</option>
                                     <option value="5">MONIQUE F. SANTOS</option>
                                     <option value="6">RAFAEL ELIAS</option>
-                                </select> --}}
+                                </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row mt-4">
                             <div class="form-group col-md-12">
                                 <label for="forma_pagamento" class="required">FORMA DE PAGAMENTO</label>
@@ -474,56 +466,9 @@
   </main><!-- End #main -->
 
 
+
   <!-- ======= Footer ======= -->
   <footer id="footer">
-
-    <div class="footer-top">
-      <div class="container">
-        <div class="row">
-
-          <div class="col-lg-3 col-md-6 footer-contact">
-            <h3>AIC Brasil</h3>
-            <p>
-              Rua das Sempre-Vivas 181,  <br>
-              Sapucaia, Contagem/MG - CEP 32071-128<br>
-              Brasil <br><br>
-              <strong>Tel:</strong> (31) 97348-2342<br>
-              <strong>Email:</strong> contato@aicbrasil-ies.com.br<br>
-            </p>
-          </div>
-
-          <div class="col-lg-2 col-md-6 footer-links">
-            <h4>Links úteis</h4>
-            <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Sobre Nós</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Serviços</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Termos de Serviço</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Política de privacidade</a></li>
-            </ul>
-          </div>
-
-          <div class="col-lg-3 col-md-6 footer-links">
-            <h4>Nossos Serviços</h4>
-            <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Proteção Veicular</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Seguros</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Faculdade EAD</a></li>
-            </ul>
-          </div>
-
-          <div class="col-lg-4 col-md-6 footer-newsletter">
-            <h4>Receba nossa Newsletter</h4>
-            <p>Tamen quem nulla quae legam multos aute sint culpa legam noster magna</p>
-            <form action="" method="post">
-              <input type="email" name="email"><input type="submit" value="Subscribe">
-            </form>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
     <div class="container d-md-flex py-4">
 
       <div class="me-md-auto text-center text-md-start">
@@ -539,11 +484,9 @@
         </div>
       </div>
       <div class="social-links text-center text-md-right pt-3 pt-md-0">
-        <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
-        <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
-        <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+        <a href="https://www.facebook.com/AiCBrasilCARs/" class="facebook"><i class="bx bxl-facebook"></i></a>
+        <a href="https://www.instagram.com/aic_brasil/" class="instagram"><i class="bx bxl-instagram"></i></a>
         <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
-        <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
       </div>
     </div>
   </footer><!-- End Footer -->

@@ -197,11 +197,8 @@
               <h3>GPS BLOCK + REBOQ.24h</h3>
               <h4><sup>R$</sup>99,99<span> / mês</span></h4>
               <ul>
-                <li>Aida dere</li>
-                <li>Nec feugiat nisl</li>
-                <li>Nulla at volutpat dola</li>
-                <li class="na">Pharetra massa</li>
-                <li class="na">Massa ultricies mi</li>
+                <li>GPS Block</li>
+                <li>GUINCHO - REBOQUE.24h</li>
               </ul>
               <div class="btn-wrap">
                 <a href="{{route('site.checkout', ['id_plano' => 18])}}" class="btn-buy">Quero esse</a>
@@ -214,11 +211,11 @@
               <h3>PLANO A.1</h3>
               <h4><sup>R$</sup>135,00<span> / mês</span></h4>
               <ul>
-                <li>Aida dere</li>
-                <li>Nec feugiat nisl</li>
-                <li>Nulla at volutpat dola</li>
-                <li>Pharetra massa</li>
-                <li class="na">Massa ultricies mi</li>
+                <li>GUINCHO - REBOQUE.24h</li>
+                <li>PANE SECA | ELÉTRICA</li>
+                <li>PANE MECÂNICA</li>
+                <li>CHAVEIRO AUTO | RESIDENCIAL</li>
+                <li>ALAGAMENTO | ENCHENTE</li>
               </ul>
               <div class="btn-wrap">
                 <a href="{{route('site.checkout', ['id_plano' => 2])}}" class="btn-buy">Quero esse</a>
@@ -231,11 +228,14 @@
               <h3>PLANO B.2</h3>
               <h4><sup>R$</sup>170,00<span> / mês</span></h4>
               <ul>
-                <li>Aida dere</li>
-                <li>Nec feugiat nisl</li>
-                <li>Nulla at volutpat dola</li>
-                <li>Pharetra massa</li>
-                <li>Massa ultricies mi</li>
+                <li>ALAGAMENTO | ENCHENTE</li>
+                <li>CHAVEIRO AUTO | RESIDENCIAL</li>
+                <li>FURTO | ROUBO | INCÊNDIO</li>
+                <li>GUINCHO - REBOQUE.24h</li>
+                <li>GUARDA DO VEÍCULO</li>
+                <li>PANE SECA | ELÉTRICA</li>
+                <li>PANE MECÂNICA</li>
+                <li>E MAIS...</li>
               </ul>
               <div class="btn-wrap">
                 <a href="{{route('site.checkout', ['id_plano' => 4])}}" class="btn-buy">Quero esse</a>
