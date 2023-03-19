@@ -1966,3 +1966,7 @@ input:required.error:hover, input.required.error:hover {
     position: sticky;
     top: 0px;
 }
+
+.ul-resposta{
+    padding-left: 30px !important;
+}

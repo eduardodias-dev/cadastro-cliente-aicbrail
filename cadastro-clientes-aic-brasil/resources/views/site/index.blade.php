@@ -10,8 +10,8 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  {{-- <link href="site/img/favicon.png" rel="icon">
-  <link href="site/img/apple-touch-icon.png" rel="apple-touch-icon"> --}}
+  <link href="site/img/LOGO-AIC-BRASIL.ico" rel="icon">
+  {{-- <link href="site/img/apple-touch-icon.png" rel="apple-touch-icon"> --}}
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -42,7 +42,9 @@
   <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center justify-content-between">
 
-      <h1 class="logo"><a href="/">AIC Brasil</a></h1>
+      <h1 class="">
+        <a href="/">
+            <img src="site/img/LOGO-AIC-BRASIL.ico" height="80"></a></h1>
       <!-- Uncomment below if you prefer to use an image logo -->
       <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
@@ -259,53 +261,44 @@
         <div class="faq-list">
           <ul>
             <li data-aos="fade-up">
-              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-1">QUAL É O SITE DA AIC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-1">COMO ACIONO A ASSISTÊNCIA 24h <b>AiC BRASIL</b>?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-1" class="collapse show" data-bs-parent=".faq-list">
                 <p>
-                    <a href="https://app.aicbrasil-ies.com.br/">https://app.aicbrasil-ies.com.br/</a>
+                    0800 348 2342
                 </p>
               </div>
             </li>
 
             <li data-aos="fade-up" data-aos-delay="100">
-              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-2" class="collapsed">QUAL O TELEFONE DA AIC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-2" class="collapsed">EM QUAIS CIDADES A ASSISTÊNCIA 24h DA <b>AiC BRASIL</b> ESTÁ PRESENTE?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-2" class="collapse" data-bs-parent=".faq-list">
                 <p>
-                    0800.348.2342
+                    99% DO BRASIL
                 </p>
               </div>
             </li>
 
             <li data-aos="fade-up" data-aos-delay="200">
-              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-3" class="collapsed">QUAL O E-MAIL DA AIC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-3" class="collapsed">QUANTOS GUINCHOS REBOQUE TENHO DIREITO, POR MÊS?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-3" class="collapse" data-bs-parent=".faq-list">
                 <p>
-                    aicbrasill@gmail.com
+                    ILIMITADO, EM CASO DE EVENTO-SINISTRO
                 </p>
               </div>
             </li>
 
             <li data-aos="fade-up" data-aos-delay="300">
-              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-4" class="collapsed">QUAL O E-MAIL DA ESCOLA FACULDADE, AIC BRASIL? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-4" class="collapsed">QUANTAS BASES (PONTO DE APOIO) A ASSISTÊNCIA 24h <b>AiC BRASIL</b> TEM?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-4" class="collapse" data-bs-parent=".faq-list">
                 <p>
-                    contato@aicbrasil-ies.com.br
+                    5570 BASES E 27850 PONTO(S) DE APOIO
                 </p>
               </div>
             </li>
 
             <li data-aos="fade-up" data-aos-delay="400">
-              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-5" class="collapsed">QUEM PODE SER CLIENTE DA AIC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-              <div id="faq-list-5" class="collapse" data-bs-parent=".faq-list">
-                <p>
-                    PESSOA(S) NATURAIS FÍSICA E, JURÍDICA.
-                </p>
-              </div>
-            </li>
-
-            <li data-aos="fade-up" data-aos-delay="400">
-                <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-6" class="collapsed">A AIC BRASIL, TEM APP?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-                <div id="faq-list-6" class="collapse" data-bs-parent=".faq-list">
+                <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-5" class="collapsed">A AIC BRASIL, TEM APP?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+                <div id="faq-list-5" class="collapse" data-bs-parent=".faq-list">
                   <p>
                     SIM, É SÓ BAIXÁ-LO NO TEU Pc, TABLET OU TELEFONE.
                   </p>
@@ -313,16 +306,16 @@
             </li>
 
             <li data-aos="fade-up" data-aos-delay="400">
-                <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-7" class="collapsed">QUAL É O HORÁRIO DE FUNCIONAMENTO DA AIC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-                <div id="faq-list-7" class="collapse" data-bs-parent=".faq-list">
-                  <p>
-                    COMERCIAL, DAS 09h AS 21h<br>
-                    CRYPTO iMoB, DAS 09h AS 17h<br>
-                    JURÍDICO, DAS 09h AS 12h E, DAS 14h AS 17h
-                  </p>
-                </div>
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-6" class="collapsed">QUAL É O HORÁRIO DE FUNCIONAMENTO DA AiC BRASIL?<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-6" class="collapse" data-bs-parent=".faq-list">
+                <ul class="ul-resposta">
+                    ✓ <b>COMERCIAL:</b> DAS 09h AS 21h<br>
+                    ✓ <b>CRYPTO iMoB:</b> DAS 09h AS 17h<br>
+                    ✓ <b>JURÍDICO:</b> DAS 09h AS 12h E, DAS 14h AS 17h<br>
+                    ✓ <b>GUINCHO REBOQUE:</b> 24h/365 DIAS
+                </ul>
+              </div>
             </li>
-
           </ul>
         </div>
 
