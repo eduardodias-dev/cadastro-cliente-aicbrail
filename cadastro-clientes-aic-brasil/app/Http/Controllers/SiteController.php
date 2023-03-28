@@ -228,7 +228,7 @@ class SiteController extends Controller
             $newAssinatura->status = 'pendente';
             $newAssinatura->info_adicional = '';
             $newAssinatura->adesao = date('Y-m-d H:i:s');
-            $newAssinatura->cobertura_terceiros = $data['cobertura_terceiros'];
+            //$newAssinatura->cobertura_terceiros = $data['cobertura_terceiros'];
             $newAssinatura->melhor_vencimento = $data['melhor_vencimento'];
             $newAssinatura->tipo_pagamento = $data['forma_pagamento'];
             $newAssinatura->protecao_veicular = $data['comprar_protecao_veicular'];
