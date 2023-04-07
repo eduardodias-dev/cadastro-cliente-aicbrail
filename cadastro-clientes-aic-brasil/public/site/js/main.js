@@ -474,7 +474,9 @@ jQuery(function() {
 
         return precoFormatado;
     }
+
     visualizarAdicionaisInclusos();
+
     function montaMensagem(response){
         var dadosAssinatura = JSON.parse(response.result);
         var forma_pagamento = $('.forma_pagamento').val();
