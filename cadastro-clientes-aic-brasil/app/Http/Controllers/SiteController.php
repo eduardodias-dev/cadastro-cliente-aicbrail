@@ -16,6 +16,7 @@ use App\Adicionais_Assinatura;
 use App\Mail\EnvioEmailApolice;
 use App\Services\GalaxPayService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Assinatura_Adicionais_Assinatura;
@@ -67,7 +68,14 @@ class SiteController extends Controller
                     $service = new GalaxPayService;
                     $result = $service->CreateSubscription($savedSubscription->id, $savedClient->id, $data['forma_pagamento'], $this->getCardData($data));
 
-                    $this->enviarEmailBemVindo($result->json()['Subscription']['myId'], $data['email']);
+                    if(isset($result->json()['Subscription'])){
+                        try{
+                            $this->enviarEmailBemVindo($result->json()['Subscription']['myId'], $data['email']);
+                        }catch(Exception $ex){
+                            Log::warning("Erro ao executar envio de email: ".$ex->getMessage());
+                        }
+                    }
+
                     return response()->json([
                         'success' => true,
                         'message' => 'Adicionado com sucesso!',
@@ -329,9 +337,7 @@ class SiteController extends Controller
             $assinatura = $assinatura[0];
 
         $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$ordercode]);
-
         $filename = 'apolice_'.$ordercode.'.pdf';
-
         $mpdf = new PDF();
 
         $pathfile = storage_path('app\public\capa_apolice.pdf');
@@ -340,33 +346,19 @@ class SiteController extends Controller
         $mpdf->useTemplate($tplId);
 
         // Do not add page until page template set, as it is inserted at the start of each page
-        $pathfile = storage_path('app\public\template_pagina_apolice.pdf');
+        $pathfile = storage_path('app\public\template_apolice.pdf');
         $mpdf->SetSourceFile($pathfile);
         $tplId = $mpdf->ImportPage(1);
         $mpdf->SetPageTemplate($tplId);
-        $mpdf->AddPage('P','','','','','','','85');
+        $mpdf->AddPage('P','','','','','','','25');
 
         $html = view('templates.apolice', ['assinatura' => $assinatura, 'adicionais' => $adicionais])->render();
 
         $mpdf->WriteHTML(strtoupper($html));
-
-        $mpdf->SetPageTemplate();
-
-        $pathfile = storage_path('app\public\template_pagina2.pdf');
-
-        $mpdf->SetSourceFile($pathfile);
-        $tplId = $mpdf->ImportPage(1);
-        $mpdf->SetPageTemplate($tplId);
-        $mpdf->AddPage('P','','','','','','','35');
-
-        $html = view('templates.apolice_adendo');
-        $mpdf->WriteHTML(strtoupper($html));
-
-
         Storage::disk('public')->put($filename, $mpdf->Output($filename, 'S'));
 
-        Mail::to($emailCliente)
-            ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais));
+        Mail::to('eduardo.dias092@gmail.com')
+             ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais));
 
         return 1;
     }
