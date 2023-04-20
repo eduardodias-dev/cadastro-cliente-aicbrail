@@ -136,6 +136,39 @@ class SiteController extends Controller
         return view('site.order_partial', ['subscription' => $data, 'error' => $error]);
     }
 
+    public function view_contract($ordercode, $sendEmail = 0){
+
+        $assinatura = DB::select('SELECT * from v_assinaturas_detalhe where codigo_assinatura = ?', [$ordercode]);
+        if(count($assinatura) > 0)
+            $assinatura = $assinatura[0];
+
+        $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$ordercode]);
+        $filename = 'apolice_'.$ordercode.'.pdf';
+        $mpdf = new PDF();
+
+        $pathfile = storage_path('app\public\capa_apolice.pdf');
+        $mpdf->SetSourceFile($pathfile);
+        $tplId = $mpdf->ImportPage(1);
+        $mpdf->useTemplate($tplId);
+
+        // Do not add page until page template set, as it is inserted at the start of each page
+        $pathfile = storage_path('app\public\template_apolice.pdf');
+        $mpdf->SetSourceFile($pathfile);
+        $tplId = $mpdf->ImportPage(1);
+        $mpdf->SetPageTemplate($tplId);
+        $mpdf->AddPage('P','','','','','','','25');
+
+        $html = view('templates.apolice', ['assinatura' => $assinatura, 'adicionais' => $adicionais])->render();
+
+        $mpdf->WriteHTML(strtoupper($html));
+        Storage::disk('public')->put($filename, $mpdf->Output($filename, 'S'));
+
+        Mail::to('eduardo.dias092@gmail.com')
+             ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais));
+
+        return 1;
+    }
+
     private function adicionarCliente($data)
     {
         DB::beginTransaction();
@@ -208,11 +241,11 @@ class SiteController extends Controller
     }
 
     private function validarCliente($request){
-        return Validator::make($request, $this->regras());
+        return Validator::make($request, $this->regras($request["tipo_cadastro"]));
     }
 
-    private function regras(){
-        return [
+    private function regras($tipoCadastro){
+        $arrRegras = [
             'nome' => 'required|string|max:255',
             'cpfcnpj' => 'required|regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/',
             'email' => 'required|email',
@@ -225,6 +258,12 @@ class SiteController extends Controller
             // 'expiration_year' => 'required|numeric',
             // 'cvv' => 'required|numeric',
         ];
+
+        if($tipoCadastro == "2"){
+            $arrRegras['cpfcnpj'] = 'required|regex:/^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$/';
+        }
+
+        return $arrRegras;
     }
 
     private function adicionarAssinatura($data, $client_id, $plan_id){

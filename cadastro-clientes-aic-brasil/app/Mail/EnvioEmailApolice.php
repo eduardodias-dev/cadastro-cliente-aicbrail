@@ -20,13 +20,15 @@ class EnvioEmailApolice extends Mailable
     private $assinatura;
     private $adicionais;
     private $caminhoArquivoLogo;
-    public function __construct($assinatura, $caminhoArquivo, $adicionais)
+    private $enviarApolice;
+    public function __construct($assinatura, $caminhoArquivo, $adicionais, $enviarApolice = 0)
     {
         //
         $this->assinatura = $assinatura;
         $this->caminhoArquivo = $caminhoArquivo;
         $this->adicionais = $adicionais;
         $this->caminhoArquivoLogo = storage_path('app\public\LOGO-AIC-BRASIL.ico');
+        $this->enviarApolice = $enviarApolice;
     }
 
     /**
@@ -36,14 +38,28 @@ class EnvioEmailApolice extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@aicbrasill.com.br','Não Responda')
-                    ->subject("Bem-Vindo à AIC BRASIL!")
-                    ->view('templates.email')
-                    ->with([
-                        'assinatura' => $this->assinatura,
-                        'adicionais' => $this->adicionais,
-                        'caminhoArquivoLogo' => $this->caminhoArquivoLogo
-                    ])
-                    ->attach($this->caminhoArquivo);
+        $obj = $this->from('noreply@aicbrasill.com.br','Não Responda');
+        if($this->enviarApolice == 0){
+            $obj->subject("Bem-Vindo à AIC BRASIL!")
+                ->view('templates.email')
+                ->with([
+                    'assinatura' => $this->assinatura,
+                    'adicionais' => $this->adicionais,
+                    'caminhoArquivoLogo' => $this->caminhoArquivoLogo
+                ]);
+        }
+        else
+        {
+            $obj->subject("Bem-Vindo à AIC BRASIL!")
+                ->view('templates.email')
+                ->with([
+                    'assinatura' => $this->assinatura,
+                    'adicionais' => $this->adicionais,
+                    'caminhoArquivoLogo' => $this->caminhoArquivoLogo
+                ])
+                ->attach($this->caminhoArquivo);
+        }
+
+        return $obj;
     }
 }

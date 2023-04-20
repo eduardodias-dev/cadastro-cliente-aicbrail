@@ -10,8 +10,7 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="/site/img/favicon.png" rel="icon">
-  <link href="/site/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="/site/img/LOGO-AIC-BRASIL.ico" rel="icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -143,36 +142,33 @@
                         @csrf
                         <input type="hidden" value="{{$plano->id}}" name="plan_id" />
                         <input type="hidden" value="{{$plano->preco}}" name="plan_price" />
-                        {{-- <div class="form-group">
+                        <div class="form-group">
                             <div class="mb-1">
                                 <label class="">Tipo de cadastro</label>
                             </div>
                             <div class="mb-1">
-                                <input type="radio" name="tipo_cadastro" value="1" id=""> Pessoa Física
+                                <input type="radio" name="tipo_cadastro" value="1" id="" checked="true"> Pessoa Física
                                 <input type="radio" name="tipo_cadastro" value="2" id=""> Pessoa Jurídica
                             </div>
-                        </div> --}}
+                        </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
-                                <label for="email" class="required">E-mail</label>
-                                <input type="email" name="email" id="" class="form-control required" required>
+                                <label for="cpfcnpj" class="cpfcnpj required">CPF</label>
+                                <input type="text" name="cpfcnpj" id="" class="form-control required">
                             </div>
+
                             <div class="form-group col-md-6">
                                 <label for="nome" class="required">Nome</label>
                                 <input type="text" name="nome" id="" class="form-control required">
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="form-group col-md-8">
-                                <label for="cpfcnpj" class="required">CPF</label>
-                                <input type="text" name="cpfcnpj" id="" class="form-control required">
+                            <div class="form-group col-md-12">
+                                <label for="email" class="required">E-mail</label>
+                                <input type="email" name="email" id="" class="form-control required" required>
                             </div>
                         </div>
                         <div class="row mt-2">
-                            {{-- <div class="form-group col-md-6">
-                                <label for="telefone">Telefone</label>
-                                <input type="text" name="telefone" id="" class="form-control required">
-                            </div> --}}
                             <div class="form-group col-md-6">
                                 <label for="celular" class="required">Celular</label>
                                 <input type="text" name="celular" id="" class="form-control required">
@@ -368,9 +364,9 @@
                                 <label for="melhor_vencimento" class="required">MELHOR VENCIMENTO</label>
                                 <select name="melhor_vencimento" class="form-control required">
                                     <option value="" class="">Selecione</option>
-                                    <option value="5">Dia 05</option>
-                                    <option value="7">Dia 07</option>
                                     <option value="10">Dia 10</option>
+                                    <option value="15">Dia 15</option>
+                                    <option value="20">Dia 20</option>
                                 </select>
                             </div>
                         </div>

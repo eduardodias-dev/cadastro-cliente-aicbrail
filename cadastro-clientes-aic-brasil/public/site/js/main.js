@@ -520,4 +520,19 @@ jQuery(function() {
 
         return isValid;
     }
+
+    $('[name=tipo_cadastro]').change(function(){
+        var val = $(this).val();
+        if(val == "1"){
+            $('[name=cpfcnpj]').val("");
+            $("label.cpfcnpj").html("CPF");
+            $('[name=cpfcnpj]').inputmask('999.999.999-99');
+        }
+        else if(val == "2")
+        {
+            $('[name=cpfcnpj]').val("");
+            $("label.cpfcnpj").html("CNPJ");
+            $('[name=cpfcnpj]').inputmask('99.999.999/9999-99');
+        }
+    })
 })
