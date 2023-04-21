@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Assinatura_Adicionais_Assinatura;
+use App\LogIntegracao;
 use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller
@@ -136,35 +137,47 @@ class SiteController extends Controller
         return view('site.order_partial', ['subscription' => $data, 'error' => $error]);
     }
 
-    public function view_contract($ordercode, $sendEmail = 0){
+    public function updateTransaction(Request $request)
+    {
+        $transaction = $request->get("Transaction");
+        $confirmHash = $request->get("confirmHash");
+        $event = $request->get("event");
+        $subscriptionMyId = $transaction["subscriptionMyId"];
 
+        if($transaction["status"] == "authorized" ||
+            $transaction["status"] == "payedBoleto" ||
+            $transaction["status"] == "payedPix")
+            {
+                $this->confirmarAssinatura($subscriptionMyId, $transaction);
+            }
+        $data = DB::select("SELECT * from v_assinaturas_integracao where codigo_assinatura = ?;", [$subscriptionMyId]);
+        $log = new LogIntegracao();
+        $log->resultado = json_encode($request->all());
+        $log->acao = 'Atualizar Status Pagamento';
+        $log->data_integracao = date('Y-m-d H:i:s');
+        $log->client_id = $data[0]["id_cliente"];
+
+        $log->save();
+    }
+
+    private function view_contract($ordercode, $sendEmail = 0, $showReport = 0)
+    {
         $assinatura = DB::select('SELECT * from v_assinaturas_detalhe where codigo_assinatura = ?', [$ordercode]);
         if(count($assinatura) > 0)
             $assinatura = $assinatura[0];
 
         $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$ordercode]);
-        $filename = 'apolice_'.$ordercode.'.pdf';
-        $mpdf = new PDF();
+        $filename = $this->gerarApolice($ordercode, $assinatura, $adicionais);
 
-        $pathfile = storage_path('app\public\capa_apolice.pdf');
-        $mpdf->SetSourceFile($pathfile);
-        $tplId = $mpdf->ImportPage(1);
-        $mpdf->useTemplate($tplId);
+        if($sendEmail == 1)
+            Mail::to($assinatura->emails)
+                ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais));
 
-        // Do not add page until page template set, as it is inserted at the start of each page
-        $pathfile = storage_path('app\public\template_apolice.pdf');
-        $mpdf->SetSourceFile($pathfile);
-        $tplId = $mpdf->ImportPage(1);
-        $mpdf->SetPageTemplate($tplId);
-        $mpdf->AddPage('P','','','','','','','25');
-
-        $html = view('templates.apolice', ['assinatura' => $assinatura, 'adicionais' => $adicionais])->render();
-
-        $mpdf->WriteHTML(strtoupper($html));
-        Storage::disk('public')->put($filename, $mpdf->Output($filename, 'S'));
-
-        Mail::to('eduardo.dias092@gmail.com')
-             ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais));
+        if($showReport == 1)
+            return Storage::disk('public')->download($filename, 'Request', [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="'.$filename.'"'
+            ]);
 
         return 1;
     }
@@ -369,13 +382,23 @@ class SiteController extends Controller
         return "AICBR-".date_format(date_create($assinatura->adesao), "Ydm")."".$assinatura->id;
     }
 
-    private function enviarEmailBemvindo($ordercode, $emailCliente){
+    private function enviarEmailBemvindo($ordercode, $emailCliente, $enviarApolice = 0){
 
         $assinatura = DB::select('SELECT * from v_assinaturas_detalhe where codigo_assinatura = ?', [$ordercode]);
         if(count($assinatura) > 0)
             $assinatura = $assinatura[0];
 
         $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$ordercode]);
+
+        $filename = $this->gerarApolice($ordercode, $assinatura, $adicionais);
+
+        Mail::to($emailCliente)
+             ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais, $enviarApolice));
+
+        return 1;
+    }
+
+    private function gerarApolice($ordercode, $assinatura, $adicionais){
         $filename = 'apolice_'.$ordercode.'.pdf';
         $mpdf = new PDF();
 
@@ -396,9 +419,20 @@ class SiteController extends Controller
         $mpdf->WriteHTML(strtoupper($html));
         Storage::disk('public')->put($filename, $mpdf->Output($filename, 'S'));
 
-        Mail::to('eduardo.dias092@gmail.com')
-             ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais));
+        return $filename;
+    }
 
-        return 1;
+    private function confirmarAssinatura($codigoAssinatura, $transactionPayload)
+    {
+        $assinaturas = DB::select('SELECT * from v_assinaturas_detalhe where codigo_assinatura = ?', [$codigoAssinatura]);
+        if(count($assinaturas) > 0){
+            $assinatura_detalhe = $assinaturas[0];
+
+            $assinatura = Assinatura::find($assinatura_detalhe->id_assinatura);
+            $assinatura->status = "ativa";
+
+            $assinatura->save();
+            $this->enviarEmailBemvindo($codigoAssinatura, $assinatura_detalhe->emails, 1);
+        }
     }
 }

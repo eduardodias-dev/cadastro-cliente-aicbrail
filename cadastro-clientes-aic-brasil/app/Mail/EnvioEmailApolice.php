@@ -50,8 +50,8 @@ class EnvioEmailApolice extends Mailable
         }
         else
         {
-            $obj->subject("Bem-Vindo à AIC BRASIL!")
-                ->view('templates.email')
+            $obj->subject("Pagamento Recebido - AIC BRASIL")
+                ->view('templates.email_anexo')
                 ->with([
                     'assinatura' => $this->assinatura,
                     'adicionais' => $this->adicionais,

@@ -45,3 +45,5 @@ Route::get('/vieworder', [SiteController::class, 'view_order'])->name('view.orde
 Route::post('/vieworder', [SiteController::class, 'view_order_post'])->name('view.order.post');
 
 Route::get('/pdf/{ordercode}/{sendEmail?}', 'HomeController@pdf');
+// Route::post('/viewContract/{ordercode}/{sendEmail?}/{showReport?}', 'SiteController@view_contract');
+Route::post('transaction/update', 'SiteController@updateTransaction');
