@@ -27,6 +27,10 @@
                 <b>Quantidade:</b> {{$subscription['quantidade']}}<br>
                 <b>Info Adicional:</b> {{$subscription['info_adicional']}}<br>
                 <b>Forma de Pagamento:</b> {{$subscription['tipo_pagamento']}}<br>
+                @if($subscription['tipo_cadastro'] == "J")
+                    <b>Nome Representante:</b> {{$subscription['nome_representante']}}<br>
+                    <b>CPF Representante:</b> {{$subscription['cpf_representante']}}<br>
+                @endif
             </div>
         </div>
     </div>

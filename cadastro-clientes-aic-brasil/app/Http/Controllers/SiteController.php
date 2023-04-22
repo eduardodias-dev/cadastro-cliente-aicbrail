@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller
 {
+    private $hash = "0762710a8d88880c2b738d6816c468ef";
     public function home(){
         return view('site.index');
     }
@@ -139,9 +140,13 @@ class SiteController extends Controller
 
     public function updateTransaction(Request $request)
     {
-        $transaction = $request->get("Transaction");
         $confirmHash = $request->get("confirmHash");
-        $event = $request->get("event");
+
+        if(!isset($confirmHash) || $confirmHash == "" || $confirmHash != $this->hash){
+            return response()->json(['error' => 'Falha na autenticação.'], 401);
+        }
+
+        $transaction = $request->get("Transaction");
         $subscriptionMyId = $transaction["subscriptionMyId"];
 
         if($transaction["status"] == "authorized" ||
@@ -155,9 +160,11 @@ class SiteController extends Controller
         $log->resultado = json_encode($request->all());
         $log->acao = 'Atualizar Status Pagamento';
         $log->data_integracao = date('Y-m-d H:i:s');
-        $log->client_id = $data[0]["id_cliente"];
+        $log->client_id = $data[0]->id_cliente;
 
         $log->save();
+
+        return response()->json(['message' => 'Operação executada com sucesso.'], 200);
     }
 
     private function view_contract($ordercode, $sendEmail = 0, $showReport = 0)
@@ -189,11 +196,14 @@ class SiteController extends Controller
             $newCliente = new Cliente;
 
             $newCliente->id_galaxpay = 0;
+            $newCliente->tipo_cadastro = $data['tipo_cadastro'];
             $newCliente->nome = $data['nome'];
             $newCliente->documento = $data['cpfcnpj'];
             $newCliente->status = 'active';
             $newCliente->sexo = $data['sexo'];
             $newCliente->dataNascimento = date_create_from_format("d/m/Y", $data['datanasc']);
+            $newCliente->nome_representante = $data['nome_representante'];
+            $newCliente->cpf_representante = $data['cpf_representante'];
 
             $result = $newCliente->save();
 
@@ -272,8 +282,8 @@ class SiteController extends Controller
             // 'cvv' => 'required|numeric',
         ];
 
-        if($tipoCadastro == "2"){
-            $arrRegras['cpfcnpj'] = 'required|regex:/^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$/';
+        if($tipoCadastro == "J"){
+            $arrRegras['cpfcnpj'] = 'required|regex:/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/';
         }
 
         return $arrRegras;
