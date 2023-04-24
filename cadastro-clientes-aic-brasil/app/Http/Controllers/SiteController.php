@@ -143,7 +143,7 @@ class SiteController extends Controller
         $confirmHash = $request->get("confirmHash");
 
         if(!isset($confirmHash) || $confirmHash == "" || $confirmHash != $this->hash){
-            return response()->json(['error' => 'Falha na autenticação.'], 401);
+            return response()->json(['error' => 'Falha na autenticacao.'], 401);
         }
 
         $transaction = $request->get("Transaction");

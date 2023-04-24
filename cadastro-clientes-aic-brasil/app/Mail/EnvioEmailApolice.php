@@ -27,7 +27,7 @@ class EnvioEmailApolice extends Mailable
         $this->assinatura = $assinatura;
         $this->caminhoArquivo = $caminhoArquivo;
         $this->adicionais = $adicionais;
-        $this->caminhoArquivoLogo = storage_path('app\public\LOGO-AIC-BRASIL.ico');
+        $this->caminhoArquivoLogo = storage_path('app/public/LOGO-AIC-BRASIL.ico');
         $this->enviarApolice = $enviarApolice;
     }
 
