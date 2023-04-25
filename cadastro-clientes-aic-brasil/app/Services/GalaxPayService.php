@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\FilaConfirmacaoAssinatura;
 use App\LogIntegracao;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -29,6 +30,13 @@ class GalaxPayService
             $log->client_id = $data[0]->id_cliente;
 
             $log->save();
+
+            $filaAssinatura = new FilaConfirmacaoAssinatura();
+            $filaAssinatura->id_assinatura = $data[0]->id_assinatura;
+            $filaAssinatura->acao = 'Confirmar pagamento';
+            $filaAssinatura->finalizado = 0;
+
+            $filaAssinatura->save();
 
             return $response;
         }

@@ -46,4 +46,5 @@ Route::post('/vieworder', [SiteController::class, 'view_order_post'])->name('vie
 
 Route::get('/pdf/{ordercode}/{sendEmail?}', 'HomeController@pdf');
 // Route::post('/viewContract/{ordercode}/{sendEmail?}/{showReport?}', 'SiteController@view_contract');
-Route::post('transaction/update', 'SiteController@updateTransaction');
+//Route::post('transaction/update', 'SiteController@updateTransaction');
+Route::get('check/queue', 'JobsController@verificarFilaAssinaturas');
