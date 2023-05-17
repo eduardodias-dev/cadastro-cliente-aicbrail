@@ -18,7 +18,7 @@ use App\Http\Controllers\AdminController;
 
 Route::get('/', "SiteController@home");
 
-Route::prefix("admin")->middleware('auth')->group(function(){
+//Route::prefix("admin")->middleware('auth')->group(function(){
     Route::get('/clients', [AdminController::class, 'clients'])->name('client.list');
     Route::get('/clients/{id}', [AdminController::class, 'clientById'])->name('client.detail');
     Route::get('/customers', [AdminController::class, 'customers'])->name('customer.list');
@@ -34,12 +34,17 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     Route::get('/batch', [AdminController::class, 'integrateSubscriptionsInBatch'])->name('subscription.integrate');
     Route::get('/batch/inactive', [AdminController::class, 'integrateDelayedClientsInBatch']);
     Route::get('/logs', [AdminController::class, 'getLogs'])->name('logs.list');
-});
+//});
 
-Auth::routes();
+//Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/checkout/{id_plano}', [SiteController::class, 'checkout'])->name('site.checkout');
 Route::post('/checkout/{id_plano}', [SiteController::class, 'checkout_post'])->name('checkout.post');
 Route::get('/vieworder', [SiteController::class, 'view_order'])->name('view.order');
 Route::post('/vieworder', [SiteController::class, 'view_order_post'])->name('view.order.post');
+
+Route::get('/pdf/{ordercode}/{sendEmail?}', 'HomeController@pdf');
+// Route::post('/viewContract/{ordercode}/{sendEmail?}/{showReport?}', 'SiteController@view_contract');
+//Route::post('transaction/update', 'SiteController@updateTransaction');
+Route::get('check/queue', 'JobsController@verificarFilaAssinaturas');

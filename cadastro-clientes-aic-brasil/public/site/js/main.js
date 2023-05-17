@@ -301,6 +301,7 @@ jQuery(function() {
     $('[name=card_number]').inputmask('9999 9999 9999 9999');
     $('[name=card_cvv]').inputmask('999');
     $('[name=card_expires_at]').inputmask('99/99');
+    $('[name=cpf_representante]').inputmask('999.999.999-99');
 
     /**DateTime Picker */
     $('#datetimepicker').datetimepicker({
@@ -474,7 +475,9 @@ jQuery(function() {
 
         return precoFormatado;
     }
+
     visualizarAdicionaisInclusos();
+
     function montaMensagem(response){
         var dadosAssinatura = JSON.parse(response.result);
         var forma_pagamento = $('.forma_pagamento').val();
@@ -518,4 +521,38 @@ jQuery(function() {
 
         return isValid;
     }
+
+    $('[name=tipo_cadastro]').change(function(){
+        var val = $(this).val();
+        alterarTipoCadastro(val);
+    });
+
+    function alterarTipoCadastro(val){
+        if(val == "F"){
+            $('[name=cpfcnpj]').val("");
+            $("label.cpfcnpj").html("CPF");
+            $("label[for=nome]").html("Nome");
+            $('[name=cpfcnpj]').inputmask('999.999.999-99');
+
+            $('[name=nome_representante]').closest('.form-group').hide();
+            $('[name=nome_representante]').val("");
+
+            $('[name=cpf_representante]').closest('.form-group').hide();
+            $('[name=cpf_representante]').val("");
+
+            $('[name=rg]').closest('.form-group').show();
+        }
+        else if(val == "J")
+        {
+            $('[name=cpfcnpj]').val("");
+            $("label.cpfcnpj").html("CNPJ");
+            $("label[for=nome]").html("Razão Social");
+            $('[name=cpfcnpj]').inputmask('99.999.999/9999-99');
+
+            $('[name=nome_representante]').closest('.form-group').show();
+            $('[name=cpf_representante]').closest('.form-group').show();
+            $('[name=rg]').closest('.form-group').hide();
+        }
+    }
+    alterarTipoCadastro($('[name=tipo_cadastro]').val());
 })

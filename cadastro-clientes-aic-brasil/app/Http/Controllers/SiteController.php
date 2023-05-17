@@ -10,15 +10,22 @@ use App\Veiculo;
 use App\Endereco;
 use App\Telefone;
 use App\Assinatura;
+use \Mpdf\Mpdf as PDF;
 use Illuminate\Http\Request;
 use App\Adicionais_Assinatura;
+use App\Mail\EnvioEmailApolice;
 use App\Services\GalaxPayService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use App\Assinatura_Adicionais_Assinatura;
+use App\LogIntegracao;
 use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller
 {
+    private $hash = "0762710a8d88880c2b738d6816c468ef";
     public function home(){
         return view('site.index');
     }
@@ -62,6 +69,14 @@ class SiteController extends Controller
                 if($savedSubscription != null){
                     $service = new GalaxPayService;
                     $result = $service->CreateSubscription($savedSubscription->id, $savedClient->id, $data['forma_pagamento'], $this->getCardData($data));
+
+                    if(isset($result->json()['Subscription'])){
+                        try{
+                            $this->enviarEmailBemVindo($result->json()['Subscription']['myId'], $data['email']);
+                        }catch(Exception $ex){
+                            Log::warning("Erro ao executar envio de email: ".$ex->getMessage());
+                        }
+                    }
 
                     return response()->json([
                         'success' => true,
@@ -123,6 +138,57 @@ class SiteController extends Controller
         return view('site.order_partial', ['subscription' => $data, 'error' => $error]);
     }
 
+    public function updateTransaction(Request $request)
+    {
+        $confirmHash = $request->get("confirmHash");
+
+        if(!isset($confirmHash) || $confirmHash == "" || $confirmHash != $this->hash){
+            return response()->json(['error' => 'Falha na autenticacao.'], 401);
+        }
+
+        $transaction = $request->get("Transaction");
+        $subscriptionMyId = $transaction["subscriptionMyId"];
+
+        if($transaction["status"] == "authorized" ||
+            $transaction["status"] == "payedBoleto" ||
+            $transaction["status"] == "payedPix")
+            {
+                $this->confirmarAssinatura($subscriptionMyId, $transaction);
+            }
+        $data = DB::select("SELECT * from v_assinaturas_integracao where codigo_assinatura = ?;", [$subscriptionMyId]);
+        $log = new LogIntegracao();
+        $log->resultado = json_encode($request->all());
+        $log->acao = 'Atualizar Status Pagamento';
+        $log->data_integracao = date('Y-m-d H:i:s');
+        $log->client_id = $data[0]->id_cliente;
+
+        $log->save();
+
+        return response()->json(['message' => 'Operação executada com sucesso.'], 200);
+    }
+
+    private function view_contract($ordercode, $sendEmail = 0, $showReport = 0)
+    {
+        $assinatura = DB::select('SELECT * from v_assinaturas_detalhe where codigo_assinatura = ?', [$ordercode]);
+        if(count($assinatura) > 0)
+            $assinatura = $assinatura[0];
+
+        $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$ordercode]);
+        $filename = $this->gerarApolice($ordercode, $assinatura, $adicionais);
+
+        if($sendEmail == 1)
+            Mail::to($assinatura->emails)
+                ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais));
+
+        if($showReport == 1)
+            return Storage::disk('public')->download($filename, 'Request', [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="'.$filename.'"'
+            ]);
+
+        return 1;
+    }
+
     private function adicionarCliente($data)
     {
         DB::beginTransaction();
@@ -130,11 +196,14 @@ class SiteController extends Controller
             $newCliente = new Cliente;
 
             $newCliente->id_galaxpay = 0;
+            $newCliente->tipo_cadastro = $data['tipo_cadastro'];
             $newCliente->nome = $data['nome'];
             $newCliente->documento = $data['cpfcnpj'];
             $newCliente->status = 'active';
             $newCliente->sexo = $data['sexo'];
             $newCliente->dataNascimento = date_create_from_format("d/m/Y", $data['datanasc']);
+            $newCliente->nome_representante = $data['nome_representante'];
+            $newCliente->cpf_representante = $data['cpf_representante'];
 
             $result = $newCliente->save();
 
@@ -195,11 +264,11 @@ class SiteController extends Controller
     }
 
     private function validarCliente($request){
-        return Validator::make($request, $this->regras());
+        return Validator::make($request, $this->regras($request["tipo_cadastro"]));
     }
 
-    private function regras(){
-        return [
+    private function regras($tipoCadastro){
+        $arrRegras = [
             'nome' => 'required|string|max:255',
             'cpfcnpj' => 'required|regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/',
             'email' => 'required|email',
@@ -212,6 +281,12 @@ class SiteController extends Controller
             // 'expiration_year' => 'required|numeric',
             // 'cvv' => 'required|numeric',
         ];
+
+        if($tipoCadastro == "J"){
+            $arrRegras['cpfcnpj'] = 'required|regex:/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/';
+        }
+
+        return $arrRegras;
     }
 
     private function adicionarAssinatura($data, $client_id, $plan_id){
@@ -315,5 +390,59 @@ class SiteController extends Controller
 
     private function getCogigoAssinatura($assinatura){
         return "AICBR-".date_format(date_create($assinatura->adesao), "Ydm")."".$assinatura->id;
+    }
+
+    private function enviarEmailBemvindo($ordercode, $emailCliente, $enviarApolice = 0){
+
+        $assinatura = DB::select('SELECT * from v_assinaturas_detalhe where codigo_assinatura = ?', [$ordercode]);
+        if(count($assinatura) > 0)
+            $assinatura = $assinatura[0];
+
+        $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$ordercode]);
+
+        $filename = $this->gerarApolice($ordercode, $assinatura, $adicionais);
+
+        Mail::to($emailCliente)
+             ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais, $enviarApolice));
+
+        return 1;
+    }
+
+    private function gerarApolice($ordercode, $assinatura, $adicionais){
+        $filename = 'apolice_'.$ordercode.'.pdf';
+        $mpdf = new PDF();
+
+        $pathfile = storage_path('app\public\capa_apolice.pdf');
+        $mpdf->SetSourceFile($pathfile);
+        $tplId = $mpdf->ImportPage(1);
+        $mpdf->useTemplate($tplId);
+
+        // Do not add page until page template set, as it is inserted at the start of each page
+        $pathfile = storage_path('app\public\template_apolice.pdf');
+        $mpdf->SetSourceFile($pathfile);
+        $tplId = $mpdf->ImportPage(1);
+        $mpdf->SetPageTemplate($tplId);
+        $mpdf->AddPage('P','','','','','','','25');
+
+        $html = view('templates.apolice', ['assinatura' => $assinatura, 'adicionais' => $adicionais])->render();
+
+        $mpdf->WriteHTML(strtoupper($html));
+        Storage::disk('public')->put($filename, $mpdf->Output($filename, 'S'));
+
+        return $filename;
+    }
+
+    private function confirmarAssinatura($codigoAssinatura, $transactionPayload)
+    {
+        $assinaturas = DB::select('SELECT * from v_assinaturas_detalhe where codigo_assinatura = ?', [$codigoAssinatura]);
+        if(count($assinaturas) > 0){
+            $assinatura_detalhe = $assinaturas[0];
+
+            $assinatura = Assinatura::find($assinatura_detalhe->id_assinatura);
+            $assinatura->status = "ativa";
+
+            $assinatura->save();
+            $this->enviarEmailBemvindo($codigoAssinatura, $assinatura_detalhe->emails, 1);
+        }
     }
 }

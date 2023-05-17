@@ -10,8 +10,7 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="/site/img/favicon.png" rel="icon">
-  <link href="/site/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="/site/img/LOGO-AIC-BRASIL.ico" rel="icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -143,36 +142,33 @@
                         @csrf
                         <input type="hidden" value="{{$plano->id}}" name="plan_id" />
                         <input type="hidden" value="{{$plano->preco}}" name="plan_price" />
-                        {{-- <div class="form-group">
+                        <div class="form-group">
                             <div class="mb-1">
                                 <label class="">Tipo de cadastro</label>
                             </div>
                             <div class="mb-1">
-                                <input type="radio" name="tipo_cadastro" value="1" id=""> Pessoa Física
-                                <input type="radio" name="tipo_cadastro" value="2" id=""> Pessoa Jurídica
+                                <input type="radio" name="tipo_cadastro" value="F" id="" checked="true"> Pessoa Física
+                                <input type="radio" name="tipo_cadastro" value="J" id=""> Pessoa Jurídica
                             </div>
-                        </div> --}}
+                        </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
-                                <label for="email" class="required">E-mail</label>
-                                <input type="email" name="email" id="" class="form-control required" required>
+                                <label for="cpfcnpj" class="cpfcnpj required">CPF</label>
+                                <input type="text" name="cpfcnpj" id="" class="form-control required">
                             </div>
+
                             <div class="form-group col-md-6">
                                 <label for="nome" class="required">Nome</label>
                                 <input type="text" name="nome" id="" class="form-control required">
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="form-group col-md-8">
-                                <label for="cpfcnpj" class="required">CPF</label>
-                                <input type="text" name="cpfcnpj" id="" class="form-control required">
+                            <div class="form-group col-md-12">
+                                <label for="email" class="required">E-mail</label>
+                                <input type="email" name="email" id="" class="form-control required" required>
                             </div>
                         </div>
                         <div class="row mt-2">
-                            {{-- <div class="form-group col-md-6">
-                                <label for="telefone">Telefone</label>
-                                <input type="text" name="telefone" id="" class="form-control required">
-                            </div> --}}
                             <div class="form-group col-md-6">
                                 <label for="celular" class="required">Celular</label>
                                 <input type="text" name="celular" id="" class="form-control required">
@@ -218,17 +214,25 @@
                         </div>
                         <h4 class="mt-2">Informações Adicionais</h4>
                         <div class="row mt-2">
+                            <div class="form-group col-md-6">
+                                <label for="rg">RG</label>
+                                <input type="rg" name="rg" id="" class="form-control">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="nome_representante">Nome Representante</label>
+                                <input type="nome_representante" name="nome_representante" id="" class="form-control">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="cpf_representante">CPF Representante</label>
+                                <input type="cpf_representante" name="cpf_representante" id="" class="form-control">
+                            </div>
                             <div class="form-group col-md-3">
-                                <label for="alfabetizado">Alfabetizada</label>
-                                <select name="alfabetizado" class="form-control">
+                                <label for="alfabetizado" class="required">Alfabetizada</label>
+                                <select name="alfabetizado" class="form-control required">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">Sim</option>
                                     <option value="0">Não</option>
                                 </select>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="rg">RG</label>
-                                <input type="rg" name="rg" id="" class="form-control">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="sexo">Sexo</label>
@@ -368,34 +372,18 @@
                                 <label for="melhor_vencimento" class="required">MELHOR VENCIMENTO</label>
                                 <select name="melhor_vencimento" class="form-control required">
                                     <option value="" class="">Selecione</option>
-                                    <option value="5">Dia 05</option>
-                                    <option value="7">Dia 07</option>
                                     <option value="10">Dia 10</option>
+                                    <option value="15">Dia 15</option>
+                                    <option value="20">Dia 20</option>
                                 </select>
                             </div>
                         </div>
-                        {{-- <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="consultor_vendas" class="required">CONSULTOR(A) VENDA(S)</label>
-                                <input type="hidden" name="consultor_vendas" value="2">
-                                <select name="consultor_vendas" class="form-control required">
-                                    <option value="" class="">Selecione</option>
-                                    <option value="1">ADEMIR L. B. SILVA</option>
-                                    <option value="2">JADSON SANTOS</option>
-                                    <option value="3">LUDMILA SANTOS</option>
-                                    <option value="4">JOYCE KELLY</option>
-                                    <option value="5">MONIQUE F. SANTOS</option>
-                                    <option value="6">RAFAEL ELIAS</option>
-                                </select>
-                            </div>
-                        </div> --}}
                         <div class="row mt-4">
                             <div class="form-group col-md-12">
                                 <label for="forma_pagamento" class="required">FORMA DE PAGAMENTO</label>
                                 <select name="forma_pagamento" class="form-control forma_pagamento hide required">
-                                    <option value="" class="">Selecione</option>
-                                    <option value="creditcard">CARTÃO DE CRÉDITO</option>
                                     <option value="boleto">BOLETO BANCÁRIO/PIX</option>
+                                    <option value="creditcard" disabled>CARTÃO DE CRÉDITO</option>
                                 </select>
                                 <div class="campos_cartao mt-4" id="campos_cartao">
                                     <hr>
@@ -435,7 +423,7 @@
                         </div>
                         <div class="row mt-4">
                             <div class="col-md-2">
-                                <button type="submit" class="btn btn-success">Avançar</button>
+                                <button type="submit" class="btn btn-success">Confirmar</button>
                             </div>
                         </div>
                     </form>

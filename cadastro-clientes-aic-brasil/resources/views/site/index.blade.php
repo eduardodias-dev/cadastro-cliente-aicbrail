@@ -10,7 +10,7 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="site/img/LOGO-AIC-BRASIL.ico" rel="icon">
+  <link href="/site/img/LOGO-AIC-BRASIL.ico" rel="icon">
   {{-- <link href="site/img/apple-touch-icon.png" rel="apple-touch-icon"> --}}
 
   <!-- Google Fonts -->
