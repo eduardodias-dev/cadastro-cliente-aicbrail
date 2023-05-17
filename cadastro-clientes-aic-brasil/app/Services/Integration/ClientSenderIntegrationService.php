@@ -60,20 +60,6 @@ class ClientSenderIntegrationService implements IClientSenderIntegrationService{
         return $response;
     }
 
-    public function getSubscriptionTransactions(int $startAt, int $limit, array $filter){
-        $configs = $this->integrationService->getSenderServiceConfig();
-
-        $filter['startAt'] = $startAt;
-        $filter['limit'] = $limit;
-
-        $token_object = $this->getToken("transactions.read");
-
-        $response = Http::withToken($token_object['access_token'])
-                        ->get($configs['URL'].'/transactions', $filter);
-
-        return $response;
-    }
-
     public function getPlans(int $startAt, int $limit, array $filter){
         $configs = $this->integrationService->getSenderServiceConfig();
 

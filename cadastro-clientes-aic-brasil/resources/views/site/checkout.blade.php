@@ -275,6 +275,7 @@
                                 <input type="text" name="ocupacao" class="form-control">
                             </div>
                         </div>
+                        <hr>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <h5>Club de Benefício</h5>
@@ -320,6 +321,7 @@
                                 </select>
                             </div>
                         </div>
+                        <hr>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="tipo_veiculo" class="required">TIPO DO VEÍCULO</label>
@@ -378,6 +380,7 @@
                                 </select>
                             </div>
                         </div>
+                        <hr>
                         <div class="row mt-4">
                             <div class="form-group col-md-12">
                                 <label for="forma_pagamento" class="required">FORMA DE PAGAMENTO</label>

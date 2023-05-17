@@ -7,5 +7,4 @@ interface IClientSenderIntegrationService{
     public function getClientSubscriptions(int $startAt, int $limit, array $filter);
     public function getClientFromSenderServiceById(int $galaxPayId);
     public function getPlans(int $startAt, int $limit, array $filter);
-    public function getSubscriptionTransactions(int $startAt, int $limit, array $filter);
 }

@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller
 {
-    private $hash = "0762710a8d88880c2b738d6816c468ef";
+    private $hash = "024c0b517d4c84afc32cc517ad1dd66e";
     public function home(){
         return view('site.index');
     }
@@ -148,14 +148,18 @@ class SiteController extends Controller
 
         $transaction = $request->get("Transaction");
         $subscriptionMyId = $transaction["subscriptionMyId"];
-
+        $data = DB::select("SELECT * from v_assinaturas_integracao where codigo_assinatura = ?;", [$subscriptionMyId]);
+        
+        if(count($data) <= 0)
+            return response()->json(['error' => 'Assinatura Nao encontrada.'], 404);
+            
         if($transaction["status"] == "authorized" ||
             $transaction["status"] == "payedBoleto" ||
             $transaction["status"] == "payedPix")
             {
                 $this->confirmarAssinatura($subscriptionMyId, $transaction);
             }
-        $data = DB::select("SELECT * from v_assinaturas_integracao where codigo_assinatura = ?;", [$subscriptionMyId]);
+        
         $log = new LogIntegracao();
         $log->resultado = json_encode($request->all());
         $log->acao = 'Atualizar Status Pagamento';
@@ -164,7 +168,7 @@ class SiteController extends Controller
 
         $log->save();
 
-        return response()->json(['message' => 'Operação executada com sucesso.'], 200);
+        return response()->json(['message' => 'Operacao executada com sucesso.'], 200);
     }
 
     private function view_contract($ordercode, $sendEmail = 0, $showReport = 0)
@@ -178,7 +182,7 @@ class SiteController extends Controller
 
         if($sendEmail == 1)
             Mail::to($assinatura->emails)
-                ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais));
+                ->send(new EnvioEmailApolice($assinatura, storage_path('app/public/'.$filename), $adicionais));
 
         if($showReport == 1)
             return Storage::disk('public')->download($filename, 'Request', [
@@ -403,7 +407,7 @@ class SiteController extends Controller
         $filename = $this->gerarApolice($ordercode, $assinatura, $adicionais);
 
         Mail::to($emailCliente)
-             ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais, $enviarApolice));
+             ->send(new EnvioEmailApolice($assinatura, storage_path('app/public/'.$filename), $adicionais, $enviarApolice));
 
         return 1;
     }
@@ -412,13 +416,13 @@ class SiteController extends Controller
         $filename = 'apolice_'.$ordercode.'.pdf';
         $mpdf = new PDF();
 
-        $pathfile = storage_path('app\public\capa_apolice.pdf');
+        $pathfile = storage_path('app/public/capa_apolice.pdf');
         $mpdf->SetSourceFile($pathfile);
         $tplId = $mpdf->ImportPage(1);
         $mpdf->useTemplate($tplId);
 
         // Do not add page until page template set, as it is inserted at the start of each page
-        $pathfile = storage_path('app\public\template_apolice.pdf');
+        $pathfile = storage_path('app/public/template_apolice.pdf');
         $mpdf->SetSourceFile($pathfile);
         $tplId = $mpdf->ImportPage(1);
         $mpdf->SetPageTemplate($tplId);

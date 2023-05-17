@@ -1,6 +1,6 @@
 <body style="font-family: Arial, Helvetica, sans-serif; border: 2px solid black; padding: 10px;">
     <div style="text-align:center; display: flex; justify-content: space-between; align-items: center; padding: 10px;">
-        <img src="site/img/LOGO-AIC-BRASIL.png" height="120" />
+        <!-- <img src="/site/img/LOGO-AIC-BRASIL.png" height="120" /> -->
         <h1 style="font-weight: 100;">APÓLICE DE ASSISTÊNCIA 24h</h1>
     </div>
     <hr/>

@@ -2,7 +2,7 @@
     <img src="{{$message->embed($caminhoArquivoLogo)}}" height="100" />
     <h1 style="font-weight: 100;">Bem-vindo à AIC BRASIL!</h1>
     <p>
-        Estamos muito felizes de te ter conosco, conte com a gente sempre que precisar! <br/>
+        Estamos muito felizes em tê-lo(a) conosco, conte com a gente sempre que precisar! <br/>
     </p>
     <div style="border: 1px solid #6c97c3; border-radius: 10px; padding: 10px; text-align:left;margin-bottom: 10px;">
         <h4 style="padding-bottom: 0;">Dados da assinatura:</h4>
@@ -15,12 +15,11 @@
         <b>CEP:</b> {{$assinatura->cep}}
     </div>
     <div style="background-color: #ddd; border-radius: 10px; padding: 10px;text-align: left;">
-        Abaixo segue a apólice com os dados da sua compra.<br/>
+        Prezado(a) cliente, assim que nosso sistema registrar o pagamento, a sua <b>APÓLICE</b> de <b>ASSISTÊNCIA 24h</b> será encaminhada em teu e-mail, finalizando de fato a compra e, assim, você poderá usufruir de todos os benefícios contratados. Desde já muitíssimo obrigado.<br/>
         Quaisquer dúvida não deixe de entrar em contato pelos canais:
         <div class="email">
             <h4>Emails:</h4>
             <p>aicbrasill@gmail.com</p>
-            <p>contato@aicbrasil-ies.com.br</p>
         </div>
 
         <div class="phone">

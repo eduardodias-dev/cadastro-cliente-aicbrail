@@ -28,33 +28,38 @@ class JobsController extends Controller
         foreach($filas as $fila){
             $assinatura = Assinatura::find($fila->id_assinatura);
 
-            $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['myIds' => $assinatura->id]);
+            $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['myIds' => $assinatura->codigo_assinatura]);
             if($response->successful() == false || count($response->json()['Subscriptions']) <= 0){
+                die(print_r($response->json()));
                 throw new Exception("Não foi possível recuperar a assinatura. \n".json_encode($response->error()));
             }
-
-            foreach($response->json() as $subscription){
-                if($subscription['status'] == 'active'){
-                    $transactionsResponse = $this->clientIntegrationService->getSubscriptionTransactions(0, 1, ['subscriptionGalaxPayIds' => $subscription['galaxPayId']]);
-                    if($transactionsResponse->successful() == false || count($transactionsResponse->json()['Transactions']) <= 0){
-                        throw new Exception("Não foi possível recuperar a assinatura. \n".json_encode($transactionsResponse->error()));
-                    }
-                    $transaction = $transactionsResponse->json()[0];
-
-                    if($transaction["status"] == "authorized" ||
-                        $transaction["status"] == "payedBoleto" ||
-                        $transaction["status"] == "payedPix")
-                    {
-                        $this->confirmarAssinatura($assinatura->codigo_assinatura);
-                    }
+            $subs = $response->json();
+            //die(print_r($subs['Subscriptions']));
+            foreach($subs['Subscriptions'] as $subscription){
+                //die(print_r($subscription));
+                
+                /*$transactionsResponse = $this->clientIntegrationService->getSubscriptionTransactions(0, 1, ['subscriptionGalaxPayIds' => $subscription['galaxPayId']]);
+                if($transactionsResponse->successful() == false || count($transactionsResponse->json()['Transactions']) <= 0){
+                    throw new Exception("Não foi possível recuperar a assinatura. \n".json_encode($transactionsResponse->error()));
+                }*/
+                //$transaction = $transactionsResponse->json()[0];
+                $transaction = $subscription['Transactions'][0];
+                if($transaction["status"] == "authorized" ||
+                    $transaction["status"] == "payedBoleto" ||
+                    $transaction["status"] == "payedPix")
+                {
+                    $this->confirmarAssinatura($assinatura->codigo_assinatura);
+                    
+                    $fila->finalizado = 1;
                 }
+                print "Assinatura processada: ".$assinatura->codigo_assinatura;
+                
             }
 
-            $fila->finalizado = 1;
             $fila->save();
         }
 
-        return 'Executado com sucesso: '.count($filas).' processadas';
+        return '<br>Executado com sucesso: '.count($filas).' processadas';
     }
 
     private function confirmarAssinatura($codigoAssinatura)
@@ -82,7 +87,7 @@ class JobsController extends Controller
         $filename = $this->gerarApolice($ordercode, $assinatura, $adicionais);
 
         Mail::to($emailCliente)
-             ->send(new EnvioEmailApolice($assinatura, storage_path('app\public\\'.$filename), $adicionais, $enviarApolice));
+             ->send(new EnvioEmailApolice($assinatura, storage_path('app/public/'.$filename), $adicionais, $enviarApolice));
 
         return 1;
     }
@@ -91,13 +96,13 @@ class JobsController extends Controller
         $filename = 'apolice_'.$ordercode.'.pdf';
         $mpdf = new PDF();
 
-        $pathfile = storage_path('app\public\capa_apolice.pdf');
+        $pathfile = storage_path('app/public/capa_apolice.pdf');
         $mpdf->SetSourceFile($pathfile);
         $tplId = $mpdf->ImportPage(1);
         $mpdf->useTemplate($tplId);
 
         // Do not add page until page template set, as it is inserted at the start of each page
-        $pathfile = storage_path('app\public\template_apolice.pdf');
+        $pathfile = storage_path('app/public/template_apolice.pdf');
         $mpdf->SetSourceFile($pathfile);
         $tplId = $mpdf->ImportPage(1);
         $mpdf->SetPageTemplate($tplId);
