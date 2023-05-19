@@ -223,3 +223,10 @@ function getMonthInPTBr($monthNumber)
 
     return $monthName;
 }
+
+function getFilePathByArray(array $pathInArray){
+    $separator = DIRECTORY_SEPARATOR;
+    $generatedPath = implode($separator, $pathInArray);
+
+    return $generatedPath;
+}

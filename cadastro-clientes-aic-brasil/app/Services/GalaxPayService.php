@@ -88,7 +88,8 @@ class GalaxPayService
             ];
         else if ($type == 'pix')
             $request['PaymentMethodBoleto'] = [
-                "deadlineDays" => self::QTDE_DIAS_PRIMEIRO_PAGAMENTO
+                "deadlineDays" => self::QTDE_DIAS_PRIMEIRO_PAGAMENTO,
+                "instructions" => "ASSISTÊNCIA 24h"
             ];
 
         return $request;
