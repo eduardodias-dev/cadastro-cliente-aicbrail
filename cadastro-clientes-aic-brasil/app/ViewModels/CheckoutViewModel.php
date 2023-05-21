@@ -1,6 +1,6 @@
 <?php
 
-namespace ViewModels;
+namespace App\ViewModels;
 
 use App\Plano;
 use App\Assinatura;

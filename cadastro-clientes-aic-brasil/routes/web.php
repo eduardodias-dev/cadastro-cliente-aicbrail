@@ -48,3 +48,7 @@ Route::get('/pdf/{ordercode}/{sendEmail?}', 'HomeController@pdf');
 // Route::post('/viewContract/{ordercode}/{sendEmail?}/{showReport?}', 'SiteController@view_contract');
 //Route::post('transaction/update', 'SiteController@updateTransaction');
 Route::get('check/queue', 'JobsController@verificarFilaAssinaturas');
+Route::get('carrinho','SiteController@cart')->name('cart.index');
+Route::post('carrinho','SiteController@cart_add')->name('cart.add');
+Route::post('remover-carrinho','SiteController@cart_remove')->name('cart.remove');
+Route::post('limpar-carrinho','SiteController@cart_clear')->name('cart.clear');

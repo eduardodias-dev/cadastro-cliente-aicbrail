@@ -2,28 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Email;
 use App\Plano;
 use Exception;
-use App\Cliente;
-use App\Veiculo;
-use App\Endereco;
-use App\Telefone;
 use App\Assinatura;
 use \Mpdf\Mpdf as PDF;
 use Illuminate\Http\Request;
-use App\Adicionais_Assinatura;
 use App\Mail\EnvioEmailApolice;
-use App\Services\GalaxPayService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use App\Assinatura_Adicionais_Assinatura;
 use App\LogIntegracao;
 use App\Services\CheckoutService;
 use Illuminate\Support\Facades\Validator;
-use ViewModels\CheckoutViewModel;
+use App\ViewModels\CheckoutViewModel;
 
 class SiteController extends Controller
 {
@@ -32,7 +23,52 @@ class SiteController extends Controller
         return view('site.index');
     }
 
-    public function checkout(Request $request, $id_plano){
+    public function cart_add(Request $request)
+    {
+        $data = $request->all();
+        $validation = $this->validarCliente($data);
+
+        //implementar aparição de erros na view.
+        if($validation->fails()){
+            return response()->json([
+                'success' => false,
+                'message' => 'Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)',
+                'errors' => json_encode($validation->errors())
+                ]
+            );
+        }
+        $data['valor_calculado'] = $data['plan_price'];
+        $cart = session()->get('carrinho');
+        if(!$cart)
+        {
+            if(!isset($cart[$data['plan_id']]))
+            {
+                $cart[$data['plan_id']] = $data;
+            }
+        }else{
+            $cart[$data['plan_id']] = $data;
+        }
+
+        session()->put('carrinho', $cart);
+
+        return redirect()->route('cart.index');
+    }
+
+    public function cart(Request $request){
+        $planos = Plano::where(['ativo_venda' => '1'])->get()->toArray();
+
+        return view('site.cart', ['planos' => $planos]);
+    }
+
+    public function cart_remove(Request $request){
+        return view('site.cart');
+    }
+
+    public function cart_clear(Request $request){
+        return view('site.cart');
+    }
+
+    public function checkout($id_plano){
         $checkoutViewModel = CheckoutViewModel::CreateStandardCheckoutView($id_plano);
         return view('site.checkout', [
                                         'club_beneficio' => $checkoutViewModel->adicionais_club_beneficio,
@@ -48,7 +84,6 @@ class SiteController extends Controller
         try{
             $data = $request->all();
             $validation = $this->validarCliente($data);
-
 
             if($validation->fails()){
                 return response()->json([
@@ -70,6 +105,16 @@ class SiteController extends Controller
                 'message' => 'Adicionado com sucesso!',
                 'result' => json_encode($result->json())
             ]);
+        }
+        catch(Exception $e)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ops... Ocorreu um erro ao salvar seu cadastro, por favor entre em contato com o suporte.',
+                'exception' => $e->getMessage()
+                ]
+            );
+        }
     }
 
     public function view_order(Request $request){
@@ -135,80 +180,6 @@ class SiteController extends Controller
         return response()->json(['message' => 'Operacao executada com sucesso.'], 200);
     }
 
-    private function adicionarCliente($data)
-    {
-        DB::beginTransaction();
-        try{
-            $newCliente = new Cliente;
-
-            $newCliente->id_galaxpay = 0;
-            $newCliente->tipo_cadastro = $data['tipo_cadastro'];
-            $newCliente->nome = $data['nome'];
-            $newCliente->documento = $data['cpfcnpj'];
-            $newCliente->status = 'active';
-            $newCliente->sexo = $data['sexo'];
-            $newCliente->dataNascimento = date_create_from_format("d/m/Y", $data['datanasc']);
-            $newCliente->nome_representante = $data['nome_representante'];
-            $newCliente->cpf_representante = $data['cpf_representante'];
-
-            $result = $newCliente->save();
-
-            if(!$result)
-                return null;
-
-            $data['client_id'] = $newCliente->id;
-
-            $clienteEmail = new Email;
-            $clienteEmail->client_id = $newCliente->id;
-            $clienteEmail->endereco = $data['email'];
-            $clienteEmail->save();
-
-            $clienteEndereco = new Endereco;
-            $clienteEndereco->client_id = $newCliente->id;
-            $clienteEndereco->cep = str_replace('-','',$data['cep']);
-            $clienteEndereco->rua = $data['logradouro'];
-            $clienteEndereco->numero = $data['numero'];
-            $clienteEndereco->complemento = $data['complemento'];
-            $clienteEndereco->bairro = $data['bairro'];
-            $clienteEndereco->cidade = $data['cidade'];
-            $clienteEndereco->estado = $data['estado'];
-            $clienteEndereco->save();
-
-            $clienteTelefone = new Telefone;
-            $clienteTelefone->client_id = $newCliente->id;
-            $clienteTelefone->numero = $data['celular'];
-            $clienteTelefone->save();
-
-            $veiculo = new Veiculo;
-
-            $veiculo->client_id = $newCliente->id;
-            $veiculo->chassi = $data['chassi'];
-            $veiculo->placa = $data['placa_veiculo'];
-            $veiculo->renavam = $data['renavam'];
-            $veiculo->tipo = $data['tipo_veiculo'];
-            $veiculo->anoFabricacao = $data['ano_fabricacao'];
-            $veiculo->anoModelo = $data['ano_fabricacao'];
-            $veiculo->marca = $data['marca_veiculo'];
-            $veiculo->modelo = $data['modelo_veiculo'];
-            $veiculo->cor = $data['cor_veiculo'];
-            $veiculo->cambio = "";
-            $veiculo->fipeCodigo = "";
-            $veiculo->fipeValor = "";
-
-            $veiculo->save();
-
-            DB::commit();
-
-            return $newCliente;
-        }catch(Exception $e){
-
-            DB::rollback();
-            throw $e;
-        }
-
-        return null;
-    }
-
     private function validarCliente($request){
         return Validator::make($request, $this->regras($request["tipo_cadastro"]));
     }
@@ -233,109 +204,6 @@ class SiteController extends Controller
         }
 
         return $arrRegras;
-    }
-
-    private function adicionarAssinatura($data, $client_id, $plan_id){
-        DB::beginTransaction();
-        $result = 0;
-        try{
-
-            $newAssinatura = new Assinatura;
-            $newAssinatura->plan_id = $plan_id;
-            $newAssinatura->client_id = $client_id;
-            $newAssinatura->valor = $data['valor_calculado'];
-            $newAssinatura->quantidade = 1;//$data['quantidade'];
-            $newAssinatura->periodicidade = 'mensal';
-            $newAssinatura->status = 'pendente';
-            $newAssinatura->info_adicional = '';
-            $newAssinatura->adesao = date('Y-m-d H:i:s');
-            //$newAssinatura->cobertura_terceiros = $data['cobertura_terceiros'];
-            $newAssinatura->melhor_vencimento = $data['melhor_vencimento'];
-            $newAssinatura->tipo_pagamento = $data['forma_pagamento'];
-            $newAssinatura->protecao_veicular = $data['comprar_protecao_veicular'];
-
-            $result = $newAssinatura->save();
-
-            $newAssinatura->codigo_assinatura = $this->getCogigoAssinatura($newAssinatura);
-
-            $beneficios = isset($data['club_beneficio']) ? $data['club_beneficio'] : [];
-            foreach($beneficios as $item){
-                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
-
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $item;
-                $adicionalAssinatura->deletado = false;
-
-                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
-                $adicionalAssinatura->save();
-            }
-
-            $coberturas = isset($data['cobertura_24horas']) ? $data['cobertura_24horas'] : [];
-
-            foreach($coberturas as $item){
-                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
-
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $item;
-                $adicionalAssinatura->deletado = false;
-
-                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
-                $adicionalAssinatura->save();
-            }
-
-            $cobertura_24horas_incluso_plano = Adicionais_Assinatura::where('incluso_nos_planos', 'LIKE', '%'.$plan_id.'%')->get();
-            foreach($cobertura_24horas_incluso_plano as $incluso){
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $incluso->id;
-                $adicionalAssinatura->deletado = false;
-
-                $adicionalAssinatura->save();
-            }
-
-            $seguros = isset($data['comprar_seguros']) ? $data['comprar_seguros'] : [];
-            foreach($seguros as $item){
-                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
-
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $item;
-                $adicionalAssinatura->deletado = false;
-
-                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
-                $adicionalAssinatura->save();
-            }
-
-            $newAssinatura->save();
-
-            DB::commit();
-
-            return $newAssinatura;
-        }catch(Exception $e){
-            $result = 0;
-            DB::rollBack();
-
-            throw $e;
-        }
-
-        return null;
-    }
-
-    private function getCardData($data){
-        $card_data = [
-            "card_number" => $data['card_number'],
-            "card_holder" => $data['card_holder'],
-            "card_expires_at" => $data['card_expires_at'],
-            "card_cvv" => $data['card_cvv']
-        ];
-
-        return $card_data;
-    }
-
-    private function getCogigoAssinatura($assinatura){
-        return "AICBR-".date_format(date_create($assinatura->adesao), "Ydm")."".$assinatura->id;
     }
 
     private function enviarEmailBemvindo($ordercode, $emailCliente, $enviarApolice = 0){

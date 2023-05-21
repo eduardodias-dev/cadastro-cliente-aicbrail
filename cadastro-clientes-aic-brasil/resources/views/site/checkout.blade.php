@@ -138,7 +138,7 @@
         <div class="main-form mt-2">
             <div class="row align-items-start">
                 <div class="col-md-6 p-5" style="background: white;">
-                    <form id="form-checkout" method="POST" action="{{route('checkout.post', ['id_plano' => $plano->id])}}">
+                    <form id="form-checkout" method="POST" action="{{route('cart.add')}}">
                         @csrf
                         <input type="hidden" value="{{$plano->id}}" name="plan_id" />
                         <input type="hidden" value="{{$plano->preco}}" name="plan_price" />

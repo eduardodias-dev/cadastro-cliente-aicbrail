@@ -319,7 +319,9 @@ jQuery(function() {
                 },
         }
     });
+
     $('#form-checkout').on('submit', (e) =>{
+        return;
         e.preventDefault();
         var isValid = validarFormulario($(this));
         if(!isValid) return;
