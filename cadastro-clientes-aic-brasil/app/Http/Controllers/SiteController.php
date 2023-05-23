@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\LogIntegracao;
+use App\Services\CartHelper;
 use App\Services\CheckoutService;
 use Illuminate\Support\Facades\Validator;
 use App\ViewModels\CheckoutViewModel;
@@ -37,7 +38,8 @@ class SiteController extends Controller
                 ]
             );
         }
-        $data['valor_calculado'] = $data['plan_price'];
+        $data['valor_calculado'] = CartHelper::getValorCalculado($data, $data['plan_price']);
+
         $cart = session()->get('carrinho');
         if(!$cart)
         {
@@ -61,11 +63,27 @@ class SiteController extends Controller
     }
 
     public function cart_remove(Request $request){
-        return view('site.cart');
+        $planId = $request->input('plan_id');
+        $cart = session()->get('carrinho');
+
+        if(isset($cart) && isset($cart[$planId]))
+        {
+            unset($cart[$planId]);
+            if(count($cart) >= 1)
+                session()->put('carrinho', $cart);
+            else
+                session()->remove('carrinho');
+        }
+
+        return redirect()->route('cart.index');
     }
 
     public function cart_clear(Request $request){
-        return view('site.cart');
+        $cart = session()->get('carrinho');
+        if(isset($cart))
+            session()->remove('carrinho');
+
+        return redirect()->route('cart.index');
     }
 
     public function checkout($id_plano){

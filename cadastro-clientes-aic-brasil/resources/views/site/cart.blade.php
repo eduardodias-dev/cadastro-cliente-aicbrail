@@ -132,11 +132,13 @@
   <div class="container">
     @php
         $cart = session('carrinho');
-        print_r(array_search('18', array_column($planos, 'plan_id')));
         $total = 0;
-        foreach($cart as $item){
-            $total += $item['plan_price'];
-        }
+        if(isset($cart))
+            foreach($cart as $item){
+                $total += $item['valor_calculado'];
+            }
+        else
+            $cart = [];
     @endphp
     <h1>Carrinho</h1>
 
@@ -149,23 +151,23 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach($cart as $item)
-                <tr>
-                    <td>{{ $planos[array_search($item['plan_id'], array_column($planos, 'id'))]['nome'] }}</td>
-                    <td>{{ $item['nome'] }}</td>
-                    <td>{{ getValorEmReal($item['plan_price']) }}</td>
-                    <td>
-                        <form action="{{ route('cart.remove') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="id" value="{{ '' }}">
-                            <button type="submit" class="btn btn-danger">Remover</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
             @if(count($cart) > 0)
+                <tbody>
+                    @foreach($cart as $item)
+                    <tr>
+                        <td>{{ $planos[array_search($item['plan_id'], array_column($planos, 'id'))]['nome'] }}</td>
+                        <td>{{ $item['nome'] }}</td>
+                        <td>{{ getValorEmReal($item['valor_calculado']) }}</td>
+                        <td>
+                            <form action="{{ route('cart.remove') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="plan_id" value="{{ $item['plan_id'] }}">
+                                <button type="submit" class="btn btn-danger">Remover</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
                 <tfoot>
                     <tr class="table-secondary">
                         <td colspan="2"><b>Total</b></td>
@@ -173,10 +175,17 @@
                         <td></td>
                     </tr>
                 </tfoot>
+            @else
+                <tbody>
+                    <tr>
+                        <td colspan="4" class="table-secondary" align="center"><h4>Não há itens no carrinho</h4></td>
+                    </tr>
+                </tbody>
             @endif
         </table>
-
-        <a href="{{ route('cart.clear') }}" class="btn btn-secondary">Remover Tudo</a>
+        @if(count($cart) > 0)
+            <a href="{{ route('cart.clear') }}" class="btn btn-secondary">Remover Tudo</a>
+        @endif
         {{-- <a href="{{ route('site.checkout') }}" class="btn btn-primary">Prosseguir ao Checkout</a> --}}
 
         <!-- Add your additional HTML content, such as subtotal, discounts, etc. -->
