@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Assinatura_Adicionais_Assinatura;
+use App\Pacote;
 
 class CheckoutService
 {
@@ -58,7 +59,83 @@ class CheckoutService
         return null;
     }
 
-    private function adicionarCliente($data)
+    public function realizarCheckoutByCart($cartData)
+    {
+        DB::beginTransaction();
+        try{
+            $cliente_pagador = $cartData['dados_pagamento']['cliente'];
+            unset($cartData['dados_pagamento']);
+            $savedClientPagador = $this->adicionarCliente($cliente_pagador, true);
+            $pacote = new Pacote;
+            $pacote->client_id = $savedClientPagador->id;
+            $pacote->status = 'pendente';
+            $pacote->tipo_pagamento = $cliente_pagador['forma_pagamento'];
+            $pacote->adesao = date('Y-m-d H:i:s');
+            $pacote->melhor_vencimento = $cliente_pagador['melhor_vencimento'];
+            $pacote->save();
+
+            $pacote->codigo = $this->getCodigoPacote($pacote);
+            $valorTotalPacote = 0.0;
+
+            foreach($cartData as $key => $cartItem){
+
+                $savedClient = $this->adicionarCliente($cartItem, false);
+
+                if($savedClient != null){
+                    $savedSubscription = $this->adicionarAssinatura($cartItem, $savedClient->id, $key);
+
+                    $valorTotalPacote += $savedSubscription->valor;
+                }
+
+                // if($savedSubscription != null){
+                //     $service = new GalaxPayService;
+                //     $result = $service->CreateSubscription($savedSubscription->id, $savedClient->id, $checkoutData['forma_pagamento'], $this->getCardData($checkoutData));
+
+
+                //     if(isset($result->json()['Subscription'])){
+                //         try{
+                //             $this->enviarEmailBemVindo($result->json()['Subscription']['myId'], $checkoutData['email']);
+                //         }catch(Exception $ex){
+                //             Log::warning("Erro ao executar envio de email: ".$ex->getMessage());
+                //             throw $ex;
+                //         }
+                //     }else{
+                //         throw new Exception('Erro ao executar integração: '.json_encode($result->json()));
+                //     }
+
+                //     DB::commit();
+                //     return $result;
+                // }
+            }
+            $pacote->valor = $valorTotalPacote;
+            $pacote->save();
+
+            $service = new GalaxPayService;
+            $result = $service->CreateSubscription($pacote->id, $pacote->client_id, $cliente_pagador['forma_pagamento'], $this->getCardData($cliente_pagador));
+
+            if($result != null && isset($result->json()['Subscription'])){
+                try{
+                    //$this->enviarEmailBemVindo($result->json()['Subscription']['myId'], $cliente_pagador['email']);
+                }catch(Exception $ex){
+                    Log::warning("Erro ao executar envio de email: ".$ex->getMessage());
+                    throw $ex;
+                }
+            }else{
+                throw new Exception('Erro ao executar integração: '.json_encode($result->json()));
+            }
+
+            DB::commit();
+            return $result;
+        }catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+
+        DB::rollBack();
+        return null;
+    }
+
+    private function adicionarCliente($data, $somentePagamento = false)
     {
         try{
             $newCliente = new Cliente;
@@ -101,25 +178,28 @@ class CheckoutService
             $clienteTelefone->numero = $data['celular'];
             $clienteTelefone->save();
 
-            $veiculo = new Veiculo;
+            if(!$somentePagamento){
+                $veiculo = new Veiculo;
 
-            $veiculo->client_id = $newCliente->id;
-            $veiculo->chassi = $data['chassi'];
-            $veiculo->placa = $data['placa_veiculo'];
-            $veiculo->renavam = $data['renavam'];
-            $veiculo->tipo = $data['tipo_veiculo'];
-            $veiculo->anoFabricacao = $data['ano_fabricacao'];
-            $veiculo->anoModelo = $data['ano_fabricacao'];
-            $veiculo->marca = $data['marca_veiculo'];
-            $veiculo->modelo = $data['modelo_veiculo'];
-            $veiculo->cor = $data['cor_veiculo'];
-            $veiculo->cambio = "";
-            $veiculo->fipeCodigo = "";
-            $veiculo->fipeValor = "";
+                $veiculo->client_id = $newCliente->id;
+                $veiculo->chassi = $data['chassi'];
+                $veiculo->placa = $data['placa_veiculo'];
+                $veiculo->renavam = $data['renavam'];
+                $veiculo->tipo = $data['tipo_veiculo'];
+                $veiculo->anoFabricacao = $data['ano_fabricacao'];
+                $veiculo->anoModelo = $data['ano_fabricacao'];
+                $veiculo->marca = $data['marca_veiculo'];
+                $veiculo->modelo = $data['modelo_veiculo'];
+                $veiculo->cor = $data['cor_veiculo'];
+                $veiculo->cambio = "";
+                $veiculo->fipeCodigo = "";
+                $veiculo->fipeValor = "";
 
-            $veiculo->save();
+                $veiculo->save();
+            }
 
             return $newCliente;
+
         }catch(Exception $e){
 
             throw $e;
@@ -140,13 +220,13 @@ class CheckoutService
             $newAssinatura->status = 'pendente';
             $newAssinatura->info_adicional = '';
             $newAssinatura->adesao = date('Y-m-d H:i:s');
-            $newAssinatura->melhor_vencimento = $data['melhor_vencimento'];
-            $newAssinatura->tipo_pagamento = $data['forma_pagamento'];
+            //$newAssinatura->melhor_vencimento = $data['melhor_vencimento'];
+            //$newAssinatura->tipo_pagamento = $data['forma_pagamento'];
             $newAssinatura->protecao_veicular = $data['comprar_protecao_veicular'];
 
             $newAssinatura->save();
 
-            $newAssinatura->codigo_assinatura = $this->getCogigoAssinatura($newAssinatura);
+            $newAssinatura->codigo_assinatura = $this->getCodigoAssinatura($newAssinatura);
 
             $beneficios = isset($data['club_beneficio']) ? $data['club_beneficio'] : [];
             foreach($beneficios as $item){
@@ -157,7 +237,7 @@ class CheckoutService
                 $adicionalAssinatura->adicional_assinatura_id = $item;
                 $adicionalAssinatura->deletado = false;
 
-                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
+                //$newAssinatura->valor += $adicionalAssinaturaValor->valor;
                 $adicionalAssinatura->save();
             }
 
@@ -171,7 +251,7 @@ class CheckoutService
                 $adicionalAssinatura->adicional_assinatura_id = $item;
                 $adicionalAssinatura->deletado = false;
 
-                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
+                //$newAssinatura->valor += $adicionalAssinaturaValor->valor;
                 $adicionalAssinatura->save();
             }
 
@@ -194,7 +274,7 @@ class CheckoutService
                 $adicionalAssinatura->adicional_assinatura_id = $item;
                 $adicionalAssinatura->deletado = false;
 
-                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
+                //$newAssinatura->valor += $adicionalAssinaturaValor->valor;
                 $adicionalAssinatura->save();
             }
 
@@ -249,7 +329,7 @@ class CheckoutService
         return $filename;
     }
 
-    private function getCogigoAssinatura($assinatura){
+    private function getCodigoAssinatura($assinatura){
         return "AICBR-".date_format(date_create($assinatura->adesao), "Ydm")."".$assinatura->id;
     }
 
@@ -264,4 +344,7 @@ class CheckoutService
         return $card_data;
     }
 
+    private function getCodigoPacote($pacote){
+        return "P-AICBR-".date_format(date_create($pacote->adesao), "Ydm")."".$pacote->id;
+    }
 }

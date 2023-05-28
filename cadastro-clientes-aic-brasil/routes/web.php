@@ -39,8 +39,8 @@ Route::prefix("admin")->middleware('auth')->group(function(){
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/checkout/{id_plano}', [SiteController::class, 'checkout'])->name('site.checkout');
-Route::post('/checkout/{id_plano}', [SiteController::class, 'checkout_post'])->name('checkout.post');
+Route::get('/comprar-plano/{id_plano}', [SiteController::class, 'comprar_plano'])->name('site.comprar_plano');
+//Route::post('/checkout', [SiteController::class, 'checkout_post'])->name('checkout.post');
 Route::get('/vieworder', [SiteController::class, 'view_order'])->name('view.order');
 Route::post('/vieworder', [SiteController::class, 'view_order_post'])->name('view.order.post');
 
@@ -52,3 +52,5 @@ Route::get('carrinho','SiteController@cart')->name('cart.index');
 Route::post('carrinho','SiteController@cart_add')->name('cart.add');
 Route::post('remover-carrinho','SiteController@cart_remove')->name('cart.remove');
 Route::get('limpar-carrinho','SiteController@cart_clear')->name('cart.clear');
+Route::get('checkout/confirm', 'SiteController@checkout_confirm')->name('checkout.confirm');
+Route::post('checkout/confirm', 'SiteController@checkout_post')->name('checkout.finalize');

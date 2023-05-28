@@ -3,7 +3,6 @@
 namespace App\ViewModels;
 
 use App\Plano;
-use App\Assinatura;
 use App\Adicionais_Assinatura;
 
 class CheckoutViewModel{

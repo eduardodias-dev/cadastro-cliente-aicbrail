@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Checkout - AIC Brasil</title>
+  <title>Carrinho - AIC Brasil</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -28,71 +28,7 @@
 
   <!-- Template Main CSS File -->
   <link href="/site/css/style.css" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: OnePage - v4.9.2
-  * Template URL: https://bootstrapmade.com/onepage-multipurpose-bootstrap-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
-<!-- Modal -->
-<div class="modal fade modal-lg" id="modal-checkout" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          {{-- <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1> --}}
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="text-center" id="box-carregando" style=" padding: 20px;">
-                <i class='bx bx-loader-alt bx-spin bx-rotate-180 text-center' style="font-size: 50px; color: #1264d0" ></i>
-                <h5 class="text-center">Aguarde, Estamos processando seu pedido.</h5>
-            </div>
-        </div>
-      </div>
-    </div>
-</div>
-  <div class="modal fade modal-lg" id="modal-result" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          {{-- <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1> --}}
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div id="box-sucesso" class="text-center" style=" padding: 20px;">
-                <i class='bx bxs-check-circle ' style="font-size: 50px; color: #03a803;" ></i>
-                <div class="mensagem">
-
-                </div>
-            </div>
-            <div id="box-erro" class="text-center" style=" padding: 20px;">
-                <i class='bx bxs-error-circle ' style="font-size: 50px; color: #a80303;" ></i>
-                <div class="mensagem">
-
-                </div>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade modal-lg" id="modal-pesquisando-pedido" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          {{-- <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1> --}}
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="text-center" id="box-carregando" style=" padding: 20px;">
-                <i class='bx bx-loader-alt bx-spin bx-rotate-180 text-center' style="font-size: 50px; color: #1264d0" ></i>
-                <h5 class="text-center">Aguarde, Estamos pesquisando seu pedido.</h5>
-            </div>
-        </div>
-      </div>
-    </div>
-    </div>
 <body>
     <script type="text/javascript">
         (function (a, b, c, d, e, f, g) {
@@ -185,10 +121,11 @@
         </table>
         @if(count($cart) > 0)
             <a href="{{ route('cart.clear') }}" class="btn btn-secondary">Remover Tudo</a>
+            <form action="{{ route('checkout.confirm') }}" method="GET" style="display: inline-block">
+                @csrf
+                <button type="submit" class="btn btn-primary">Prosseguir ao Checkout</button>
+            </form>
         @endif
-        {{-- <a href="{{ route('site.checkout') }}" class="btn btn-primary">Prosseguir ao Checkout</a> --}}
-
-        <!-- Add your additional HTML content, such as subtotal, discounts, etc. -->
     </div>
 
   <!-- ======= Footer ======= -->

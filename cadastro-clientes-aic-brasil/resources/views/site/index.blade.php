@@ -203,7 +203,7 @@
                 <li>GUINCHO - REBOQUE.24h</li>
               </ul>
               <div class="btn-wrap">
-                <a href="{{route('site.checkout', ['id_plano' => 18])}}" class="btn-buy">Quero esse</a>
+                <a href="{{route('site.comprar_plano', ['id_plano' => 18])}}" class="btn-buy">Quero esse</a>
               </div>
             </div>
           </div>
@@ -220,7 +220,7 @@
                 <li>ALAGAMENTO | ENCHENTE</li>
               </ul>
               <div class="btn-wrap">
-                <a href="{{route('site.checkout', ['id_plano' => 2])}}" class="btn-buy">Quero esse</a>
+                <a href="{{route('site.comprar_plano', ['id_plano' => 2])}}" class="btn-buy">Quero esse</a>
               </div>
             </div>
           </div>
@@ -240,7 +240,7 @@
                 <li>E MAIS...</li>
               </ul>
               <div class="btn-wrap">
-                <a href="{{route('site.checkout', ['id_plano' => 4])}}" class="btn-buy">Quero esse</a>
+                <a href="{{route('site.comprar_plano', ['id_plano' => 4])}}" class="btn-buy">Quero esse</a>
               </div>
             </div>
           </div>

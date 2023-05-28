@@ -56,7 +56,7 @@ class SiteController extends Controller
         return redirect()->route('cart.index');
     }
 
-    public function cart(Request $request){
+    public function cart(){
         $planos = Plano::where(['ativo_venda' => '1'])->get()->toArray();
 
         return view('site.cart', ['planos' => $planos]);
@@ -78,7 +78,7 @@ class SiteController extends Controller
         return redirect()->route('cart.index');
     }
 
-    public function cart_clear(Request $request){
+    public function cart_clear(){
         $cart = session()->get('carrinho');
         if(isset($cart))
             session()->remove('carrinho');
@@ -86,9 +86,9 @@ class SiteController extends Controller
         return redirect()->route('cart.index');
     }
 
-    public function checkout($id_plano){
+    public function comprar_plano($id_plano){
         $checkoutViewModel = CheckoutViewModel::CreateStandardCheckoutView($id_plano);
-        return view('site.checkout', [
+        return view('site.comprar_plano', [
                                         'club_beneficio' => $checkoutViewModel->adicionais_club_beneficio,
                                         'cobertura_24horas' => $checkoutViewModel->adicionais_cobertura_24horas,
                                         'comprar_seguros' => $checkoutViewModel->adicionais_comprar_seguros,
@@ -112,17 +112,15 @@ class SiteController extends Controller
                 );
             }
 
-            $plano = Plano::find($data['plan_id']);
-            $data['valor_calculado'] = $plano->preco;
-
+            $cart = session()->get('carrinho');
+            if(!isset($cart)){
+                throw new Exception('Carrinho está vazio.');
+            }
+            $cart['dados_pagamento'] = ['cliente' => $data];
             $checkoutService = new CheckoutService();
-            $result = $checkoutService->realizarCheckout($data);
+            $result = $checkoutService->realizarCheckoutByCart($cart);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Adicionado com sucesso!',
-                'result' => json_encode($result->json())
-            ]);
+            return $result;
         }
         catch(Exception $e)
         {
@@ -133,6 +131,12 @@ class SiteController extends Controller
                 ]
             );
         }
+    }
+
+    public function checkout_confirm(Request $request){
+        $planos = Plano::where(['ativo_venda' => '1'])->get()->toArray();
+        $session_id = session()->getId();
+        return view('site.checkout_confirm',['session_id' => $session_id, 'planos' => $planos]);
     }
 
     public function view_order(Request $request){

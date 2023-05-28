@@ -133,15 +133,13 @@
 
   <main id="main" style="margin-top: 0px; background: #fafafa" class="py-1">
     <div class="container py-5" >
-        <h1>CHECKOUT</h1>
+        <h1>Checkout</h1>
 
         <div class="main-form mt-2">
             <div class="row align-items-start">
                 <div class="col-md-6 p-5" style="background: white;">
-                    <form id="form-checkout" method="POST" action="{{route('cart.add')}}">
+                    <form id="form-checkout" method="POST" action="{{route('checkout.confirm')}}">
                         @csrf
-                        <input type="hidden" value="{{$plano->id}}" name="plan_id" />
-                        <input type="hidden" value="{{$plano->preco}}" name="plan_price" />
                         <div class="form-group">
                             <div class="mb-1">
                                 <label class="">Tipo de cadastro</label>
@@ -259,117 +257,8 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="cutis">Cútis - Cor</label>
-                                <select name="cutis" class="form-control">
-                                    <option value="" class="">Selecione</option>
-                                    <option value="1">Afro</option>
-                                    <option value="2">Branca</option>
-                                    <option value="3">Indígena</option>
-                                    <option value="4">Mestiça</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="ocupacao">Ocupação - Profissão</label>
-                                <input type="text" name="ocupacao" class="form-control">
-                            </div>
-                        </div>
                         <hr>
                         <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <h5>Club de Benefício</h5>
-                                @isset($club_beneficio)
-                                    @foreach ($club_beneficio as $item)
-                                        <div>
-                                            <input type="checkbox" class="adicional_assinatura" name="club_beneficio[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
-                                            <label for="club_beneficio[]">{{$item->nome}}</label>
-                                        </div>
-                                    @endforeach
-                                @endisset
-                            </div>
-                            <div class="form-group col-md-6">
-                                <h5>COBERTURA 24h (365 DIAS)</h5>
-                                @isset($cobertura_24horas)
-                                    @foreach($cobertura_24horas as $item)
-                                        <div>
-                                            <input type="checkbox" class="adicional_assinatura" name="cobertura_24horas[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
-                                            <label for="cobertura_24horas[]">{{$item->nome}}</label>
-                                        </div>
-                                    @endforeach
-                                @endisset
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <h5>COMPRAR SEGURO(S)</h5>
-                                @isset($comprar_seguros)
-                                    @foreach($comprar_seguros as $item)
-                                        <div>
-                                            <input type="checkbox" class="adicional_assinatura" name="comprar_seguros[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
-                                            <label for="comprar_seguros[]">{{$item->nome}}</label>
-                                        </div>
-                                    @endforeach
-                                @endisset
-                            </div>
-                            <div class="form-group col-md-6">
-                                <h5 for="comprar_protecao_veicular">COMPRAR PROTEÇÃO VEICULAR</h5>
-                                <select name="comprar_protecao_veicular" class="form-control">
-                                    <option value="" class="">Selecione</option>
-                                    <option value="1">Sim</option>
-                                    <option value="0">Não</option>
-                                </select>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="tipo_veiculo" class="required">TIPO DO VEÍCULO</label>
-                                <select name="tipo_veiculo" class="form-control required">
-                                    <option value="" class="">Selecione</option>
-                                    <option value="AUTOMOVEL">AUTOMOVEL</option>
-                                    <option value="MOTOCICLETA">MOTOCICLETA</option>
-                                    <option value="CAMINHÃO">CAMINHÃO</option>
-                                    <option value="VAN_SUV">VAN - SUV</option>
-                                    <option value="PICKUP">PICK-UP</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="modelo_veiculo" class="required">MODELO DO VEÍCULO</label>
-                                <input type="text" name="modelo_veiculo" id="" class="form-control required">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="marca_veiculo" class="required">MARCA DO VEÍCULO</label>
-                                <input type="text" name="marca_veiculo" id="" class="form-control required">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="ano_fabricacao" class="required">ANO DE FABRICAÇÃO</label>
-                                <input type="text" name="ano_fabricacao" id="" class="form-control required">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="placa_veiculo" class="required">PLACA</label>
-                                <input type="text" name="placa_veiculo" id="" class="form-control required">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="chassi" class="required">CHASSI</label>
-                                <input type="text" name="chassi" id="" class="form-control required">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="renavam" class="required">RENAVAM</label>
-                                <input type="text" name="renavam" id="" class="form-control required">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="cor_veiculo" class="required">COR DO VEÍCULO</label>
-                                <input type="text" name="cor_veiculo" id="" class="form-control required">
-                            </div>
                             <div class="form-group col-md-6">
                                 <label for="melhor_vencimento" class="required">MELHOR VENCIMENTO</label>
                                 <select name="melhor_vencimento" class="form-control required">
@@ -432,23 +321,25 @@
                     </form>
                 </div>
                 <div class="col-md-6 p-5 sticky-top" style="background: white;">
-                    <h5>Plano Selecionado:</h5>
-                    <h3>{{$plano->nome}}</h3>
-                    <h2>R$ {{format_number($plano->preco)}} / Mês</h2>
-                    <small>*no Boleto/PIX</small><br>
-                    <hr>
-                    <div class="adicionais_inclusos mb-3 pb-3" style="border-bottom: .5px solid #ccc;">
-                        <h5>Incluso no Plano:</h5>
-
-                    </div>
-
-                    <div class="adicionais_selecionados mb-3 pb-3" style="border-bottom: .5px solid #ccc;">
-                        <h5>Adicionais Selecionados:</h5>
-
-                    </div>
+                    @php
+                        $cart = session('carrinho');
+                        $total = 0;
+                        if(isset($cart))
+                            foreach($cart as $item){
+                                $total += $item['valor_calculado'];
+                            }
+                        else
+                            $cart = [];
+                    @endphp
+                    <h5>Resumo do pedido</h5>
+                    <ul>
+                        @foreach($cart as $item)
+                            <li>Assinatura do plano: {{ $planos[array_search($item['plan_id'], array_column($planos, 'id'))]['nome'] }}
+                            </li>
+                        @endforeach
+                    </ul>
                     <div class="row total">
-                        <h5>Total (Plano + Adicionais): <b>R$ <span class="preco_total">{{format_number($plano->preco)}}</span> / Mês</b></h5>
-
+                        <h5>Total: <b>R$ <span class="preco_total">{{ getValorEmReal($total) }}</span> / Mês</b></h5>
                     </div>
                 </div>
             </div>

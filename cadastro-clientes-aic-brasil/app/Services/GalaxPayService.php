@@ -11,9 +11,9 @@ class GalaxPayService
 {
     const QTDE_DIAS_PRIMEIRO_PAGAMENTO = 3;
 
-    public function CreateSubscription($assinatura_id, $client_id, $type = 'card', $card_data = null)
+    public function CreateSubscription($pacote_id, $client_id, $type = 'card', $card_data = null)
     {
-        $data = DB::select("SELECT * from v_assinaturas_integracao where id_assinatura = ? AND id_cliente = ?", [$assinatura_id, $client_id]);
+        $data = DB::select("SELECT * from v_pacote_integracao where id_pacote = ? AND id_cliente = ?", [$pacote_id, $client_id]);
         if(count($data) >= 1){
             $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
             $request_data = $this->BuildCreateSubscriptionRequest($data[0], $type, $card_data);
@@ -32,7 +32,7 @@ class GalaxPayService
             $log->save();
 
             $filaAssinatura = new FilaConfirmacaoAssinatura();
-            $filaAssinatura->id_assinatura = $data[0]->id_assinatura;
+            $filaAssinatura->id_assinatura = $data[0]->id_pacote;
             $filaAssinatura->acao = 'Confirmar pagamento';
             $filaAssinatura->finalizado = 0;
 
@@ -52,7 +52,7 @@ class GalaxPayService
 
         $request = [];
 
-        $request['myId'] = $data->codigo_assinatura;
+        $request['myId'] = $data->codigo;
         $request['value'] = $data->valor;
         $request['periodicity'] = $data->periodicidade;
         $request['quantity'] = $data->quantidade;
