@@ -41,7 +41,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/comprar-plano/{id_plano}', [SiteController::class, 'comprar_plano'])->name('site.comprar_plano');
 //Route::post('/checkout', [SiteController::class, 'checkout_post'])->name('checkout.post');
-Route::get('/vieworder', [SiteController::class, 'view_order'])->name('view.order');
+Route::get('/vieworder', [SiteController::class, 'view_pacote'])->name('view.order');
 Route::post('/vieworder', [SiteController::class, 'view_order_post'])->name('view.order.post');
 
 Route::get('/pdf/{ordercode}/{sendEmail?}', 'HomeController@pdf');

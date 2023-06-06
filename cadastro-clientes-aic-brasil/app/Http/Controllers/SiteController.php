@@ -114,13 +114,18 @@ class SiteController extends Controller
 
             $cart = session()->get('carrinho');
             if(!isset($cart)){
-                throw new Exception('Carrinho está vazio.');
+                return redirect()->to('/');
             }
+
             $cart['dados_pagamento'] = ['cliente' => $data];
+            session('assinatura_criada', 1);
+
             $checkoutService = new CheckoutService();
             $result = $checkoutService->realizarCheckoutByCart($cart);
 
-            return $result;
+            session()->remove('carrinho');
+
+            return redirect()->route('view.order', ['q' => $result['Subscription']['myId']]);
         }
         catch(Exception $e)
         {
@@ -166,7 +171,37 @@ class SiteController extends Controller
             // die(json_encode($data['adicionais_assinatura']));
         }
 
-        return view('site.order_partial', ['subscription' => $data, 'error' => $error]);
+        return view('site.order_partial', ['subscriptions' => $data, 'error' => $error]);
+    }
+
+    public function view_pacote(Request $request){
+        $ordercode = $request->get('q');
+        $result = DB::select('SELECT * from v_assinaturas_detalhe where codigo_pacote = ?', [$ordercode]);
+        $error = (count($result) <= 0);
+        $subscriptions = array();
+        if(!$error){
+            $data = (array)$result;
+            foreach($data as $assinatura){
+                $assinatura = (array)$assinatura;
+                $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$assinatura['codigo_assinatura']]);
+
+                $transform_array = [];
+                $grouped_array = array();
+                foreach($adicionais as $adicional){
+                    array_push($transform_array, (array)$adicional);
+                }
+
+                foreach($transform_array as $element){
+                    $grouped_array[$element['tipo_adicional']][] = $element;
+                }
+
+                $assinatura['adicionais_assinatura'] = $grouped_array;
+                array_push($subscriptions, $assinatura);
+            }
+            // die(json_encode($data['adicionais_assinatura']));
+        }
+
+        return view('site.vieworder', ['subscriptions' => $subscriptions, 'error' => $error]);
     }
 
     public function updateTransaction(Request $request)

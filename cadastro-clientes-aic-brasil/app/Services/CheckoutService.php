@@ -28,7 +28,7 @@ class CheckoutService
             $savedClient = $this->adicionarCliente($checkoutData);
 
             if($savedClient != null){
-                $savedSubscription = $this->adicionarAssinatura($checkoutData, $savedClient->id, $checkoutData['plan_id']);
+                $savedSubscription = $this->adicionarAssinatura($checkoutData, $savedClient->id, $checkoutData['plan_id'], 0);
 
                 if($savedSubscription != null){
                     $service = new GalaxPayService;
@@ -82,31 +82,12 @@ class CheckoutService
                 $savedClient = $this->adicionarCliente($cartItem, false);
 
                 if($savedClient != null){
-                    $savedSubscription = $this->adicionarAssinatura($cartItem, $savedClient->id, $key);
+                    $savedSubscription = $this->adicionarAssinatura($cartItem, $savedClient->id, $key, $pacote->id);
 
                     $valorTotalPacote += $savedSubscription->valor;
                 }
-
-                // if($savedSubscription != null){
-                //     $service = new GalaxPayService;
-                //     $result = $service->CreateSubscription($savedSubscription->id, $savedClient->id, $checkoutData['forma_pagamento'], $this->getCardData($checkoutData));
-
-
-                //     if(isset($result->json()['Subscription'])){
-                //         try{
-                //             $this->enviarEmailBemVindo($result->json()['Subscription']['myId'], $checkoutData['email']);
-                //         }catch(Exception $ex){
-                //             Log::warning("Erro ao executar envio de email: ".$ex->getMessage());
-                //             throw $ex;
-                //         }
-                //     }else{
-                //         throw new Exception('Erro ao executar integração: '.json_encode($result->json()));
-                //     }
-
-                //     DB::commit();
-                //     return $result;
-                // }
             }
+
             $pacote->valor = $valorTotalPacote;
             $pacote->save();
 
@@ -208,7 +189,7 @@ class CheckoutService
         return null;
     }
 
-    private function adicionarAssinatura($data, $client_id, $plan_id){
+    private function adicionarAssinatura($data, $client_id, $plan_id, $pacote_id){
         try{
 
             $newAssinatura = new Assinatura;
@@ -223,7 +204,7 @@ class CheckoutService
             //$newAssinatura->melhor_vencimento = $data['melhor_vencimento'];
             //$newAssinatura->tipo_pagamento = $data['forma_pagamento'];
             $newAssinatura->protecao_veicular = $data['comprar_protecao_veicular'];
-
+            $newAssinatura->pacote_id = $pacote_id;
             $newAssinatura->save();
 
             $newAssinatura->codigo_assinatura = $this->getCodigoAssinatura($newAssinatura);
