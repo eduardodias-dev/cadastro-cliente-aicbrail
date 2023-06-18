@@ -5,6 +5,7 @@ namespace App\Services;
 use Exception;
 use App\Pacote;
 use App\LogIntegracao;
+use App\FilaConfirmacaoPacote;
 use App\FilaConfirmacaoAssinatura;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -34,8 +35,8 @@ class GalaxPayService
 
             $log->save();
 
-            $filaAssinatura = new FilaConfirmacaoAssinatura();
-            $filaAssinatura->id_assinatura = $data[0]->id_pacote;
+            $filaAssinatura = new FilaConfirmacaoPacote();
+            $filaAssinatura->id_pacote = $data[0]->id_pacote;
             $filaAssinatura->acao = 'Confirmar pagamento';
             $filaAssinatura->finalizado = 0;
 
