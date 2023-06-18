@@ -24,6 +24,8 @@
   <link href="site/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="site/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="dist/plugins/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
   <link href="site/css/style.css" rel="stylesheet">
@@ -50,11 +52,17 @@
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-          <li><a class="nav-link scrollto" href="#services">Serviços</a></li>
-          <li><a class="nav-link scrollto" href="#pricing">Planos</a></li>
-          <li><a class="nav-link scrollto" href="#contact">Contato</a></li>
-          <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
+            <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+            <li><a class="nav-link scrollto" href="#services">Serviços</a></li>
+            <li><a class="nav-link scrollto" href="#pricing">Planos</a></li>
+            <li><a class="nav-link scrollto" href="#contact">Contato</a></li>
+            <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
+            <li>
+                <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
+                    <i class="fa fa-shopping-cart" style="font-size: 22px;"></i>
+                    {{-- <span class="badge bg-primary">5</span> --}}
+                </a>
+            </li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->

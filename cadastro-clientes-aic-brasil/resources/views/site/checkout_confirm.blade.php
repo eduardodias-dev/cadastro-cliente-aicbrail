@@ -25,7 +25,7 @@
   <link href="/site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.14/combined/css/gijgo.min.css"> --}}
   <link rel="stylesheet" href="/dist/plugins/datetimepicker/jquery.datetimepicker.min.css" />
-
+  <link href="/dist/plugins/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
   <!-- Template Main CSS File -->
   <link href="/site/css/style.css" rel="stylesheet">
 
@@ -122,8 +122,14 @@
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link scrollto active" href="/">Home</a></li>
-          <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
+            <li><a class="nav-link scrollto active" href="/">Home</a></li>
+            <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
+            <li>
+                <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
+                    <i class="fa fa-shopping-cart" style="font-size: 22px;"></i>
+                    {{-- <span class="badge badge-primary">5</span> --}}
+                </a>
+            </li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -137,8 +143,13 @@
 
         <div class="main-form mt-2">
             <div class="row align-items-start">
+                @if(isset(session()->get('error')))
+                    <div class="alert alert-danger">
+                        Ocorreu um erro ao processar seu pedido.
+                    </div>
+                @endif
                 <div class="col-md-6 p-5" style="background: white;">
-                    <form id="form-checkout" method="POST" action="{{route('checkout.confirm')}}">
+                    <form id="form-checkout" method="POST" action="{{route('checkout.finalize')}}">
                         @csrf
                         <div class="form-group">
                             <div class="mb-1">

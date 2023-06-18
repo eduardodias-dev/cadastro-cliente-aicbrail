@@ -54,3 +54,5 @@ Route::post('remover-carrinho','SiteController@cart_remove')->name('cart.remove'
 Route::get('limpar-carrinho','SiteController@cart_clear')->name('cart.clear');
 Route::get('checkout/confirm', 'SiteController@checkout_confirm')->name('checkout.confirm');
 Route::post('checkout/confirm', 'SiteController@checkout_post')->name('checkout.finalize');
+
+Route::get('/downloadapolice', [SiteController::class, 'download_apolice'])->name('download_apolice');

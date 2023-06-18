@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
-use App\FilaConfirmacaoAssinatura;
+use Exception;
+use App\Pacote;
 use App\LogIntegracao;
+use App\FilaConfirmacaoAssinatura;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
 class GalaxPayService
@@ -37,6 +40,11 @@ class GalaxPayService
             $filaAssinatura->finalizado = 0;
 
             $filaAssinatura->save();
+
+            $pacote = Pacote::find($data[0]->id_pacote);
+            $pacote->link_boleto = $this->pegarLinkBoleto($response);
+
+            $pacote->save();
 
             return $response;
         }
@@ -93,6 +101,21 @@ class GalaxPayService
             ];
 
         return $request;
+    }
+
+    private function pegarLinkBoleto($jsonResposta){
+        try{
+            //Subscription.Transactions[0].Boleto.pdf
+
+            if(isset($jsonResposta['Subscription'])){
+                if(isset($jsonResposta['Subscription']['Transactions'])){
+                    return $jsonResposta['Subscription']['Transactions'][0]['Boleto']['pdf'];
+                }
+            }
+        }catch(Exception $e){
+            Log::warning("Não foi possível recuperar o link: ".$e->getMessage());
+        }
+        return null;
     }
 
 }

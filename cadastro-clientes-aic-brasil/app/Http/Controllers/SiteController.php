@@ -125,16 +125,12 @@ class SiteController extends Controller
 
             session()->remove('carrinho');
 
-            return redirect()->route('view.order', ['q' => $result['Subscription']['myId']]);
+            return redirect()->route('view.order', ['codigo_pacote' => $result['Subscription']['myId']]);
         }
         catch(Exception $e)
         {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ops... Ocorreu um erro ao salvar seu cadastro, por favor entre em contato com o suporte.',
-                'exception' => $e->getMessage()
-                ]
-            );
+            session()->put('error', true);
+            return redirect()->route('checkout.confirm');
         }
     }
 
@@ -175,7 +171,7 @@ class SiteController extends Controller
     }
 
     public function view_pacote(Request $request){
-        $ordercode = $request->get('q');
+        $ordercode = $request->get('codigo_pacote');
         $result = DB::select('SELECT * from v_assinaturas_detalhe where codigo_pacote = ?', [$ordercode]);
         $error = (count($result) <= 0);
         $subscriptions = array();
@@ -201,7 +197,18 @@ class SiteController extends Controller
             // die(json_encode($data['adicionais_assinatura']));
         }
 
-        return view('site.vieworder', ['subscriptions' => $subscriptions, 'error' => $error]);
+        return view('site.vieworder', ['codigo_pacote' => $ordercode, 'subscriptions' => $subscriptions, 'error' => $error]);
+    }
+
+    public function download_apolice(Request $request){
+        $codigo_pacote = $request->get('codigo_pacote');
+
+        $checkoutService = new CheckoutService();
+        $nomeArquivo = $checkoutService->gerarApolicePeloPacote($codigo_pacote);
+
+        $arquivo = storage_path(getFilePathByArray(['app','public',$nomeArquivo]));
+
+        return response()->file($arquivo, ['Content-disposition:attachment; filename="'.$nomeArquivo.'"']);
     }
 
     public function updateTransaction(Request $request)
@@ -249,7 +256,7 @@ class SiteController extends Controller
             'logradouro' => 'required|string',
             'cidade' => 'required|string',
             'estado' => 'required|string',
-            'cep' => 'regex:/^[0-9]{5}-[0-9]{3}$/'
+            'cep' => 'regex:/^[0-9]{5}-[0-9]{3}$/',
             // 'card_number' => 'required|numeric',
             // 'expiration_month' => 'required|numeric',
             // 'expiration_year' => 'required|numeric',
