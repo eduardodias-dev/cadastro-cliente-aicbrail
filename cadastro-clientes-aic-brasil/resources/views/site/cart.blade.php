@@ -59,12 +59,6 @@
         <ul>
             <li><a class="nav-link scrollto active" href="/">Home</a></li>
             <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
-            <li>
-                <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
-                    <i class="fa fa-shopping-cart" style="font-size: 22px;"></i>
-                    {{-- <span class="badge badge-primary">5</span> --}}
-                </a>
-            </li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->

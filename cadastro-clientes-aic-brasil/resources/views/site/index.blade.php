@@ -56,13 +56,13 @@
             <li><a class="nav-link scrollto" href="#services">Serviços</a></li>
             <li><a class="nav-link scrollto" href="#pricing">Planos</a></li>
             <li><a class="nav-link scrollto" href="#contact">Contato</a></li>
-            <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
             <li>
                 <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
                     <i class='bx bxs-cart' style="font-size: 22px;"></i>
                     {{-- <span class="badge bg-primary">5</span> --}}
                 </a>
             </li>
+            <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->

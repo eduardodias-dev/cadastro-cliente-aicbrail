@@ -50,13 +50,13 @@
       <nav id="navbar" class="navbar">
         <ul>
             <li><a class="nav-link scrollto active" href="/">Home</a></li>
-            <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
             <li>
                 <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
                     <i class='bx bxs-cart' style="font-size: 22px;"></i>
                     {{-- <span class="badge badge-primary">5</span> --}}
                 </a>
             </li>
+            <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -82,8 +82,13 @@
             <div class="main-form mt-2" style="min-height: 600px;">
                 <hr>
                 <div class="row py-3">
-                    <h2 class="d-inline">Pedido: {{$codigo_pacote}}</h2>
-                    <a href="{{ route('download_apolice', ['codigo_pacote'=> $codigo_pacote])}}" target="_blank">Ver Apólice</a>
+                    <div class="col-md">
+                        <h2>Pedido: {{$codigo_pacote}}</h2>
+                        <a class="btn btn-primary" href="{{$pacote->link_boleto}}" target="_blank">
+                            Clique aqui para ver seu Boleto
+                            <i class='bx bx-money-withdraw'></i>
+                        </a>
+                    </div>
                 </div>
                 <div class="row py-3">
                     @if(session()->has('assinatura_criada'))

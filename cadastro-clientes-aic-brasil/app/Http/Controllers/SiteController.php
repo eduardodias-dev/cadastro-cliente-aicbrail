@@ -4,18 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Plano;
 use Exception;
+use App\Pacote;
 use App\Assinatura;
 use \Mpdf\Mpdf as PDF;
-use Illuminate\Http\Request;
-use App\Mail\EnvioEmailApolice;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use App\LogIntegracao;
 use App\Services\CartHelper;
+use Illuminate\Http\Request;
+use App\Mail\EnvioEmailApolice;
 use App\Services\CheckoutService;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use App\ViewModels\CheckoutViewModel;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller
 {
@@ -183,6 +184,7 @@ class SiteController extends Controller
     public function view_pacote(Request $request){
         $ordercode = $request->get('codigo_pacote');
         $result = DB::select('SELECT * from v_assinaturas_detalhe where codigo_pacote = ?', [$ordercode]);
+        $pacote = Pacote::where(['codigo'=>$ordercode])->first();
         $error = (count($result) <= 0);
         $subscriptions = array();
         if(!$error){
@@ -207,7 +209,7 @@ class SiteController extends Controller
             // die(json_encode($data['adicionais_assinatura']));
         }
 
-        return view('site.vieworder', ['codigo_pacote' => $ordercode, 'subscriptions' => $subscriptions, 'error' => $error]);
+        return view('site.vieworder', ['codigo_pacote' => $ordercode, 'subscriptions' => $subscriptions, 'error' => $error, 'pacote' => $pacote]);
     }
 
     public function download_apolice(Request $request){
