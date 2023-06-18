@@ -126,7 +126,7 @@
             <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
             <li>
                 <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
-                    <i class="fa fa-shopping-cart" style="font-size: 22px;"></i>
+                    <i class='bx bxs-cart' style="font-size: 22px;"></i>
                     <span class="badge badge-primary">5</span>
                 </a>
             </li>
@@ -142,6 +142,14 @@
         <h1>Comprar Plano</h1>
 
         <div class="main-form mt-2">
+            @if(session()->has('erros'))
+                <div class="row" >
+                    <div class="alert alert-danger alert-dismissible">
+                        Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
             <div class="row align-items-start">
                 <div class="col-md-6 p-5" style="background: white;">
                     <form id="form-checkout" method="POST" action="{{route('cart.add')}}">
@@ -160,59 +168,59 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="cpfcnpj" class="cpfcnpj required">CPF</label>
-                                <input type="text" name="cpfcnpj" id="" class="form-control required">
+                                <input type="text" name="cpfcnpj" id="" class="form-control required" value="{{old('cpfcnpj')}}">
                             </div>
 
                             <div class="form-group col-md-6">
                                 <label for="nome" class="required">Nome</label>
-                                <input type="text" name="nome" id="" class="form-control required">
+                                <input type="text" name="nome" id="" class="form-control required" required  value="{{old('nome')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-12">
                                 <label for="email" class="required">E-mail</label>
-                                <input type="email" name="email" id="" class="form-control required" required>
+                                <input type="email" name="email" id="" class="form-control required" required  value="{{old('email')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="celular" class="required">Celular</label>
-                                <input type="text" name="celular" id="" class="form-control required">
+                                <input type="text" name="celular" id="" class="form-control required" required value="{{old('celular')}}">
                             </div>
                         </div>
                         <h4 class="mt-2">Endereço</h4>
                         <div class="row mt-2">
                             <div class="form-group col-md-3">
                                 <label for="cep" class="required">CEP</label>
-                                <input type="text" name="cep" id="" class="form-control required">
+                                <input type="text" name="cep" id="" class="form-control required" required value="{{old('cep')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="logradouro" class="required">Logradouro</label>
-                                <input type="text" name="logradouro" id="" class="form-control required" required>
+                                <input type="text" name="logradouro" id="" class="form-control required" required value="{{old('logradouro')}}">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="numero" class="required">Número</label>
-                                <input type="text" name="numero" id="" class="form-control required">
+                                <input type="text" name="numero" id="" class="form-control required" required value="{{old('numero')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-4">
                                 <label for="complemento" class="required">Complemento</label>
-                                <input type="text" name="complemento" id="" class="form-control required">
+                                <input type="text" name="complemento" id="" class="form-control required" value="{{old('complemento')}}">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="bairro" class="required">Bairro</label>
-                                <input type="text" name="bairro" id="" class="form-control required">
+                                <input type="text" name="bairro" id="" class="form-control required" required value="{{old('bairro')}}">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="cidade" class="required">Cidade</label>
-                                <input type="text" name="cidade" id="" class="form-control required">
+                                <input type="text" name="cidade" id="" class="form-control required" required value="{{old('cidade')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-4">
                                 <label for="estado" class="required">Estado</label>
-                                <select name="estado" class="form-control required">
+                                <select name="estado" class="form-control required" required value="{{old('estado')}}">
                                     <option value="" class="">Selecione</option>
                                     {{printEstadosAsOptions()}}
                                 </select>
@@ -222,19 +230,19 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="rg">RG</label>
-                                <input type="rg" name="rg" id="" class="form-control">
+                                <input type="rg" name="rg" id="" class="form-control" value="{{old('rg')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="nome_representante">Nome Representante</label>
-                                <input type="nome_representante" name="nome_representante" id="" class="form-control">
+                                <input type="text" name="nome_representante" id="" class="form-control" value="{{old('nome_representante')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="cpf_representante">CPF Representante</label>
-                                <input type="cpf_representante" name="cpf_representante" id="" class="form-control">
+                                <input type="text" name="cpf_representante" id="" class="form-control" value="{{old('cpf_representante')}}">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="alfabetizado" class="required">Alfabetizada</label>
-                                <select name="alfabetizado" class="form-control required">
+                                <select name="alfabetizado" class="form-control required" value="{{old('alfabetizado')}}">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">Sim</option>
                                     <option value="0">Não</option>
@@ -242,7 +250,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="sexo">Sexo</label>
-                                <select name="sexo" class="form-control">
+                                <select name="sexo" class="form-control" value="{{old('sexo')}}">
                                     <option value="" class="">Selecione</option>
                                     <option value="M">Masculino</option>
                                     <option value="F">Feminino</option>
@@ -252,11 +260,11 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="datanasc" class="required">Data de Nascimento</label>
-                                <input type="text" name="datanasc" id="datetimepicker" class="form-control required">
+                                <input type="text" name="datanasc" id="datetimepicker" class="form-control required" required value="{{old('datanasc')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="estado_civil" class="required">Estado Civil</label>
-                                <select name="estado_civil" class="form-control required">
+                                <select name="estado_civil" class="form-control required" required value="{{old('estado_civil')}}">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">Solteiro</option>
                                     <option value="2">Casado</option>
@@ -268,7 +276,7 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="cutis">Cútis - Cor</label>
-                                <select name="cutis" class="form-control">
+                                <select name="cutis" class="form-control" value="{{old('cutis')}}">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">Afro</option>
                                     <option value="2">Branca</option>
@@ -278,7 +286,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="ocupacao">Ocupação - Profissão</label>
-                                <input type="text" name="ocupacao" class="form-control">
+                                <input type="text" name="ocupacao" class="form-control" value="{{old('ocupacao')}}">
                             </div>
                         </div>
                         <hr>
@@ -320,7 +328,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <h5 for="comprar_protecao_veicular">COMPRAR PROTEÇÃO VEICULAR</h5>
-                                <select name="comprar_protecao_veicular" class="form-control">
+                                <select name="comprar_protecao_veicular" class="form-control" value="{{old('comprar_protecao_veicular')}}">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">Sim</option>
                                     <option value="0">Não</option>
@@ -331,7 +339,7 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="tipo_veiculo" class="required">TIPO DO VEÍCULO</label>
-                                <select name="tipo_veiculo" class="form-control required">
+                                <select name="tipo_veiculo" class="form-control required" required value="{{old('tipo_veiculo')}}">
                                     <option value="" class="">Selecione</option>
                                     <option value="AUTOMOVEL">AUTOMOVEL</option>
                                     <option value="MOTOCICLETA">MOTOCICLETA</option>
@@ -344,37 +352,37 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="modelo_veiculo" class="required">MODELO DO VEÍCULO</label>
-                                <input type="text" name="modelo_veiculo" id="" class="form-control required">
+                                <input type="text" name="modelo_veiculo" id="" class="form-control required" required value="{{old('modelo_veiculo')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="marca_veiculo" class="required">MARCA DO VEÍCULO</label>
-                                <input type="text" name="marca_veiculo" id="" class="form-control required">
+                                <input type="text" name="marca_veiculo" id="" class="form-control required" required value="{{old('marca_veiculo')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="ano_fabricacao" class="required">ANO DE FABRICAÇÃO</label>
-                                <input type="text" name="ano_fabricacao" id="" class="form-control required">
+                                <input type="text" name="ano_fabricacao" id="" class="form-control required" required value="{{old('ano_fabricacao')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="placa_veiculo" class="required">PLACA</label>
-                                <input type="text" name="placa_veiculo" id="" class="form-control required">
+                                <input type="text" name="placa_veiculo" id="" class="form-control required" required value="{{old('placa_veiculo')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="chassi" class="required">CHASSI</label>
-                                <input type="text" name="chassi" id="" class="form-control required">
+                                <input type="text" name="chassi" id="" class="form-control required" required value="{{old('chassi')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="renavam" class="required">RENAVAM</label>
-                                <input type="text" name="renavam" id="" class="form-control required">
+                                <input type="text" name="renavam" id="" class="form-control required" required value="{{old('renavam')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="cor_veiculo" class="required">COR DO VEÍCULO</label>
-                                <input type="text" name="cor_veiculo" id="" class="form-control required">
+                                <input type="text" name="cor_veiculo" id="" class="form-control required" required value="{{old('cor_veiculo')}}">
                             </div>
 
                         </div>

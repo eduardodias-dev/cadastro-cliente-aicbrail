@@ -53,7 +53,7 @@
             <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
             <li>
                 <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
-                    <i class="fa fa-shopping-cart" style="font-size: 22px;"></i>
+                    <i class='bx bxs-cart' style="font-size: 22px;"></i>
                     {{-- <span class="badge badge-primary">5</span> --}}
                 </a>
             </li>
@@ -86,11 +86,11 @@
                     <a href="{{ route('download_apolice', ['codigo_pacote'=> $codigo_pacote])}}" target="_blank">Ver Apólice</a>
                 </div>
                 <div class="row py-3">
-                    @if(session()->get('assinatura_criada'))
+                    @if(session()->has('assinatura_criada'))
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="alert alert-success" role="info">
-                                    Plano criado com sucesso
+                                    Plano criado com sucesso!
                                 </div>
                             </div>
                         </div>

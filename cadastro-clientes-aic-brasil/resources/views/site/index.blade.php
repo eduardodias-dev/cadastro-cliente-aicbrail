@@ -59,7 +59,7 @@
             <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
             <li>
                 <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
-                    <i class="fa fa-shopping-cart" style="font-size: 22px;"></i>
+                    <i class='bx bxs-cart' style="font-size: 22px;"></i>
                     {{-- <span class="badge bg-primary">5</span> --}}
                 </a>
             </li>

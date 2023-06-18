@@ -26,18 +26,24 @@ class SiteController extends Controller
 
     public function cart_add(Request $request)
     {
+        session()->remove('erros');
         $data = $request->all();
         $validation = $this->validarCliente($data);
 
         //implementar aparição de erros na view.
         if($validation->fails()){
-            return response()->json([
-                'success' => false,
-                'message' => 'Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)',
-                'errors' => json_encode($validation->errors())
-                ]
-            );
+            // return response()->json([
+            //     'success' => false,
+            //     'message' => 'Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)',
+            //     'errors' => json_encode($validation->errors())
+            //     ]
+            // );
+            session()->flash('erros', $validation->errors());
+
+            return redirect()->route('site.comprar_plano', ['id_plano' => $data['plan_id']])
+                            ->withInput();
         }
+
         $data['valor_calculado'] = CartHelper::getValorCalculado($data, $data['plan_price']);
 
         $cart = session()->get('carrinho');
@@ -101,15 +107,19 @@ class SiteController extends Controller
     {
         try{
             $data = $request->all();
-            $validation = $this->validarCliente($data);
+            $validation = $this->validarCliente($data, 1);
 
             if($validation->fails()){
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)',
-                    'errors' => json_encode($validation->errors())
-                    ]
-                );
+                // return response()->json([
+                //     'success' => false,
+                //     'message' => 'Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)',
+                //     'errors' => json_encode($validation->errors())
+                //     ]
+                // );
+                session()->flash('erros', $validation->errors());
+
+                return redirect()->route('checkout.confirm')
+                            ->withInput();
             }
 
             $cart = session()->get('carrinho');
@@ -118,7 +128,7 @@ class SiteController extends Controller
             }
 
             $cart['dados_pagamento'] = ['cliente' => $data];
-            session('assinatura_criada', 1);
+            session()->flash('assinatura_criada', 1);
 
             $checkoutService = new CheckoutService();
             $result = $checkoutService->realizarCheckoutByCart($cart);
@@ -129,7 +139,7 @@ class SiteController extends Controller
         }
         catch(Exception $e)
         {
-            session()->put('error', true);
+            session()->flash('erros', true);
             return redirect()->route('checkout.confirm');
         }
     }
@@ -244,11 +254,11 @@ class SiteController extends Controller
         return response()->json(['message' => 'Operacao executada com sucesso.'], 200);
     }
 
-    private function validarCliente($request){
-        return Validator::make($request, $this->regras($request["tipo_cadastro"]));
+    private function validarCliente($request, $checkout = 0){
+        return Validator::make($request, $this->regras($request["tipo_cadastro"], $checkout));
     }
 
-    private function regras($tipoCadastro){
+    private function regras($tipoCadastro, $checkout){
         $arrRegras = [
             'nome' => 'required|string|max:255',
             'cpfcnpj' => 'required|regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/',
@@ -256,7 +266,7 @@ class SiteController extends Controller
             'logradouro' => 'required|string',
             'cidade' => 'required|string',
             'estado' => 'required|string',
-            'cep' => 'regex:/^[0-9]{5}-[0-9]{3}$/',
+            'cep' => 'regex:/^[0-9]{5}-[0-9]{3}$/'
             // 'card_number' => 'required|numeric',
             // 'expiration_month' => 'required|numeric',
             // 'expiration_year' => 'required|numeric',
@@ -266,7 +276,9 @@ class SiteController extends Controller
         if($tipoCadastro == "J"){
             $arrRegras['cpfcnpj'] = 'required|regex:/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/';
         }
-
+        if($checkout != 1){
+            $arrRegras['tipo_veiculo'] = 'required|string';
+        }
         return $arrRegras;
     }
 
