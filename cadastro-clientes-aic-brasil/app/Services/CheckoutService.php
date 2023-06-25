@@ -3,13 +3,16 @@
 namespace App\Services;
 
 use App\Email;
+use App\Plano;
 use Exception;
+use App\Pacote;
 use App\Cliente;
 use App\Veiculo;
 use App\Endereco;
 use App\Telefone;
 use App\Assinatura;
 use \Mpdf\Mpdf as PDF;
+use App\Mail\EmailBoasVindas;
 use App\Adicionais_Assinatura;
 use App\Mail\EnvioEmailApolice;
 use Illuminate\Support\Facades\DB;
@@ -17,8 +20,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Assinatura_Adicionais_Assinatura;
-use App\Mail\EmailBoasVindas;
-use App\Pacote;
 
 class CheckoutService
 {
@@ -26,7 +27,7 @@ class CheckoutService
     {
         DB::beginTransaction();
         try{
-            $savedClient = $this->adicionarCliente($checkoutData);
+            $savedClient = $this->adicionarCliente($checkoutData,$checkoutData['plan_id']);
 
             if($savedClient != null){
                 $savedSubscription = $this->adicionarAssinatura($checkoutData, $savedClient->id, $checkoutData['plan_id'], 0);
@@ -66,7 +67,7 @@ class CheckoutService
         try{
             $cliente_pagador = $cartData['dados_pagamento']['cliente'];
             unset($cartData['dados_pagamento']);
-            $savedClientPagador = $this->adicionarCliente($cliente_pagador, true);
+            $savedClientPagador = $this->adicionarCliente($cliente_pagador, 1, true);
             $pacote = new Pacote;
             $pacote->client_id = $savedClientPagador->id;
             $pacote->status = 'pendente';
@@ -80,7 +81,7 @@ class CheckoutService
 
             foreach($cartData as $key => $cartItem){
 
-                $savedClient = $this->adicionarCliente($cartItem, false);
+                $savedClient = $this->adicionarCliente($cartItem, $key, false);
 
                 if($savedClient != null){
                     $savedSubscription = $this->adicionarAssinatura($cartItem, $savedClient->id, $key, $pacote->id);
@@ -117,7 +118,7 @@ class CheckoutService
         return null;
     }
 
-    private function adicionarCliente($data, $somentePagamento = false)
+    private function adicionarCliente($data, $plan_id, $somentePagamento = false)
     {
         try{
             $newCliente = new Cliente;
@@ -160,7 +161,9 @@ class CheckoutService
             $clienteTelefone->numero = $data['celular'];
             $clienteTelefone->save();
 
-            if(!$somentePagamento){
+            $plano = Plano::find($plan_id);
+            if(!$somentePagamento && $plano->juridico != 1){
+                //die('somentePag'.$somentePagamento.' '.$plano->juridico.' data:'.print_r($data));
                 $veiculo = new Veiculo;
 
                 $veiculo->client_id = $newCliente->id;
@@ -204,60 +207,60 @@ class CheckoutService
             $newAssinatura->adesao = date('Y-m-d H:i:s');
             //$newAssinatura->melhor_vencimento = $data['melhor_vencimento'];
             //$newAssinatura->tipo_pagamento = $data['forma_pagamento'];
-            $newAssinatura->protecao_veicular = $data['comprar_protecao_veicular'];
+            $newAssinatura->protecao_veicular = isset($data['comprar_protecao_veicular']) ? $data['comprar_protecao_veicular'] : '0';
             $newAssinatura->pacote_id = $pacote_id;
             $newAssinatura->save();
 
             $newAssinatura->codigo_assinatura = $this->getCodigoAssinatura($newAssinatura);
 
-            $beneficios = isset($data['club_beneficio']) ? $data['club_beneficio'] : [];
-            foreach($beneficios as $item){
-                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
+            $plano = Plano::find($plan_id);
+            if($plano->juridico != 1){
+                $beneficios = isset($data['club_beneficio']) ? $data['club_beneficio'] : [];
+                foreach($beneficios as $item){
 
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $item;
-                $adicionalAssinatura->deletado = false;
+                    $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
+                    $adicionalAssinatura->assinatura_id = $newAssinatura->id;
+                    $adicionalAssinatura->adicional_assinatura_id = $item;
+                    $adicionalAssinatura->deletado = false;
 
-                //$newAssinatura->valor += $adicionalAssinaturaValor->valor;
-                $adicionalAssinatura->save();
-            }
+                    //$newAssinatura->valor += $adicionalAssinaturaValor->valor;
+                    $adicionalAssinatura->save();
+                }
 
-            $coberturas = isset($data['cobertura_24horas']) ? $data['cobertura_24horas'] : [];
+                $coberturas = isset($data['cobertura_24horas']) ? $data['cobertura_24horas'] : [];
 
-            foreach($coberturas as $item){
-                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
+                foreach($coberturas as $item){
 
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $item;
-                $adicionalAssinatura->deletado = false;
+                    $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
+                    $adicionalAssinatura->assinatura_id = $newAssinatura->id;
+                    $adicionalAssinatura->adicional_assinatura_id = $item;
+                    $adicionalAssinatura->deletado = false;
 
-                //$newAssinatura->valor += $adicionalAssinaturaValor->valor;
-                $adicionalAssinatura->save();
-            }
+                    //$newAssinatura->valor += $adicionalAssinaturaValor->valor;
+                    $adicionalAssinatura->save();
+                }
 
-            $cobertura_24horas_incluso_plano = Adicionais_Assinatura::where('incluso_nos_planos', 'LIKE', '%'.$plan_id.'%')->get();
-            foreach($cobertura_24horas_incluso_plano as $incluso){
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $incluso->id;
-                $adicionalAssinatura->deletado = false;
+                $cobertura_24horas_incluso_plano = Adicionais_Assinatura::where('incluso_nos_planos', 'LIKE', '%'.$plan_id.'%')->get();
+                foreach($cobertura_24horas_incluso_plano as $incluso){
+                    $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
+                    $adicionalAssinatura->assinatura_id = $newAssinatura->id;
+                    $adicionalAssinatura->adicional_assinatura_id = $incluso->id;
+                    $adicionalAssinatura->deletado = false;
 
-                $adicionalAssinatura->save();
-            }
+                    $adicionalAssinatura->save();
+                }
 
-            $seguros = isset($data['comprar_seguros']) ? $data['comprar_seguros'] : [];
-            foreach($seguros as $item){
-                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
+                $seguros = isset($data['comprar_seguros']) ? $data['comprar_seguros'] : [];
+                foreach($seguros as $item){
+                    $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
+                    $adicionalAssinatura->assinatura_id = $newAssinatura->id;
+                    $adicionalAssinatura->adicional_assinatura_id = $item;
+                    $adicionalAssinatura->deletado = false;
 
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $item;
-                $adicionalAssinatura->deletado = false;
+                    //$newAssinatura->valor += $adicionalAssinaturaValor->valor;
+                    $adicionalAssinatura->save();
+                }
 
-                //$newAssinatura->valor += $adicionalAssinaturaValor->valor;
-                $adicionalAssinatura->save();
             }
 
             $newAssinatura->save();

@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Checkout - AIC Brasil</title>
+  <title>Comprar Plano - AIC Brasil</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -160,10 +160,17 @@
                             <div class="mb-1">
                                 <label class="">Tipo de cadastro</label>
                             </div>
-                            <div class="mb-1">
-                                <input type="radio" name="tipo_cadastro" value="F" id="" checked="true"> Pessoa Física
-                                <input type="radio" name="tipo_cadastro" value="J" id=""> Pessoa Jurídica
-                            </div>
+                            @if($plano->juridico != 1)
+                                <div class="mb-1">
+                                    <input type="radio" name="tipo_cadastro" value="F" id="" checked="true"> Pessoa Física
+                                    <input type="radio" name="tipo_cadastro" value="J" id=""> Pessoa Jurídica
+                                </div>
+                            @else
+                                <div class="mb-1">
+                                    <input type="radio" name="tipo_cadastro" value="F" {{$plano->tipo_pessoa == 'F' ? 'checked' : 'disabled'}}> Pessoa Física
+                                    <input type="radio" name="tipo_cadastro" value="J" {{$plano->tipo_pessoa == 'J' ? 'checked' : 'disabled'}}> Pessoa Jurídica
+                                </div>
+                            @endif
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
@@ -289,103 +296,105 @@
                                 <input type="text" name="ocupacao" class="form-control" value="{{old('ocupacao')}}">
                             </div>
                         </div>
-                        <hr>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <h5>Club de Benefício</h5>
-                                @isset($club_beneficio)
-                                    @foreach ($club_beneficio as $item)
-                                        <div>
-                                            <input type="checkbox" class="adicional_assinatura" name="club_beneficio[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
-                                            <label for="club_beneficio[]">{{$item->nome}}</label>
-                                        </div>
-                                    @endforeach
-                                @endisset
+                        @if($plano->juridico != 1)
+                            <hr>
+                            <div class="row mt-2">
+                                <div class="form-group col-md-6">
+                                    <h5>Club de Benefício</h5>
+                                    @isset($club_beneficio)
+                                        @foreach ($club_beneficio as $item)
+                                            <div>
+                                                <input type="checkbox" class="adicional_assinatura" name="club_beneficio[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
+                                                <label for="club_beneficio[]">{{$item->nome}}</label>
+                                            </div>
+                                        @endforeach
+                                    @endisset
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <h5>COBERTURA 24h (365 DIAS)</h5>
+                                    @isset($cobertura_24horas)
+                                        @foreach($cobertura_24horas as $item)
+                                            <div>
+                                                <input type="checkbox" class="adicional_assinatura" name="cobertura_24horas[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
+                                                <label for="cobertura_24horas[]">{{$item->nome}}</label>
+                                            </div>
+                                        @endforeach
+                                    @endisset
+                                </div>
                             </div>
-                            <div class="form-group col-md-6">
-                                <h5>COBERTURA 24h (365 DIAS)</h5>
-                                @isset($cobertura_24horas)
-                                    @foreach($cobertura_24horas as $item)
-                                        <div>
-                                            <input type="checkbox" class="adicional_assinatura" name="cobertura_24horas[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
-                                            <label for="cobertura_24horas[]">{{$item->nome}}</label>
-                                        </div>
-                                    @endforeach
-                                @endisset
+                            <div class="row mt-2">
+                                <div class="form-group col-md-6">
+                                    <h5>COMPRAR SEGURO(S)</h5>
+                                    @isset($comprar_seguros)
+                                        @foreach($comprar_seguros as $item)
+                                            <div>
+                                                <input type="checkbox" class="adicional_assinatura" name="comprar_seguros[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
+                                                <label for="comprar_seguros[]">{{$item->nome}}</label>
+                                            </div>
+                                        @endforeach
+                                    @endisset
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <h5 for="comprar_protecao_veicular">COMPRAR PROTEÇÃO VEICULAR</h5>
+                                    <select name="comprar_protecao_veicular" class="form-control" value="{{old('comprar_protecao_veicular')}}">
+                                        <option value="" class="">Selecione</option>
+                                        <option value="1">Sim</option>
+                                        <option value="0">Não</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <h5>COMPRAR SEGURO(S)</h5>
-                                @isset($comprar_seguros)
-                                    @foreach($comprar_seguros as $item)
-                                        <div>
-                                            <input type="checkbox" class="adicional_assinatura" name="comprar_seguros[]" value="{{$item->id}}" data-nome="{{$item->nome}}" data-preco="{{$item->valor}}" data-incluso-plano="{{$item->incluso_nos_planos}}">
-                                            <label for="comprar_seguros[]">{{$item->nome}}</label>
-                                        </div>
-                                    @endforeach
-                                @endisset
+                            <hr>
+                            <div class="row mt-2">
+                                <div class="form-group col-md-6">
+                                    <label for="tipo_veiculo" class="required">TIPO DO VEÍCULO</label>
+                                    <select name="tipo_veiculo" class="form-control required" required value="{{old('tipo_veiculo')}}">
+                                        <option value="" class="">Selecione</option>
+                                        <option value="AUTOMOVEL">AUTOMOVEL</option>
+                                        <option value="MOTOCICLETA">MOTOCICLETA</option>
+                                        <option value="CAMINHÃO">CAMINHÃO</option>
+                                        <option value="VAN_SUV">VAN - SUV</option>
+                                        <option value="PICKUP">PICK-UP</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="form-group col-md-6">
-                                <h5 for="comprar_protecao_veicular">COMPRAR PROTEÇÃO VEICULAR</h5>
-                                <select name="comprar_protecao_veicular" class="form-control" value="{{old('comprar_protecao_veicular')}}">
-                                    <option value="" class="">Selecione</option>
-                                    <option value="1">Sim</option>
-                                    <option value="0">Não</option>
-                                </select>
+                            <div class="row mt-2">
+                                <div class="form-group col-md-6">
+                                    <label for="modelo_veiculo" class="required">MODELO DO VEÍCULO</label>
+                                    <input type="text" name="modelo_veiculo" id="" class="form-control required" required value="{{old('modelo_veiculo')}}">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="marca_veiculo" class="required">MARCA DO VEÍCULO</label>
+                                    <input type="text" name="marca_veiculo" id="" class="form-control required" required value="{{old('marca_veiculo')}}">
+                                </div>
                             </div>
-                        </div>
-                        <hr>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="tipo_veiculo" class="required">TIPO DO VEÍCULO</label>
-                                <select name="tipo_veiculo" class="form-control required" required value="{{old('tipo_veiculo')}}">
-                                    <option value="" class="">Selecione</option>
-                                    <option value="AUTOMOVEL">AUTOMOVEL</option>
-                                    <option value="MOTOCICLETA">MOTOCICLETA</option>
-                                    <option value="CAMINHÃO">CAMINHÃO</option>
-                                    <option value="VAN_SUV">VAN - SUV</option>
-                                    <option value="PICKUP">PICK-UP</option>
-                                </select>
+                            <div class="row mt-2">
+                                <div class="form-group col-md-6">
+                                    <label for="ano_fabricacao" class="required">ANO DE FABRICAÇÃO</label>
+                                    <input type="text" name="ano_fabricacao" id="" class="form-control required" required value="{{old('ano_fabricacao')}}">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="placa_veiculo" class="required">PLACA</label>
+                                    <input type="text" name="placa_veiculo" id="" class="form-control required" required value="{{old('placa_veiculo')}}">
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="modelo_veiculo" class="required">MODELO DO VEÍCULO</label>
-                                <input type="text" name="modelo_veiculo" id="" class="form-control required" required value="{{old('modelo_veiculo')}}">
+                            <div class="row mt-2">
+                                <div class="form-group col-md-6">
+                                    <label for="chassi" class="required">CHASSI</label>
+                                    <input type="text" name="chassi" id="" class="form-control required" required value="{{old('chassi')}}">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="renavam" class="required">RENAVAM</label>
+                                    <input type="text" name="renavam" id="" class="form-control required" required value="{{old('renavam')}}">
+                                </div>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="marca_veiculo" class="required">MARCA DO VEÍCULO</label>
-                                <input type="text" name="marca_veiculo" id="" class="form-control required" required value="{{old('marca_veiculo')}}">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="ano_fabricacao" class="required">ANO DE FABRICAÇÃO</label>
-                                <input type="text" name="ano_fabricacao" id="" class="form-control required" required value="{{old('ano_fabricacao')}}">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="placa_veiculo" class="required">PLACA</label>
-                                <input type="text" name="placa_veiculo" id="" class="form-control required" required value="{{old('placa_veiculo')}}">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="chassi" class="required">CHASSI</label>
-                                <input type="text" name="chassi" id="" class="form-control required" required value="{{old('chassi')}}">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="renavam" class="required">RENAVAM</label>
-                                <input type="text" name="renavam" id="" class="form-control required" required value="{{old('renavam')}}">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-md-6">
-                                <label for="cor_veiculo" class="required">COR DO VEÍCULO</label>
-                                <input type="text" name="cor_veiculo" id="" class="form-control required" required value="{{old('cor_veiculo')}}">
-                            </div>
+                            <div class="row mt-2">
+                                <div class="form-group col-md-6">
+                                    <label for="cor_veiculo" class="required">COR DO VEÍCULO</label>
+                                    <input type="text" name="cor_veiculo" id="" class="form-control required" required value="{{old('cor_veiculo')}}">
+                                </div>
 
-                        </div>
+                            </div>
+                        @endif
                         <div class="row mt-4">
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-success">Confirmar</button>

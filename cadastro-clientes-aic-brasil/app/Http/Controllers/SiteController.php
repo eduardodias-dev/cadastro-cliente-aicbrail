@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Mail\EnvioEmailApolice;
 use App\Services\CheckoutService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\ViewModels\CheckoutViewModel;
 use Illuminate\Support\Facades\Storage;
@@ -118,6 +119,7 @@ class SiteController extends Controller
                 //     ]
                 // );
                 session()->flash('erros', $validation->errors());
+                Log::Debug(print_r($validation->errors));
 
                 return redirect()->route('checkout.confirm')
                             ->withInput();
@@ -140,8 +142,12 @@ class SiteController extends Controller
         }
         catch(Exception $e)
         {
-            session()->flash('erros', true);
-            return redirect()->route('checkout.confirm');
+            session()->flash('erros', $e->getMessage());
+            Log::Debug(print_r($e->getMessage()));
+
+            return redirect()
+                ->route('checkout.confirm')
+                ->withInput();
         }
     }
 
@@ -256,6 +262,17 @@ class SiteController extends Controller
         return response()->json(['message' => 'Operacao executada com sucesso.'], 200);
     }
 
+    public function list_plans(){
+        $planos = Plano::where(['ativo_venda' => '1', 'juridico' => null])->orderBy('preco','asc')->get();
+        $planosJuridicos = Plano::where(['ativo_venda' => '1', 'juridico' => '1'])->orderBy('preco','asc')->get();
+
+        return view('site.list_plan', ['planos' => $planos, 'planosJuridicos' => $planosJuridicos]);
+    }
+
+
+
+    //Private methods
+
     private function validarCliente($request, $checkout = 0){
         return Validator::make($request, $this->regras($request["tipo_cadastro"], $checkout));
     }
@@ -278,9 +295,9 @@ class SiteController extends Controller
         if($tipoCadastro == "J"){
             $arrRegras['cpfcnpj'] = 'required|regex:/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/';
         }
-        if($checkout != 1){
-            $arrRegras['tipo_veiculo'] = 'required|string';
-        }
+        // if($checkout != 1){
+        //     $arrRegras['tipo_veiculo'] = 'required|string';
+        // }
         return $arrRegras;
     }
 
@@ -337,4 +354,5 @@ class SiteController extends Controller
             $this->enviarEmailBemvindo($codigoAssinatura, $assinatura_detalhe->emails, 1);
         }
     }
+
 }

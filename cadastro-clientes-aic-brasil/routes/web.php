@@ -56,3 +56,5 @@ Route::get('checkout/confirm', 'SiteController@checkout_confirm')->name('checkou
 Route::post('checkout/confirm', 'SiteController@checkout_post')->name('checkout.finalize');
 
 Route::get('/downloadapolice', [SiteController::class, 'download_apolice'])->name('download_apolice');
+
+Route::get('/planos', [SiteController::class, 'list_plans'])->name('planos');

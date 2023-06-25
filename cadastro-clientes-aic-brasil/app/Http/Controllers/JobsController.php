@@ -92,7 +92,6 @@ class JobsController extends Controller
         $mpdf = new PDF();
         $pathfile = storage_path(getFilePathByArray(['app','public','capa_apolice.pdf']));
 
-
         $mpdf->SetSourceFile($pathfile);
         $tplId = $mpdf->ImportPage(1);
         $mpdf->useTemplate($tplId);

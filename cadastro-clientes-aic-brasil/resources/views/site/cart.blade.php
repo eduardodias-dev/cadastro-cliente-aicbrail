@@ -125,6 +125,9 @@
                 @csrf
                 <button type="submit" class="btn btn-primary">Prosseguir ao Checkout</button>
             </form>
+            <a href="{{ route('planos') }}" class="btn btn-success">Continuar comprando</a>
+        @else
+            <a href="{{ route('planos') }}" class="btn btn-success">Comprar um plano</a>
         @endif
     </div>
 

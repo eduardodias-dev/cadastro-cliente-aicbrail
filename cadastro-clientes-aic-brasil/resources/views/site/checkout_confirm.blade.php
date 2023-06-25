@@ -147,6 +147,7 @@
                 <div class="row" >
                     <div class="alert alert-danger alert-dismissible">
                         Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)
+                        {{session()->get('erros')}}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
