@@ -5,14 +5,14 @@
         Estamos muito felizes em tê-lo(a) conosco, conte com a gente sempre que precisar! <br/>
     </p>
     <div style="border: 1px solid #6c97c3; border-radius: 10px; padding: 10px; text-align:left;margin-bottom: 10px;">
-        <h4 style="padding-bottom: 0;">Dados da Pedido:</h4>
-        <b>Apólice:</b> {{$assinatura->codigo_assinatura}}<br/>
-        <b>Data de emissão:</b> {{getDataPorExtenso($assinatura->adesao)}}<br/>
-        <b>Titular:</b> {{$assinatura->nome_cliente}} <br>
-        <b>Telefone:</b> {{$assinatura->telefone}} <br>
-        <b>Endereço:</b> {{$assinatura->logradouro}}, {{$assinatura->numero}} <br>
-        <b>Cidade:</b> {{$assinatura->cidade}}/{{$assinatura->estado}} <br>
-        <b>CEP:</b> {{$assinatura->cep}}
+        <h4 style="padding-bottom: 0;">Dados do Pedido:</h4>
+        <b>Código:</b> {{$pacote->codigo}}<br/>
+        <b>Data de emissão:</b> {{getDataPorExtenso($pacote->adesao)}}<br/>
+        <b>Titular:</b> {{$pacote->nome_cliente}} <br>
+        <b>Telefone:</b> {{$pacote->telefone}} <br>
+        <b>Endereço:</b> {{$pacote->logradouro}}, {{$pacote->numero}} <br>
+        <b>Cidade:</b> {{$pacote->cidade}}/{{$pacote->estado}} <br>
+        <b>CEP:</b> {{$pacote->cep}}
     </div>
     <div style="background-color: #ddd; border-radius: 10px; padding: 10px;text-align: left;">
         Prezado(a) cliente, assim que nosso sistema registrar o pagamento, a sua <b>APÓLICE</b> de <b>ASSISTÊNCIA 24h</b> será encaminhada em teu e-mail, finalizando de fato a compra e, assim, você poderá usufruir de todos os benefícios contratados. Desde já muitíssimo obrigado.<br/>

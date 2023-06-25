@@ -278,6 +278,7 @@ var modalResult = new bootstrap.Modal('#modal-result');
 var modalPesquisandoPedido = new bootstrap.Modal('#modal-pesquisando-pedido');
 
 jQuery(function() {
+    alterarTipoCadastro($('[name=tipo_cadastro]:checked').val());
     $('#box-sucesso, #box-erro').hide();
 
     $('#campos_cartao').hide('fast');
@@ -319,7 +320,9 @@ jQuery(function() {
                 },
         }
     });
+
     $('#form-checkout').on('submit', (e) =>{
+        return;
         e.preventDefault();
         var isValid = validarFormulario($(this));
         if(!isValid) return;
@@ -528,10 +531,12 @@ jQuery(function() {
     });
 
     function alterarTipoCadastro(val){
+        console.log('oi', val);
         if(val == "F"){
             $('[name=cpfcnpj]').val("");
             $("label.cpfcnpj").html("CPF");
             $("label[for=nome]").html("Nome");
+            $("label[for=datanasc]").html("Data de Nascimento");
             $('[name=cpfcnpj]').inputmask('999.999.999-99');
 
             $('[name=nome_representante]').closest('.form-group').hide();
@@ -541,18 +546,37 @@ jQuery(function() {
             $('[name=cpf_representante]').val("");
 
             $('[name=rg]').closest('.form-group').show();
+            $('[name=cutis]').closest('.form-group').show();
+            $('[name=estado_civil]').closest('.form-group').show();
+            $('[name=alfabetizado]').closest('.form-group').show();
+            $('[name=sexo]').closest('.form-group').show();
+
+            $('[name=estado_civil]').prop('required', true);
+            $('[name=alfabetizado]').prop('required', true);
+            $('[name=sexo]').prop('required', true);
         }
         else if(val == "J")
         {
             $('[name=cpfcnpj]').val("");
             $("label.cpfcnpj").html("CNPJ");
+            $("label[for=datanasc]").html("Data de Abertura");
             $("label[for=nome]").html("Razão Social");
             $('[name=cpfcnpj]').inputmask('99.999.999/9999-99');
 
             $('[name=nome_representante]').closest('.form-group').show();
             $('[name=cpf_representante]').closest('.form-group').show();
+
             $('[name=rg]').closest('.form-group').hide();
+            $('[name=cutis]').closest('.form-group').hide();
+            $('[name=estado_civil]').closest('.form-group').hide();
+            $('[name=alfabetizado]').closest('.form-group').hide();
+            $('[name=sexo]').closest('.form-group').hide();
+
+            $('[name=estado_civil]').prop('required', false);
+            $('[name=alfabetizado]').prop('required', false);
+            $('[name=sexo]').prop('required', false);
+
         }
     }
-    alterarTipoCadastro($('[name=tipo_cadastro]').val());
+
 })

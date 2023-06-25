@@ -25,7 +25,7 @@
   <link href="/site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.14/combined/css/gijgo.min.css"> --}}
   <link rel="stylesheet" href="/dist/plugins/datetimepicker/jquery.datetimepicker.min.css" />
-
+  <link href="/dist/plugins/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
   <!-- Template Main CSS File -->
   <link href="/site/css/style.css" rel="stylesheet">
 
@@ -36,63 +36,7 @@
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
 </head>
-<div class="modal fade modal-lg" id="modal-checkout" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          {{-- <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1> --}}
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="text-center" id="box-carregando" style=" padding: 20px;">
-                <i class='bx bx-loader-alt bx-spin bx-rotate-180 text-center' style="font-size: 50px; color: #1264d0" ></i>
-                <h5 class="text-center">Aguarde, Estamos processando seu pedido.</h5>
-            </div>
-        </div>
-      </div>
-    </div>
-</div>
-  <div class="modal fade modal-lg" id="modal-result" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          {{-- <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1> --}}
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div id="box-sucesso" class="text-center" style=" padding: 20px;">
-                <i class='bx bxs-check-circle ' style="font-size: 50px; color: #03a803;" ></i>
-                <div class="mensagem">
 
-                </div>
-            </div>
-            <div id="box-erro" class="text-center" style=" padding: 20px;">
-                <i class='bx bxs-error-circle ' style="font-size: 50px; color: #a80303;" ></i>
-                <div class="mensagem">
-
-                </div>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
-<!-- Modal -->
-<div class="modal fade modal-lg" id="modal-pesquisando-pedido" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          {{-- <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1> --}}
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="text-center" id="box-carregando" style=" padding: 20px;">
-                <i class='bx bx-loader-alt bx-spin bx-rotate-180 text-center' style="font-size: 50px; color: #1264d0" ></i>
-                <h5 class="text-center">Aguarde, Estamos pesquisando seu pedido.</h5>
-            </div>
-        </div>
-      </div>
-    </div>
-</div>
 <body>
 
   <!-- ======= Header ======= -->
@@ -106,6 +50,12 @@
       <nav id="navbar" class="navbar">
         <ul>
             <li><a class="nav-link scrollto active" href="/">Home</a></li>
+            <li>
+                <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
+                    <i class='bx bxs-cart' style="font-size: 22px;"></i>
+                    {{-- <span class="badge badge-primary">5</span> --}}
+                </a>
+            </li>
             <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
@@ -114,30 +64,126 @@
     </div>
   </header><!-- End Header -->
 
-  <main id="main" style="margin-top: 70px; background: #fafafa" class="py-1">
+  <main id="main" style="margin-top: 70px; background: #fafafa; min-height: 600px;" class="py-1">
     <div class="container py-5" style="background: white;border:">
-        <h1>Acompanhe seu pedido</h1>
+        <h1>Detalhes do seu pedido</h1>
+        <form method="get" class="row">
+            <div class="form-inline col-md-6">
+                <label for="search-order">Código do seu pedido:</label>
+                <input type="search" id="search-order" name="codigo_pacote" class="form-control" value="{{$codigo_pacote}}">
+                <button type="submit" id="btn-search-order" class="btn btn-success mt-2">
+                    Buscar
+                    <i class='bx bx-search'></i>
+                </button>
+            </div>
+        </form>
+        @if(isset($codigo_pacote) && !empty($codigo_pacote))
 
-        <div class="main-form mt-2" style="min-height: 600px;">
-            <div class="row">
-                <div class="form-group col-md-6">
-                    @csrf
-                    <label for="search-order">Código do seu pedido:</label>
-                    <input type="search" id="search-order" name="search-order" class="form-control">
+            <div class="main-form mt-2" style="min-height: 600px;">
+                <hr>
+                <div class="row py-3">
+                    <div class="col-md">
+                        <h2>Pedido: {{$codigo_pacote}}</h2>
+                        <a class="btn btn-primary" href="{{$pacote->link_boleto}}" target="_blank">
+                            Clique aqui para ver seu Boleto
+                            <i class='bx bx-money-withdraw'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="row py-3">
+                    @if(session()->has('assinatura_criada'))
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-success" role="info">
+                                    Plano criado com sucesso!
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    @if($error)
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info" role="info">
+                                Não foi encontrado nenhum pedido com esse código.
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                        @for($i = 0; $i < count($subscriptions); $i++)
+                            <div class="box-assinaturas card p-3 mb-3">
+                                <div class="col-md-12">
+                                    <h2>Assinatura #{{$i + 1}}</h2>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4>Dados do Plano:</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <b style="font-size: 20px;">Status da Assinatura:</b>
+                                                    <span class="{{getClassByStatus($subscriptions[$i]['status'])}}" style="font-size: 20px;">{{ucfirst($subscriptions[$i]['status'])}}</span>
+                                                <br>
+                                                <b>Plano Contratado:</b> {{$subscriptions[$i]['nome']}}<br>
+                                                <b>Titular:</b> {{$subscriptions[$i]['nome_cliente']}}<br>
+                                                <b>Documento:</b> {{$subscriptions[$i]['documento']}}<br>
+                                                <b>Email:</b> {{$subscriptions[$i]['emails']}}<br>
+                                                <b>Telefone:</b> {{$subscriptions[$i]['telefone']}}<br>
+                                                <b>Valor:</b> {{getValorEmReal($subscriptions[$i]['valor'])}}<br>
+                                                <b>Periodicidade:</b> {{$subscriptions[$i]['periodicidade']}}<br>
+                                                <b>Quantidade:</b> {{$subscriptions[$i]['quantidade']}}<br>
+                                                <b>Info Adicional:</b> {{$subscriptions[$i]['info_adicional']}}<br>
+                                                <b>Forma de Pagamento:</b> {{$subscriptions[$i]['tipo_pagamento']}}<br>
+                                                @if($subscriptions[$i]['tipo_cadastro'] == "J")
+                                                    <b>Nome Representante:</b> {{$subscriptions[$i]['nome_representante']}}<br>
+                                                    <b>CPF Representante:</b> {{$subscriptions[$i]['cpf_representante']}}<br>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card ">
+                                            <div class="card-header">
+                                                <h4>Dados de Endereço</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <b>Rua:</b> {{$subscriptions[$i]['logradouro']}}, {{$subscriptions[$i]['numero']}} {{$subscriptions[$i]['complemento']}}<br>
+                                                <b>Bairro:</b> {{$subscriptions[$i]['bairro']}}<br>
+                                                <b>Cidade:</b> {{$subscriptions[$i]['cidade']}}/{{$subscriptions[$i]['estado']}}<br>
+                                                <b>CEP:</b> {{$subscriptions[$i]['cep']}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
+                                        <div class="card ">
+                                            <div class="card-header">
+                                                <h4>Adquirido com o Plano:</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul>
+                                                    @foreach($subscriptions[$i]['adicionais_assinatura'] as $grupo => $tipo)
+                                                        <li>
+                                                            <b>{{$grupo}}</b>
+                                                            <ul>
+                                                                @foreach($tipo as $adicional)
+                                                                    <li>{{$adicional['nome_adicional']}}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endfor
+                    @endif
                 </div>
             </div>
-            <div class="row">
-                <div class="form-group col-md-12 mt-2">
-                    <button type="button" id="btn-search-order" class="btn btn-success">
-                        Buscar
-                        <i class='bx bx-search'></i>
-                    </button>
-                </div>
-            </div>
-            <div class="row py-3" id="resultado-pesquisa">
-
-            </div>
-        </div>
+        @endif
     </div>
   </main><!-- End #main -->
 

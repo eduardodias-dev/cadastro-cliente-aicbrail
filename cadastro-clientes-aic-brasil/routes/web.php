@@ -39,12 +39,22 @@ Route::prefix("admin")->middleware('auth')->group(function(){
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/checkout/{id_plano}', [SiteController::class, 'checkout'])->name('site.checkout');
-Route::post('/checkout/{id_plano}', [SiteController::class, 'checkout_post'])->name('checkout.post');
-Route::get('/vieworder', [SiteController::class, 'view_order'])->name('view.order');
+Route::get('/comprar-plano/{id_plano}', [SiteController::class, 'comprar_plano'])->name('site.comprar_plano');
+//Route::post('/checkout', [SiteController::class, 'checkout_post'])->name('checkout.post');
+Route::get('/vieworder', [SiteController::class, 'view_pacote'])->name('view.order');
 Route::post('/vieworder', [SiteController::class, 'view_order_post'])->name('view.order.post');
 
 Route::get('/pdf/{ordercode}/{sendEmail?}', 'HomeController@pdf');
 // Route::post('/viewContract/{ordercode}/{sendEmail?}/{showReport?}', 'SiteController@view_contract');
 //Route::post('transaction/update', 'SiteController@updateTransaction');
 Route::get('check/queue', 'JobsController@verificarFilaAssinaturas');
+Route::get('carrinho','SiteController@cart')->name('cart.index');
+Route::post('carrinho','SiteController@cart_add')->name('cart.add');
+Route::post('remover-carrinho','SiteController@cart_remove')->name('cart.remove');
+Route::get('limpar-carrinho','SiteController@cart_clear')->name('cart.clear');
+Route::get('checkout/confirm', 'SiteController@checkout_confirm')->name('checkout.confirm');
+Route::post('checkout/confirm', 'SiteController@checkout_post')->name('checkout.finalize');
+
+Route::get('/downloadapolice', [SiteController::class, 'download_apolice'])->name('download_apolice');
+
+Route::get('/planos', [SiteController::class, 'list_plans'])->name('planos');

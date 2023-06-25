@@ -24,6 +24,8 @@
   <link href="site/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="site/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="dist/plugins/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
   <link href="site/css/style.css" rel="stylesheet">
@@ -50,11 +52,17 @@
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-          <li><a class="nav-link scrollto" href="#services">Serviços</a></li>
-          <li><a class="nav-link scrollto" href="#pricing">Planos</a></li>
-          <li><a class="nav-link scrollto" href="#contact">Contato</a></li>
-          <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
+            <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+            <li><a class="nav-link scrollto" href="#services">Serviços</a></li>
+            <li><a class="nav-link scrollto" href="#pricing">Planos</a></li>
+            <li><a class="nav-link scrollto" href="#contact">Contato</a></li>
+            <li>
+                <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
+                    <i class='bx bxs-cart' style="font-size: 22px;"></i>
+                    {{-- <span class="badge bg-primary">5</span> --}}
+                </a>
+            </li>
+            <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -203,7 +211,7 @@
                 <li>GUINCHO - REBOQUE.24h</li>
               </ul>
               <div class="btn-wrap">
-                <a href="{{route('site.checkout', ['id_plano' => 18])}}" class="btn-buy">Quero esse</a>
+                <a href="{{route('site.comprar_plano', ['id_plano' => 18])}}" class="btn-buy">Quero esse</a>
               </div>
             </div>
           </div>
@@ -220,7 +228,7 @@
                 <li>ALAGAMENTO | ENCHENTE</li>
               </ul>
               <div class="btn-wrap">
-                <a href="{{route('site.checkout', ['id_plano' => 2])}}" class="btn-buy">Quero esse</a>
+                <a href="{{route('site.comprar_plano', ['id_plano' => 2])}}" class="btn-buy">Quero esse</a>
               </div>
             </div>
           </div>
@@ -240,7 +248,7 @@
                 <li>E MAIS...</li>
               </ul>
               <div class="btn-wrap">
-                <a href="{{route('site.checkout', ['id_plano' => 4])}}" class="btn-buy">Quero esse</a>
+                <a href="{{route('site.comprar_plano', ['id_plano' => 4])}}" class="btn-buy">Quero esse</a>
               </div>
             </div>
           </div>
@@ -367,7 +375,11 @@
     </section><!-- End Contact Section -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <a href="https://wa.me/5508003482342?text=Quero%20saber%20mais%20sobre%20a%20AIC%20Brasil%20Assistência%2024h" style="position:fixed;width:60px;height:60px;bottom:80px;right:10px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
-    z-index:1000;" target="_blank">
+    z-index:1000;" target="_blank" title="Faça uma Doação">
+        <img src="/site/img/logo_doacao.png" />
+    </a>
+    <a href="https://www.paypal.com/donate/?hosted_button_id=E7PZYWUJXQRUU" style="position:fixed;width:60px;height:60px;bottom:150px;right:10px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
+    z-index:1000;" target="_blank" >
         <i style="margin-top:16px" class="fa fa-whatsapp"></i>
     </a>
   </main><!-- End #main -->
