@@ -85,6 +85,10 @@ class GalaxPayService
                 "state" => $data->estado
             ]
         ];
+        $request['PaymentMethodBoleto'] = [
+            "deadlineDays" => self::QTDE_DIAS_PRIMEIRO_PAGAMENTO,
+            "instructions" => "ASSISTÊNCIA 24h"
+        ];
 
         if($type == 'card')
             $request['PaymentMethodCreditCard'] = [

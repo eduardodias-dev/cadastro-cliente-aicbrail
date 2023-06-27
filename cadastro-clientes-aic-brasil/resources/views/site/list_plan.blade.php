@@ -91,8 +91,8 @@
           @endforeach
         </div>
 
-        <div class="section-title mt-5">
-          <h2>Planos Assistência Jurídica</h2>
+        <div class="section-title mt-5" id="planos_juridico">
+          <h2>Planos Assistência Jurídica 24h</h2>
         </div>
 
         <div class="row justify-content-center">

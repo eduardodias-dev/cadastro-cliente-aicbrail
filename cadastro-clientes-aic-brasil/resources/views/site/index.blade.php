@@ -235,20 +235,13 @@
 
           <div class="col-lg-4 col-md-6 mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="100">
             <div class="box">
-              <h3>PLANO B.2</h3>
-              <h4><sup>R$</sup>170,00<span> / mês</span></h4>
+              <h3>ASSISTÊNCIA JURÍDICA 24h!</h3>
+              <p class="text-center">A partir de:</p>
+              <h4><sup>R$</sup>99,00<span> / mês</span></h4>
               <ul>
-                <li>ALAGAMENTO | ENCHENTE</li>
-                <li>CHAVEIRO AUTO | RESIDENCIAL</li>
-                <li>FURTO | ROUBO | INCÊNDIO</li>
-                <li>GUINCHO - REBOQUE.24h</li>
-                <li>GUARDA DO VEÍCULO</li>
-                <li>PANE SECA | ELÉTRICA</li>
-                <li>PANE MECÂNICA</li>
-                <li>E MAIS...</li>
               </ul>
               <div class="btn-wrap">
-                <a href="{{route('site.comprar_plano', ['id_plano' => 4])}}" class="btn-buy">Quero esse</a>
+                <a href="{{route('planos')."#planos_juridico"}}" class="btn-buy">Ver planos</a>
               </div>
             </div>
           </div>
