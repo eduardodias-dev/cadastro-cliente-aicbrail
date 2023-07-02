@@ -367,9 +367,10 @@
       </div>
     </section><!-- End Contact Section -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <a href="https://wa.me/5508003482342?text=Quero%20saber%20mais%20sobre%20a%20AIC%20Brasil%20Assistência%2024h" style="position:fixed;width:60px;height:60px;bottom:80px;right:10px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
+    <a href="https://wa.me/5508003482342?text=Quero%20saber%20mais%20sobre%20a%20AIC%20Brasil%20Assistência%2024h" style="position:fixed;width:60px;height:60px;bottom:80px;right:10px;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
+    
     z-index:1000;" target="_blank" title="Faça uma Doação">
-        <img src="/site/img/logo_doacao.png" />
+        <img src="/site/img/logo_doacao_2.png" />
     </a>
     <a href="https://www.paypal.com/donate/?hosted_button_id=E7PZYWUJXQRUU" style="position:fixed;width:60px;height:60px;bottom:150px;right:10px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
     z-index:1000;" target="_blank" >

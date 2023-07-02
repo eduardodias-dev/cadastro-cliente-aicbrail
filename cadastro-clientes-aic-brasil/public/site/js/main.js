@@ -278,7 +278,7 @@ var modalResult = new bootstrap.Modal('#modal-result');
 var modalPesquisandoPedido = new bootstrap.Modal('#modal-pesquisando-pedido');
 
 jQuery(function() {
-    alterarTipoCadastro($('[name=tipo_cadastro]:checked').val());
+
     $('#box-sucesso, #box-erro').hide();
 
     $('#campos_cartao').hide('fast');
@@ -578,5 +578,7 @@ jQuery(function() {
 
         }
     }
+
+    alterarTipoCadastro($('[name=tipo_cadastro]:checked').val());
 
 })
