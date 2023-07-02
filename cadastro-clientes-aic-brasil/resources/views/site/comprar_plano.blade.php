@@ -175,59 +175,59 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="cpfcnpj" class="cpfcnpj required">CPF</label>
-                                <input type="text" name="cpfcnpj" id="" class="form-control required" value="{{old('cpfcnpj')}}">
+                                <input type="text" name="cpfcnpj" id="" class="form-control required" value="{{old('cpfcnpj') ?? getDadosDaSessao('dados_cliente', 'cpfcnpj')}}">
                             </div>
 
                             <div class="form-group col-md-6">
                                 <label for="nome" class="required">Nome</label>
-                                <input type="text" name="nome" id="" class="form-control required" required  value="{{old('nome')}}">
+                                <input type="text" name="nome" id="" class="form-control required" required  value="{{old('nome') ?? getDadosDaSessao('dados_cliente', 'nome')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-12">
                                 <label for="email" class="required">E-mail</label>
-                                <input type="email" name="email" id="" class="form-control required" required  value="{{old('email')}}">
+                                <input type="email" name="email" id="" class="form-control required" required  value="{{old('email') ?? getDadosDaSessao('dados_cliente', 'email')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="celular" class="required">Celular</label>
-                                <input type="text" name="celular" id="" class="form-control required" required value="{{old('celular')}}">
+                                <input type="text" name="celular" id="" class="form-control required" required value="{{old('celular') ?? getDadosDaSessao('dados_cliente', 'celular')}}">
                             </div>
                         </div>
                         <h4 class="mt-2">Endereço</h4>
                         <div class="row mt-2">
                             <div class="form-group col-md-3">
                                 <label for="cep" class="required">CEP</label>
-                                <input type="text" name="cep" id="" class="form-control required" required value="{{old('cep')}}">
+                                <input type="text" name="cep" id="" class="form-control required" required value="{{old('cep') ?? getDadosDaSessao('dados_cliente', 'cep')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="logradouro" class="required">Logradouro</label>
-                                <input type="text" name="logradouro" id="" class="form-control required" required value="{{old('logradouro')}}">
+                                <input type="text" name="logradouro" id="" class="form-control required" required value="{{old('logradouro') ?? getDadosDaSessao('dados_cliente', 'logradouro')}}">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="numero" class="required">Número</label>
-                                <input type="text" name="numero" id="" class="form-control required" required value="{{old('numero')}}">
+                                <input type="text" name="numero" id="" class="form-control required" required value="{{old('numero') ?? getDadosDaSessao('dados_cliente', 'numero')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-4">
                                 <label for="complemento" class="required">Complemento</label>
-                                <input type="text" name="complemento" id="" class="form-control required" value="{{old('complemento')}}">
+                                <input type="text" name="complemento" id="" class="form-control required" value="{{old('complemento') ?? getDadosDaSessao('dados_cliente', 'complemento')}}">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="bairro" class="required">Bairro</label>
-                                <input type="text" name="bairro" id="" class="form-control required" required value="{{old('bairro')}}">
+                                <input type="text" name="bairro" id="" class="form-control required" required value="{{old('bairro') ?? getDadosDaSessao('dados_cliente', 'bairro')}}">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="cidade" class="required">Cidade</label>
-                                <input type="text" name="cidade" id="" class="form-control required" required value="{{old('cidade')}}">
+                                <input type="text" name="cidade" id="" class="form-control required" required value="{{old('cidade') ?? getDadosDaSessao('dados_cliente', 'cidade')}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="form-group col-md-4">
                                 <label for="estado" class="required">Estado</label>
-                                <select name="estado" class="form-control required" required value="{{old('estado')}}">
+                                <select name="estado" class="form-control required" required value="{{old('estado') ?? getDadosDaSessao('dados_cliente', 'estado')}}">
                                     <option value="" class="">Selecione</option>
                                     {{printEstadosAsOptions()}}
                                 </select>
@@ -237,19 +237,19 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="rg">RG</label>
-                                <input type="rg" name="rg" id="" class="form-control" value="{{old('rg')}}">
+                                <input type="rg" name="rg" id="" class="form-control" value="{{old('rg') ?? getDadosDaSessao('dados_cliente', 'rg')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="nome_representante">Nome Representante</label>
-                                <input type="text" name="nome_representante" id="" class="form-control" value="{{old('nome_representante')}}">
+                                <input type="text" name="nome_representante" id="" class="form-control" value="{{old('nome_representante') ?? getDadosDaSessao('dados_cliente', 'nome_representante')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="cpf_representante">CPF Representante</label>
-                                <input type="text" name="cpf_representante" id="" class="form-control" value="{{old('cpf_representante')}}">
+                                <input type="text" name="cpf_representante" id="" class="form-control" value="{{old('cpf_representante') ?? getDadosDaSessao('dados_cliente', 'cpf_representante')}}">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="alfabetizado" class="required">Alfabetizada</label>
-                                <select name="alfabetizado" class="form-control required" value="{{old('alfabetizado')}}">
+                                <select name="alfabetizado" class="form-control required" value="{{old('alfabetizado') ?? getDadosDaSessao('dados_cliente', 'alfabetizado')}}">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">Sim</option>
                                     <option value="0">Não</option>
@@ -257,7 +257,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="sexo">Sexo</label>
-                                <select name="sexo" class="form-control" value="{{old('sexo')}}">
+                                <select name="sexo" class="form-control" value="{{old('sexo') ?? getDadosDaSessao('dados_cliente', 'sexo')}}">
                                     <option value="" class="">Selecione</option>
                                     <option value="M">Masculino</option>
                                     <option value="F">Feminino</option>
@@ -267,11 +267,11 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="datanasc" class="required">Data de Nascimento</label>
-                                <input type="text" name="datanasc" id="datetimepicker" class="form-control required" required value="{{old('datanasc')}}">
+                                <input type="text" name="datanasc" id="datetimepicker" class="form-control required" required value="{{old('datanasc') ?? getDadosDaSessao('dados_cliente', 'datanasc')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="estado_civil" class="required">Estado Civil</label>
-                                <select name="estado_civil" class="form-control required" required value="{{old('estado_civil')}}">
+                                <select name="estado_civil" class="form-control required" required value="{{old('estado_civil') ?? getDadosDaSessao('dados_cliente', 'estado_civil')}}">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">Solteiro</option>
                                     <option value="2">Casado</option>
@@ -283,7 +283,7 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-6">
                                 <label for="cutis">Cútis - Cor</label>
-                                <select name="cutis" class="form-control" value="{{old('cutis')}}">
+                                <select name="cutis" class="form-control" value="{{old('cutis') ?? getDadosDaSessao('dados_cliente', 'cutis')}}">
                                     <option value="" class="">Selecione</option>
                                     <option value="1">Afro</option>
                                     <option value="2">Branca</option>
@@ -293,7 +293,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="ocupacao">Ocupação - Profissão</label>
-                                <input type="text" name="ocupacao" class="form-control" value="{{old('ocupacao')}}">
+                                <input type="text" name="ocupacao" class="form-control" value="{{old('ocupacao') ?? getDadosDaSessao('dados_cliente', 'ocupacao')}}">
                             </div>
                         </div>
                         @if($plano->juridico != 1)
@@ -336,7 +336,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <h5 for="comprar_protecao_veicular">COMPRAR PROTEÇÃO VEICULAR</h5>
-                                    <select name="comprar_protecao_veicular" class="form-control" value="{{old('comprar_protecao_veicular')}}">
+                                    <select name="comprar_protecao_veicular" class="form-control" value="{{old('comprar_protecao_veicular') ?? getDadosDaSessao('dados_cliente', 'comprar_protecao_veicular')}}">
                                         <option value="" class="">Selecione</option>
                                         <option value="1">Sim</option>
                                         <option value="0">Não</option>
@@ -347,7 +347,7 @@
                             <div class="row mt-2">
                                 <div class="form-group col-md-6">
                                     <label for="tipo_veiculo" class="required">TIPO DO VEÍCULO</label>
-                                    <select name="tipo_veiculo" class="form-control required" required value="{{old('tipo_veiculo')}}">
+                                    <select name="tipo_veiculo" class="form-control required" required value="{{old('tipo_veiculo') ?? getDadosDaSessao('dados_cliente', 'tipo_veiculo')}}">
                                         <option value="" class="">Selecione</option>
                                         <option value="AUTOMOVEL">AUTOMOVEL</option>
                                         <option value="MOTOCICLETA">MOTOCICLETA</option>
@@ -360,37 +360,37 @@
                             <div class="row mt-2">
                                 <div class="form-group col-md-6">
                                     <label for="modelo_veiculo" class="required">MODELO DO VEÍCULO</label>
-                                    <input type="text" name="modelo_veiculo" id="" class="form-control required" required value="{{old('modelo_veiculo')}}">
+                                    <input type="text" name="modelo_veiculo" id="" class="form-control required" required value="{{old('modelo_veiculo') ?? getDadosDaSessao('dados_cliente', 'modelo_veiculo')}}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="marca_veiculo" class="required">MARCA DO VEÍCULO</label>
-                                    <input type="text" name="marca_veiculo" id="" class="form-control required" required value="{{old('marca_veiculo')}}">
+                                    <input type="text" name="marca_veiculo" id="" class="form-control required" required value="{{old('marca_veiculo') ?? getDadosDaSessao('dados_cliente', 'marca_veiculo')}}">
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="form-group col-md-6">
                                     <label for="ano_fabricacao" class="required">ANO DE FABRICAÇÃO</label>
-                                    <input type="text" name="ano_fabricacao" id="" class="form-control required" required value="{{old('ano_fabricacao')}}">
+                                    <input type="text" name="ano_fabricacao" id="" class="form-control required" required value="{{old('ano_fabricacao') ?? getDadosDaSessao('dados_cliente', 'ano_fabricacao')}}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="placa_veiculo" class="required">PLACA</label>
-                                    <input type="text" name="placa_veiculo" id="" class="form-control required" required value="{{old('placa_veiculo')}}">
+                                    <input type="text" name="placa_veiculo" id="" class="form-control required" required value="{{old('placa_veiculo') ?? getDadosDaSessao('dados_cliente', 'placa_veiculo')}}">
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="form-group col-md-6">
                                     <label for="chassi" class="required">CHASSI</label>
-                                    <input type="text" name="chassi" id="" class="form-control required" required value="{{old('chassi')}}">
+                                    <input type="text" name="chassi" id="" class="form-control required" required value="{{old('chassi') ?? getDadosDaSessao('dados_cliente', 'chassi')}}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="renavam" class="required">RENAVAM</label>
-                                    <input type="text" name="renavam" id="" class="form-control required" required value="{{old('renavam')}}">
+                                    <input type="text" name="renavam" id="" class="form-control required" required value="{{old('renavam') ?? getDadosDaSessao('dados_cliente', 'renavam')}}">
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="form-group col-md-6">
                                     <label for="cor_veiculo" class="required">COR DO VEÍCULO</label>
-                                    <input type="text" name="cor_veiculo" id="" class="form-control required" required value="{{old('cor_veiculo')}}">
+                                    <input type="text" name="cor_veiculo" id="" class="form-control required" required value="{{old('cor_veiculo') ?? getDadosDaSessao('dados_cliente', 'cor_veiculo')}}">
                                 </div>
 
                             </div>

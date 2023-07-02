@@ -49,6 +49,7 @@ class SiteController extends Controller
         $data['valor_calculado'] = CartHelper::getValorCalculado($data, $data['plan_price']);
 
         $cart = session()->get('carrinho');
+        $dados_cliente = session()->get('dados_cliente');
         if(!$cart)
         {
             if(!isset($cart[$data['plan_id']]))
@@ -57,6 +58,10 @@ class SiteController extends Controller
             }
         }else{
             $cart[$data['plan_id']] = $data;
+        }
+
+        if(!$dados_cliente){
+            session()->put('dados_cliente', $data);
         }
 
         session()->put('carrinho', $cart);

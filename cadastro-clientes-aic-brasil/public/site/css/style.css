@@ -1393,7 +1393,7 @@ section {
   font-weight: 400;
   padding: 15px;
   font-size: 18px;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   font-weight: 600;
   color: #124265;
 }

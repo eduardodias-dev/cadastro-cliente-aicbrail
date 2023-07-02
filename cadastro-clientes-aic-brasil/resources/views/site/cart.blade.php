@@ -114,7 +114,7 @@
             @else
                 <tbody>
                     <tr>
-                        <td colspan="4" class="table-secondary" align="center"><h4>Não há itens no carrinho</h4></td>
+                        <td colspan="4" class="table-secondary"><h4>Não há itens no carrinho</h4></td>
                     </tr>
                 </tbody>
             @endif

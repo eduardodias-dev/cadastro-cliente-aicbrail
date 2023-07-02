@@ -530,20 +530,25 @@ jQuery(function() {
         alterarTipoCadastro(val);
     });
 
-    function alterarTipoCadastro(val){
-        console.log('oi', val);
+    function alterarTipoCadastro(val, manterValores = false){
+
         if(val == "F"){
-            $('[name=cpfcnpj]').val("");
+            if(!manterValores){
+                $('[name=cpfcnpj]').val("");
+                $('[name=nome_representante]').val("");
+                $('[name=cpf_representante]').val("");
+            }
+
             $("label.cpfcnpj").html("CPF");
             $("label[for=nome]").html("Nome");
             $("label[for=datanasc]").html("Data de Nascimento");
             $('[name=cpfcnpj]').inputmask('999.999.999-99');
 
             $('[name=nome_representante]').closest('.form-group').hide();
-            $('[name=nome_representante]').val("");
+
 
             $('[name=cpf_representante]').closest('.form-group').hide();
-            $('[name=cpf_representante]').val("");
+
 
             $('[name=rg]').closest('.form-group').show();
             $('[name=cutis]').closest('.form-group').show();
@@ -557,7 +562,10 @@ jQuery(function() {
         }
         else if(val == "J")
         {
-            $('[name=cpfcnpj]').val("");
+            if(!manterValores){
+                $('[name=cpfcnpj]').val("");
+            }
+
             $("label.cpfcnpj").html("CNPJ");
             $("label[for=datanasc]").html("Data de Abertura");
             $("label[for=nome]").html("Razão Social");
@@ -579,6 +587,17 @@ jQuery(function() {
         }
     }
 
-    alterarTipoCadastro($('[name=tipo_cadastro]:checked').val());
+    function alterarValoresSelects(){
+        $('select').each(function(){
+            var value = $(this).attr('value');
+            console.log($(this).prop('name'), 'value:'+value);
 
+            if(value != null && value != ''){
+                $(this).find('option[value='+value+']').prop('selected', true);
+            }
+        })
+    }
+
+    alterarTipoCadastro($('[name=tipo_cadastro]:checked').val(), true);
+    alterarValoresSelects();
 })

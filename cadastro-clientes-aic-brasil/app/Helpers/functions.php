@@ -230,3 +230,15 @@ function getFilePathByArray(array $pathInArray){
 
     return $generatedPath;
 }
+
+function getDadosDaSessao($itemSessao, $chave){
+    $dados = session()->get($itemSessao);
+
+    if(isset($dados)){
+        if(isset($dados[$chave])){
+            return $dados[$chave];
+        }
+    }
+
+    return '';
+}
