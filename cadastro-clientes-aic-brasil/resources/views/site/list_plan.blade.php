@@ -52,10 +52,7 @@
 
       <nav id="navbar" class="navbar">
         <ul>
-            <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-            <li><a class="nav-link scrollto" href="#services">Serviços</a></li>
-            <li><a class="nav-link scrollto" href="#pricing">Planos</a></li>
-            <li><a class="nav-link scrollto" href="#contact">Contato</a></li>
+            <li><a class="nav-link scrollto active" href="/">Home</a></li>
             <li>
                 <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
                     <i class='bx bxs-cart' style="font-size: 22px;"></i>
@@ -111,7 +108,12 @@
 
       </div>
     </section>
-
+    <a href="https://wa.me/5508003482342?text=Quero%20saber%20mais%20sobre%20a%20AIC%20Brasil%20Assistência%2024h" id="botao_whatsapp" title="Contato no Whatsapp" target="_blank" >
+        <i style="margin-top:10px; font-size: 40px;" class="bx bxl-whatsapp"></i>
+    </a>
+    <a href="https://www.paypal.com/donate/?hosted_button_id=E7PZYWUJXQRUU" target="_blank" id="botao_doacao" title="Faça uma doação">
+        <i style="margin-top:10px; font-size: 40px;" class="bx bx-donate-heart"></i>
+    </a>
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
@@ -120,14 +122,14 @@
 
       <div class="me-md-auto text-center text-md-start">
         <div class="copyright">
-          &copy; Copyright <strong><span>AIC Brasil</span></strong>. Todos os Direitos Reservados
+          &copy; Copyright <strong><span>AIC Brasil</span> CNPJ: 46.476.232|0001-11</strong>. Todos os Direitos Reservados
         </div>
         <div class="credits">
           <!-- All the links in the footer should remain intact. -->
           <!-- You can delete the links only if you purchased the pro version. -->
           <!-- Licensing information: https://bootstrapmade.com/license/ -->
           <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/onepage-multipurpose-bootstrap-template/ -->
-          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+          Design por <a href="https://bootstrapmade.com/">BootstrapMade</a>
         </div>
       </div>
       <div class="social-links text-center text-md-right pt-3 pt-md-0">
