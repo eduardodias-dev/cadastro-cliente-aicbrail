@@ -240,11 +240,11 @@
                                 <input type="rg" name="rg" id="" class="form-control" value="{{old('rg') ?? getDadosDaSessao('dados_cliente', 'rg')}}">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="nome_representante">Nome Representante</label>
+                                <label for="nome_representante" class="required">Nome Representante</label>
                                 <input type="text" name="nome_representante" id="" class="form-control" value="{{old('nome_representante') ?? getDadosDaSessao('dados_cliente', 'nome_representante')}}">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="cpf_representante">CPF Representante</label>
+                                <label for="cpf_representante" class="required">CPF Representante</label>
                                 <input type="text" name="cpf_representante" id="" class="form-control" value="{{old('cpf_representante') ?? getDadosDaSessao('dados_cliente', 'cpf_representante')}}">
                             </div>
                             <div class="form-group col-md-3">

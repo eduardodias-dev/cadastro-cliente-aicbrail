@@ -545,10 +545,7 @@ jQuery(function() {
             $('[name=cpfcnpj]').inputmask('999.999.999-99');
 
             $('[name=nome_representante]').closest('.form-group').hide();
-
-
             $('[name=cpf_representante]').closest('.form-group').hide();
-
 
             $('[name=rg]').closest('.form-group').show();
             $('[name=cutis]').closest('.form-group').show();
@@ -559,6 +556,9 @@ jQuery(function() {
             $('[name=estado_civil]').prop('required', true);
             $('[name=alfabetizado]').prop('required', true);
             $('[name=sexo]').prop('required', true);
+
+            $('[name=nome_representante]').prop('required', false);
+            $('[name=cpf_representante]').prop('required', false);
         }
         else if(val == "J")
         {
@@ -583,6 +583,9 @@ jQuery(function() {
             $('[name=estado_civil]').prop('required', false);
             $('[name=alfabetizado]').prop('required', false);
             $('[name=sexo]').prop('required', false);
+
+            $('[name=nome_representante]').prop('required', true);
+            $('[name=cpf_representante]').prop('required', true);
 
         }
     }
