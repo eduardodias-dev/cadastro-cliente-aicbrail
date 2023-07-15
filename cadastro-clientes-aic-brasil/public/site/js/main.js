@@ -557,8 +557,8 @@ jQuery(function() {
             $('[name=alfabetizado]').prop('required', true);
             $('[name=sexo]').prop('required', true);
 
-            $('[name=nome_representante]').prop('required', false);
-            $('[name=cpf_representante]').prop('required', false);
+            $('[name=nome_representante]').removeAttr('required');
+            $('[name=cpf_representante]').removeAttr('required');
         }
         else if(val == "J")
         {
@@ -584,8 +584,8 @@ jQuery(function() {
             $('[name=alfabetizado]').prop('required', false);
             $('[name=sexo]').prop('required', false);
 
-            $('[name=nome_representante]').prop('required', true);
-            $('[name=cpf_representante]').prop('required', true);
+            $('[name=nome_representante]').attr('required', true);
+            $('[name=cpf_representante]').attr('required', true);
 
         }
     }

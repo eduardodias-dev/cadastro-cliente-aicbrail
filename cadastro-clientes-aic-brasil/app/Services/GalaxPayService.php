@@ -64,7 +64,7 @@ class GalaxPayService
         $request['myId'] = $data->codigo;
         $request['value'] = $data->valor;
         $request['periodicity'] = $data->periodicidade;
-        $request['quantity'] = $data->quantidade;
+        $request['quantity'] = 0;
         $date = intval(GalaxPayService::QTDE_DIAS_PRIMEIRO_PAGAMENTO) + strtotime($data->adesao);
         $request['firstPayDayDate'] = date('Y-m-d', $date);
         $request['additionalInfo'] = $data->info_adicional;
