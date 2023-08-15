@@ -102,7 +102,7 @@ class GalaxPayService
         else if ($type == 'pix')
             $request['PaymentMethodBoleto'] = [
                 "deadlineDays" => self::QTDE_DIAS_PRIMEIRO_PAGAMENTO,
-                "instructions" => "ASSISTÊNCIA 24h"
+                "instructions" => "ASSISTÊNCIA 24h\n PROTESTO AUTOMÁTICO APÓS O VENCIMENTO - LEI nº 23.204|2018 (ALTERA A LEI nº.15.424|2004)"
             ];
 
         return $request;

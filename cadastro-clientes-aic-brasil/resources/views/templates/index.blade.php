@@ -50,9 +50,13 @@
       </li>
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item">
-          <a class="nav-link" href="#" title="Sair do sistema">
-            <i class="fas fa-sign-out"></i> Sair do sistema
-          </a>
+        <form method="post" action="{{ route('logout') }}">
+            @csrf
+            <button class="btn btn-default nav-link" type="submit" title="Sair do sistema">
+                <i class="fas fa-sign-out"></i> Sair do sistema
+            </button>
+        </form>
+
       </li>
 
     </ul>
@@ -72,10 +76,10 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="/dist/img/avatar.png" class="img-circle elevation-2" alt="User Image">
+          <img src="/dist/img/avatar2.png" class="img-circle elevation-2 bg-light" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Usuario</a>
+          <a href="#" class="d-block">{{ auth()->user()->name }}</a>
         </div>
       </div>
 
