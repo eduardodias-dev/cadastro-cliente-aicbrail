@@ -10,6 +10,7 @@ use \Mpdf\Mpdf as PDF;
 use App\LogIntegracao;
 use App\Services\CartHelper;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Mail\EnvioEmailApolice;
 use App\Services\CheckoutService;
 use Illuminate\Support\Facades\DB;
@@ -22,12 +23,27 @@ use Illuminate\Support\Facades\Validator;
 class SiteController extends Controller
 {
     private $hash = "024c0b517d4c84afc32cc517ad1dd66e";
-    public function home(){
-        return view('site.index');
+    private $minutesCookie = 7*24*60;
+
+    public function home(Request $request){
+        $affiliateId = $request->cookie('aid');
+
+        if($request->input('aid') && ($affiliateId == '' || $affiliateId == null)){
+            $affiliateId = $request->input('aid');
+        }
+
+        $response = response()->view('site.index');
+        $response->cookie('aid', $affiliateId, $this->minutesCookie);
+        return $response;
     }
 
     public function cart_add(Request $request)
     {
+        $affiliateId = $request->cookie('aid');
+        if($request->input('aid') && ($affiliateId == '' || $affiliateId == null)){
+            $affiliateId = $request->input('aid');
+        }
+
         session()->remove('erros');
         $data = $request->all();
         $validation = $this->validarCliente($data);
@@ -66,7 +82,10 @@ class SiteController extends Controller
 
         session()->put('carrinho', $cart);
 
-        return redirect()->route('cart.index');
+        $response = new Response('Redirecting ...',301);
+        $response->cookie('aid', $affiliateId, $this->minutesCookie);
+
+        return $response->withHeaders(['Location' => '/carrinho']);
     }
 
     public function cart(){
@@ -136,6 +155,7 @@ class SiteController extends Controller
             }
 
             $cart['dados_pagamento'] = ['cliente' => $data];
+            $cart['codigo_afiliado'] = $request->cookie('aid');
             session()->flash('assinatura_criada', 1);
 
             $checkoutService = new CheckoutService();
@@ -148,6 +168,8 @@ class SiteController extends Controller
         catch(Exception $e)
         {
             session()->flash('erros', $e->getMessage());
+
+            throw $e;
             Log::Debug(print_r($e->getMessage()));
 
             return redirect()
@@ -159,7 +181,10 @@ class SiteController extends Controller
     public function checkout_confirm(Request $request){
         $planos = Plano::where(['ativo_venda' => '1'])->get()->toArray();
         $session_id = session()->getId();
-        return view('site.checkout_confirm',['session_id' => $session_id, 'planos' => $planos]);
+
+        $aid = $request->cookie('aid');
+
+        return view('site.checkout_confirm',['session_id' => $session_id, 'planos' => $planos, 'aid' => $aid]);
     }
 
     public function view_order(Request $request){

@@ -80,17 +80,28 @@ class CheckoutService
             $valorTotalPacote = 0.0;
 
             foreach($cartData as $key => $cartItem){
+                if(is_array($cartItem)){
+                    $savedClient = $this->adicionarCliente($cartItem, $key, false);
 
-                $savedClient = $this->adicionarCliente($cartItem, $key, false);
+                    if($savedClient != null){
+                        $savedSubscription = $this->adicionarAssinatura($cartItem, $savedClient->id, $key, $pacote->id);
 
-                if($savedClient != null){
-                    $savedSubscription = $this->adicionarAssinatura($cartItem, $savedClient->id, $key, $pacote->id);
-
-                    $valorTotalPacote += $savedSubscription->valor;
+                        $valorTotalPacote += $savedSubscription->valor;
+                    }
                 }
             }
 
             $pacote->valor = $valorTotalPacote;
+            if(isset($cartData['codigo_afiliado']) && !empty($cartData['codigo_afiliado'])){
+                $dados_afiliado = DB::select("SELECT * FROM v_codigo_afiliados WHERE codigo = ?", [$cartData['codigo_afiliado']]);
+
+                if(!empty($dados_afiliado) && count($dados_afiliado)>0){
+                    $dado_afiliado = $dados_afiliado[0];
+
+                    $pacote->id_afiliado = $dado_afiliado->id_afiliado;
+                }
+            }
+
             $pacote->save();
 
             $service = new GalaxPayService;

@@ -2002,3 +2002,45 @@ h5{
   box-shadow: 1px 1px 2px #888;
   z-index:1000;
 }
+
+.box-beneficio-quadrado{
+    background-color: white;
+    border-radius: 5px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.box-beneficio-quadrado p, .box-beneficio-redondo p{
+    color: #2487ce !important;
+    font-size: large;
+    font-weight: bolder;
+}
+.box-beneficio-quadrado li{
+    list-style: circle;
+}
+
+.box-beneficio-quadrado ul{
+    padding-left: 30px !important;
+    color: #2487ce !important;
+    font-size: large;
+}
+
+.box-beneficio-redondo{
+    background-color: white;
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+}
+.titulo-box{
+    font-size: 26px;
+}
+
+.box-beneficio-ultimo, .box-beneficio-redondo{
+    margin-top: -10px;
+}
+
+.box-beneficio-quadrado:hover, .box-beneficio-redondo:hover, .box-beneficio-ultimo:hover{
+    scale: 1.02;
+    box-shadow: 2px 2px 5px #ccc;
+    transition: all .5s;
+}

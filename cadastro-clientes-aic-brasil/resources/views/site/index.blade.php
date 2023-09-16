@@ -218,17 +218,44 @@
 
           <div class="col-lg-4 col-md-6 mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="100">
             <div class="box featured">
-              <h3>PLANO A.1</h3>
-              <h4><sup>R$</sup>135,00<span> / mês</span></h4>
-              <ul>
-                <li>GUINCHO - REBOQUE.24h</li>
-                <li>PANE SECA | ELÉTRICA</li>
-                <li>PANE MECÂNICA</li>
-                <li>CHAVEIRO AUTO | RESIDENCIAL</li>
-                <li>ALAGAMENTO | ENCHENTE</li>
-              </ul>
-              <div class="btn-wrap">
-                <a href="{{route('site.comprar_plano', ['id_plano' => 2])}}" class="btn-buy">Quero esse</a>
+              <div class="box-beneficios">
+                <a href="https://www.facebook.com/aicbrasil2009" class="box-link" target="_blank">
+                    <div class="box-beneficio-quadrado">
+                        <p class="titulo-box">
+                            AIC BANK & IMOB.
+                        </p>
+                        <div class="conteudo-box">
+                            <ul class="text-start mb-0">
+                                <li>ADM. CONDOMÍNIOS</li>
+                                <li>IMOBILIÁRIA</li>
+                                <li>GARANTIDORA E SEGURADORA</li>
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://www.facebook.com/AiCBRASILSAUDE" class="box-link" target="_blank">
+                    <div class="box-beneficio-redondo mx-auto d-flex justify-content align-items-center">
+                        <p class="titulo-box text-center my-auto flex-grow-1">
+                            SAÚDE <br>
+                             & <br>
+                            CIA
+                        </p>
+                    </div>
+                </a>
+                <a href="http://www.companyhero.com/afiliados/JADSONLINC25" class="box-link" target="_blank">
+                    <div class="box-beneficio-quadrado box-beneficio-ultimo">
+                        <p class="titulo-box">
+                            COWORKING
+                        </p>
+                        <div class="conteudo-box">
+                            <ul class="text-start">
+                                <li>ESCRITÓRIO VIRTUAL</li>
+                                <li>ANTI-MULTAS (RECURSO)</li>
+                                <li>REGISTRO DE MARCAS</li>
+                            </ul>
+                        </div>
+                    </div>
+                </a>
               </div>
             </div>
           </div>

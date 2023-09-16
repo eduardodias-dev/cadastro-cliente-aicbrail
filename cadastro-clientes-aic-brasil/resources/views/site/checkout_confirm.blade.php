@@ -140,14 +140,16 @@
   <main id="main" style="margin-top: 0px; background: #fafafa" class="py-1">
     <div class="container py-5" >
         <h1>Checkout</h1>
-
+        aid : {{$aid}}
+        @if(isset($aid))
+        @endif
         <div class="main-form mt-2">
             <div class="row align-items-start">
                 @if(session()->has('erros'))
                 <div class="row" >
                     <div class="alert alert-danger alert-dismissible">
                         Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)
-                        {{session()->get('erros')}}
+                        {{-- {{session()->get('erros')}} --}}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
