@@ -84,7 +84,7 @@
       </div>
 
       <!-- SidebarSearch Form -->
-      <div class="form-inline">
+      {{-- <div class="form-inline">
         <div class="input-group" data-widget="sidebar-search">
           <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
           <div class="input-group-append">
@@ -93,7 +93,7 @@
             </button>
           </div>
         </div>
-      </div>
+      </div> --}}
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
@@ -107,30 +107,46 @@
               </p>
             </a>
           </li>
-          <li class="nav-item ">
+          {{-- <li class="nav-item ">
             <a href="{{route('logs.list')}}" class="nav-link {{ request()->is('logs') ? 'active' : '' }}">
               <i class="nav-icon far fa-users-alt"></i>
               <p>
                 Log Integração
               </p>
             </a>
-          </li>
-          <li class="nav-item ">
+          </li> --}}
+          {{-- <li class="nav-item ">
             <a href="{{route('subscriptions.list')}}" class="nav-link {{ request()->is('subscriptions') ? 'active' : '' }}">
               <i class="nav-icon far fa-users-alt"></i>
               <p>
                 Assinaturas
               </p>
             </a>
-          </li>
-          <li class="nav-item ">
-            <a href="{{route('plans.list')}}" class="nav-link {{ request()->is('plans') ? 'active' : '' }}">
-              <i class="nav-icon far fa-users-alt"></i>
-              <p>
-                Planos
-              </p>
-            </a>
-          </li>
+          </li> --}}
+            <li class="nav-item ">
+                <a href="{{route('pacotes.list')}}" class="nav-link {{ request()->is('pacotes') ? 'active' : '' }}">
+                    <i class="nav-icon far fa-users-alt"></i>
+                    <p>
+                        Pacotes
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a href="{{route('plans.list')}}" class="nav-link {{ request()->is('plans') ? 'active' : '' }}">
+                    <i class="nav-icon far fa-users-alt"></i>
+                    <p>
+                        Planos
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a href="{{route('afiliados.list')}}" class="nav-link {{ request()->is('afiliados') ? 'active' : '' }}">
+                    <i class="nav-icon far fa-users-alt"></i>
+                    <p>
+                        Afiliados
+                    </p>
+                </a>
+            </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -175,6 +191,7 @@
 <script src="/dist/plugins/datetimepicker/jquery.datetimepicker.full.min.js"></script>
 {{-- <script src="/dist/plugins/jspdf/jspdf.min.js"></script> --}}
 <script src="/dist/plugins/html2pdf/html2pdf.js"></script>
+<script src="/dist/js/custom.js"></script>
 {{--
 @stack('script_pagina') --}}
 

@@ -10,7 +10,7 @@
                 <div class="card-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+                            Te enviamos um email com link de recuperação de senha!
                         </div>
                     @endif
 
