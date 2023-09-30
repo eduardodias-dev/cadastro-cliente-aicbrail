@@ -40,7 +40,9 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     Route::get('/pacotes', [AdminController::class, 'pacotes'])->name('pacotes.list');
     Route::get('/pacotes/{id}', [AdminController::class, 'pacotesById'])->name('pacotes.detail');
     Route::get('/afiliados', [AdminController::class, 'afiliados'])->name('afiliados.list');
-    Route::post('/afiliados/novo-codigo', [AdminController::class, 'novoAfiliado'])->name('afiliados.novo');
+    Route::post('/afiliados/novo', [AdminController::class, 'novoAfiliado'])->name('afiliados.novo');
+    Route::post('/afiliados/novo-codigo', [AdminController::class, 'novoCodigoAfiliado'])->name('afiliados.novoCodigo');
+    Route::post('/afiliados/remover', [AdminController::class, 'removerAfiliado'])->name('afiliados.remover');
 });
 
 Auth::routes();

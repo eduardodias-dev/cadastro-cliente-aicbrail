@@ -11,6 +11,22 @@ $(document).ready( function () {
             $btn.prop('disabled', false);
         });
     });
+
+    $('#btnSalvarRemoverAfiliado').click(function(){
+        $btn = $(this);
+        $btn.prop('disabled', true);
+        salvarRemoverAfiliado(function(){
+            $btn.prop('disabled', false);
+        });
+    });
+
+    $('#btnSalvarNovoAfiliado').click(function(){
+        $btn = $(this);
+        $btn.prop('disabled', true);
+        salvarNovoAfiliado(function(){
+            $btn.prop('disabled', false);
+        });
+    });
 } );
 
 function filter(tableId, columnIndex){
@@ -39,6 +55,24 @@ function showModalNovoCodigo(button){
     $modal.show();
 }
 
+function showModalNovoAfiliado(button){
+    $button = $(button);
+    $modal = $('#modal-novo-afiliado').modal();
+
+    $modal.find('input, select').val('');
+    $modal.show();
+}
+
+function showModalRemoverAfiliado(button){
+    $button = $(button);
+    $modal = $('#modal-remover-afiliado').modal();
+
+    var id_afiliado = $button.closest('td').closest('tr').find('.td-id_afiliado').html();
+    $modal.find('[name=id_afiliado]').val(id_afiliado);
+
+    $modal.show();
+}
+
 function salvarNovoCodigoAfiliado(callback){
     var id_afiliado = $('#id_afiliado').val();
     var nomeAfiliado = $('#nomeAfiliado').val();
@@ -55,7 +89,11 @@ function salvarNovoCodigoAfiliado(callback){
         headers: {'X-CSRF-TOKEN': token},
         method: 'POST'
     }).done(response => {
-        console.log(response);
+        if(response.erro == 0){
+            $('#modal-novo-codigo-afiliado').modal('hide');
+            window.location.reload();
+        }
+        else console.log(response);
     })
     .fail( function(err) {
         console.log(err);
@@ -64,4 +102,76 @@ function salvarNovoCodigoAfiliado(callback){
         callback()
     });
 
+}
+
+function salvarRemoverAfiliado(callback){
+    $modal = $('#modal-remover-afiliado').modal();
+
+    var id_afiliado = $modal.find('[name=id_afiliado]').val();
+
+    var token = $('[name="_token"]').val();
+
+    $.ajax({
+        url: '/admin/afiliados/remover',
+        data: {
+            id_afiliado
+        },
+        headers: {'X-CSRF-TOKEN': token},
+        method: 'POST'
+    }).done(response => {
+        if(response.erro == 0){
+            $('#modal-remover-afiliado').modal('hide');
+            window.location.reload();
+        }
+        else console.log(response);
+    })
+    .fail( function(err) {
+        console.log(err);
+    })
+    .always(function(){
+        callback()
+    });
+
+}
+
+function salvarNovoAfiliado(callback){
+    $modal = $('#modal-novo-afiliado').modal();
+
+    var nomeAfiliado = $modal.find('[name=nomeAfiliado]').val();
+    var novoCodigo = $modal.find('[name=novoCodigo]').val();
+
+    var token = $('[name="_token"]').val();
+
+    $.ajax({
+        url: '/admin/afiliados/novo',
+        data: {
+            nomeAfiliado, novoCodigo
+        },
+        headers: {'X-CSRF-TOKEN': token},
+        method: 'POST'
+    }).done(response => {
+        if(response.erro == 0){
+            $('#modal-novo-afiliado').modal('hide');
+            window.location.reload();
+        }
+        else console.log(response);
+    })
+    .fail( function(err) {
+        console.log(err);
+    })
+    .always(function(){
+        callback()
+    });
+}
+
+function copiarLink(button){
+    $button = $(button);
+
+    var url = $button.closest('td').closest('tr').find('.td-url>a').html();
+    var tempTextarea = $('<textarea>');
+    $('body').append(tempTextarea);
+    tempTextarea.val(url).select();
+    document.execCommand('copy');
+    tempTextarea.remove();
+    alert(url);
 }

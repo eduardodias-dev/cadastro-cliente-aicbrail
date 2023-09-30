@@ -5,29 +5,26 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Pacote;
 use App\Cliente;
+use App\Afiliados;
 use App\LogIntegracao;
+use App\CodigoAfiliados;
 use Illuminate\Http\Request;
 use App\Services\IPlanoDBService;
 use Illuminate\Support\Facades\DB;
 use App\Services\IClienteDBService;
+use Illuminate\Support\Facades\Log;
 use App\Services\Integration\IClientSenderIntegrationService;
 use App\Services\Integration\IClientReceiverIntegrationService;
 
 class AdminController extends Controller
 {
     //
-    private $clientIntegrationService = null;
     private $planoDBservice = null;
     private $clienteDBservice = null;
-    private $clientReceiverIntegrationService;
-    public function __construct(IClientSenderIntegrationService $iClientIntegrationService,
-                                IPlanoDBService $planoDBservice,
-                                IClienteDBService $clienteDBservice,
-                                IClientReceiverIntegrationService $iClientReceiverIntegrationService){
-        $this->clientIntegrationService = $iClientIntegrationService;
+    public function __construct(IPlanoDBService $planoDBservice,
+                                IClienteDBService $clienteDBservice){
         $this->planoDBservice = $planoDBservice;
         $this->clienteDBservice = $clienteDBservice;
-        $this->clientReceiverIntegrationService = $iClientReceiverIntegrationService;
     }
 
     public function home(Request $request){
@@ -121,18 +118,93 @@ class AdminController extends Controller
         return view('afiliados.index', ['afiliados'=>$afiliados]);
     }
 
-    public function novoAfiliado(Request $request){
+    public function novoCodigoAfiliado(Request $request){
         $id_afiliado = $request->input('id_afiliado');
         $nomeAfiliado = $request->input('nomeAfiliado');
         $codigoAtual = $request->input('codigoAtual');
         $novoCodigo = $request->input('novoCodigo');
 
-        die(json_encode([
-                'id_afiliado' => $id_afiliado,
-                'nomeAfiliado' => $nomeAfiliado,
-                'codigoAtual' => $codigoAtual,
-                'novoCodigo' => $novoCodigo
-            ]
-        ));
+        $codigoAfiliado = CodigoAfiliados::where(['id_afiliado' => $id_afiliado])->orderby('criado_em','desc')->first();
+
+        if($codigoAfiliado == null){
+            return response()->json(["mensagem" => 'Afiliado não encontrado.', 'erro' => 1]);
+        }
+
+        DB::beginTransaction();
+        try{
+
+            $codigoAfiliado->ativo = 0;
+            $codigoAfiliado->save();
+
+            $newCodigoAfiliado = new CodigoAfiliados;
+            $newCodigoAfiliado->id_afiliado = $id_afiliado;
+            $newCodigoAfiliado->ativo = 1;
+            $newCodigoAfiliado->codigo = $novoCodigo;
+
+            $newCodigoAfiliado->save();
+
+            DB::commit();
+            return response()->json(["mensagem" => 'Código atualizado com sucesso.', 'erro' => 0]);
+
+        }catch(Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(["mensagem" => 'Erro ao adicionar Afiliado.', 'erro' => 1]);
+        }
+    }
+
+    public function novoAfiliado(Request $request){
+        $nomeAfiliado = $request->input('nomeAfiliado');
+        $novoCodigo = $request->input('novoCodigo');
+
+        DB::beginTransaction();
+
+        try{
+            $newAfiliado = new Afiliados;
+            $newAfiliado->ativo = 1;
+            $newAfiliado->nome = $nomeAfiliado;
+            $newAfiliado->save();
+
+            $newCodigoAfiliado = new CodigoAfiliados;
+            $newCodigoAfiliado->codigo = $novoCodigo;
+            $newCodigoAfiliado->ativo = 1;
+            $newCodigoAfiliado->id_afiliado = $newAfiliado->id;
+
+            $newCodigoAfiliado->save();
+
+            DB::commit();
+            return response()->json(["mensagem" => 'Afiliado adicionado com sucesso.', 'erro' => 0]);
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(["mensagem" => 'Erro ao adicionar Afiliado.', 'erro' => 1]);
+        }
+    }
+
+    public function removerAfiliado(Request $request){
+        $id_afiliado = $request->input('id_afiliado');
+
+        $afiliado = Afiliados::find($id_afiliado);
+
+        if($afiliado == null){
+            return response()->json(["mensagem" => 'Afiliado não encontrado.', 'erro' => 1]);
+        }
+
+        try{
+            DB::beginTransaction();
+
+            DB::table('codigo_afiliados')->where('id_afiliado', $id_afiliado)->delete();
+
+            $afiliado->delete();
+
+            DB::commit();
+            return response()->json(["mensagem" => 'Afiliado removido com sucesso.', 'erro' => 0]);
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(["mensagem" => 'Erro ao remover Afiliado.', 'erro' => 1]);
+        }
     }
 }

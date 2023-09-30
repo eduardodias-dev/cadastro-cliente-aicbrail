@@ -140,7 +140,6 @@
   <main id="main" style="margin-top: 0px; background: #fafafa" class="py-1">
     <div class="container py-5" >
         <h1>Checkout</h1>
-        aid : {{$aid}}
         @if(isset($aid))
         @endif
         <div class="main-form mt-2">
