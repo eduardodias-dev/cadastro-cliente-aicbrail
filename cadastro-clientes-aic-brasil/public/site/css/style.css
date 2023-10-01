@@ -13,12 +13,12 @@ body {
   color: #444444;
 }
 
-a {
+a, button {
   color: #2487ce;
   text-decoration: none;
 }
 
-a:hover {
+a:hover, button:hover {
   color: #469fdf;
   text-decoration: none;
 }
@@ -2000,7 +2000,9 @@ h5{
   text-align:center;
   font-size:30px;
   box-shadow: 1px 1px 2px #888;
+  border: 0;
   z-index:1000;
+
 }
 
 .box-beneficio-quadrado{

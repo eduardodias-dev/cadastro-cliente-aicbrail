@@ -1,4 +1,5 @@
 $(document).ready( function () {
+    $('[data-toggle="tooltip"]').tooltip()
     $('#table-clientes').DataTable();
     $('#table-afiliados').DataTable();
     $('#table-pacotes').DataTable();

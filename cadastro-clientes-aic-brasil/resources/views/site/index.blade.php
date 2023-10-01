@@ -146,42 +146,6 @@
 
       </div>
     </section><!-- End About Video Section -->
-
-    <!-- ======= Clients Section ======= -->
-    <section id="clients" class="clients section-bg">
-      <div class="container">
-
-        <div class="row">
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-1.png" class="img-fluid" alt="">
-          </div>
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-2.png" class="img-fluid" alt="">
-          </div>
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-3.png" class="img-fluid" alt="">
-          </div>
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-4.png" class="img-fluid" alt="">
-          </div>
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-5.png" class="img-fluid" alt="">
-          </div>
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-6.png" class="img-fluid" alt="">
-          </div>
-
-        </div>
-
-      </div>
-    </section><!-- End Clients Section -->
-
     <!-- ======= Cta Section ======= -->
     <section id="cta" class="cta">
       <div class="container" data-aos="zoom-in">
@@ -393,12 +357,12 @@
 
       </div>
     </section><!-- End Contact Section -->
-    <a href="https://wa.me/5508003482342?text=Quero%20saber%20mais%20sobre%20a%20AIC%20Brasil%20Assistência%2024h" id="botao_whatsapp" title="Contato no Whatsapp" target="_blank" >
+    <a href="https://wa.me/5508003482342?text=Quero%20saber%20mais%20sobre%20a%20AIC%20Brasil%20Assistência%2024h" data-bs-toggle="tooltip" data-bs-placement="top" id="botao_whatsapp" title="Contato no Whatsapp" target="_blank" >
         <i style="margin-top:10px; font-size: 40px;" class="bx bxl-whatsapp"></i>
     </a>
-    <a href="https://www.paypal.com/donate/?hosted_button_id=E7PZYWUJXQRUU" target="_blank" id="botao_doacao" title="Faça uma doação">
+    <button id="botao_doacao" data-bs-toggle="tooltip" data-bs-placement="top" title="Faça uma doação">
         <i style="margin-top:10px; font-size: 40px;" class="bx bx-donate-heart"></i>
-    </a>
+    </button>
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
@@ -427,6 +391,41 @@
 
   <div id="preloader"></div>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div class="modal fade" tabindex="-1" id="modal-doacao">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Doação</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="text-center">
+                        <a href="https://www.asaas.com/c/674960587769" class="d-block" target="_blank">
+                            <i style="margin-top:10px; font-size: 50px;" class="bx bx-donate-heart"></i>
+                        </a>
+                    </div>
+                    <p class="text-center">
+                        <b>Doar pelo ASAAS</b>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-center">
+                        <a href="https://www.paypal.com/donate/?hosted_button_id=E7PZYWUJXQRUU" class="d-block" target="_blank">
+                            <i style="margin-top:10px; font-size: 40px;" class="bi bi-paypal"></i>
+                        </a>
+                    </div>
+                    <p class="text-center">
+                        <b>Doar pelo Paypal</b>
+                    </p>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Vendor JS Files -->
   <script src="site/vendor/purecounter/purecounter_vanilla.js"></script>

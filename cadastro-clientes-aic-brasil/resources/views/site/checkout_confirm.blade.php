@@ -279,9 +279,11 @@
                                 <label for="melhor_vencimento" class="required">MELHOR VENCIMENTO</label>
                                 <select name="melhor_vencimento" class="form-control required" required value="{{old('melhor_vencimento') ?? getDadosDaSessao('dados_cliente', 'melhor_vencimento')}}">
                                     <option value="" class="">Selecione</option>
+                                    <option value="05">Dia 10</option>
                                     <option value="10">Dia 10</option>
                                     <option value="15">Dia 15</option>
                                     <option value="20">Dia 20</option>
+                                    <option value="25">Dia 25</option>
                                 </select>
                             </div>
                         </div>
@@ -331,7 +333,7 @@
                         </div>
                         <div class="row mt-4">
                             <div class="col-md-2">
-                                <button type="submit" class="btn btn-success">Confirmar</button>
+                                <button type="submit" class="btn btn-success" id="btnCheckoutConfirm">Confirmar</button>
                             </div>
                         </div>
                     </form>

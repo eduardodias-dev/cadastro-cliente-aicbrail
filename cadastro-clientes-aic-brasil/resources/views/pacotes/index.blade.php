@@ -18,6 +18,7 @@
                                 <th>Nome Cliente</th>
                                 <th>Telefone</th>
                                 <th>Código</th>
+                                <th>Afiliado</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -30,6 +31,7 @@
                                     <td>{{$pacote->nome_cliente}}</td>
                                     <td>{{$pacote->telefone}}</td>
                                     <td>{{$pacote->codigo}}</td>
+                                    <td>{{$pacote->nome_afiliado}}</td>
                                     <td>
                                         <a href="{{route('pacotes.detail', ['id' => $pacote->id_pacote])}}" class="btn btn-outline-info ml-2">Detalhe</a>
                                     </td>
