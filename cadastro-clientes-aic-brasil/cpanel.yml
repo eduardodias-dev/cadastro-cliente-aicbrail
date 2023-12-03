@@ -1,0 +1,5 @@
+---
+deployment:
+      tasks:
+        - export DEPLOYPATH=/home1/aicbra00/hml.aicbrasill.com.br
+        - /bin cp * $DEPLOYPATH

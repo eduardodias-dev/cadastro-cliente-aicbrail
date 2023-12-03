@@ -37,7 +37,9 @@
 </head>
 
 <body>
-
+<div class="alert alert-info">
+    <b>Ambiente de homologação</b>
+</div>
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center justify-content-between">
