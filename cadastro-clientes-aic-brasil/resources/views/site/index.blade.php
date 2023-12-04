@@ -17,6 +17,7 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="site/vendor/aos/aos.css" rel="stylesheet">
   <link href="site/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="site/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -24,10 +25,11 @@
   <link href="site/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="site/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="dist/plugins/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
-  <link href="site/css/style.css" rel="stylesheet">
-
+  <link href="site/css/style1.css" rel="stylesheet">
   <!-- =======================================================
   * Template Name: OnePage - v4.9.2
   * Template URL: https://bootstrapmade.com/onepage-multipurpose-bootstrap-template/
@@ -37,26 +39,33 @@
 </head>
 
 <body>
-<div class="alert alert-info">
-    <b>Ambiente de homologação</b>
-</div>
+
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center justify-content-between">
 
       <h1 class="">
         <a href="/">
-            <img src="site/img/LOGO-AIC-BRASIL.ico" height="80"></a></h1>
+            <img src="site/img/logo_nova.png" height="80"></a></h1>
       <!-- Uncomment below if you prefer to use an image logo -->
       <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-          <li><a class="nav-link scrollto" href="#services">Serviços</a></li>
-          <li><a class="nav-link scrollto" href="#pricing">Planos</a></li>
-          <li><a class="nav-link scrollto" href="#contact">Contato</a></li>
-          <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
+            <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+            <li><a class="nav-link scrollto" href="#services">Serviços</a></li>
+            <li><a class="nav-link scrollto" href="#pricing">Planos</a></li>
+            <li><a class="nav-link scrollto" href="#contact">Contato</a></li>
+            <li>
+                <a class="nav-link cart-link" href="{{route('cart.index')}}" title="Ver Carrinho">
+                    <i class='bx bxs-cart' style="font-size: 22px;"></i>
+                    {{-- <span class="badge bg-primary">5</span> --}}
+                </a>
+            </li>
+            <li><a class="getstarted scrollto" href="{{route('view.order')}}">Acompanhe seu pedido</a></li>
+            <li>
+                <a class="getstarted scrollto" style="margin-left: 10px !important;" href="https://calendar.app.google/6z3LcTvPVwnE7Y6dA" target="_blank">Agendamento Área Gourmet</a>
+            </li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -140,42 +149,6 @@
 
       </div>
     </section><!-- End About Video Section -->
-
-    <!-- ======= Clients Section ======= -->
-    <section id="clients" class="clients section-bg">
-      <div class="container">
-
-        <div class="row">
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-1.png" class="img-fluid" alt="">
-          </div>
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-2.png" class="img-fluid" alt="">
-          </div>
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-3.png" class="img-fluid" alt="">
-          </div>
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-4.png" class="img-fluid" alt="">
-          </div>
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-5.png" class="img-fluid" alt="">
-          </div>
-
-          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center" data-aos="zoom-in">
-            <img src="assets/img/clients/client-6.png" class="img-fluid" alt="">
-          </div>
-
-        </div>
-
-      </div>
-    </section><!-- End Clients Section -->
-
     <!-- ======= Cta Section ======= -->
     <section id="cta" class="cta">
       <div class="container" data-aos="zoom-in">
@@ -198,51 +171,77 @@
 
           <div class="col-lg-4 col-md-6" data-aos="zoom-im" data-aos-delay="100">
             <div class="box">
-              <h3>GPS BLOCK + REBOQ.24h</h3>
+              <div class="box-image mb-3">
+                <img src="site/img/logo_veicular.jpeg" height="150" />
+              </div>
+              <h3>PROTEÇÃO VEICULAR</h3>
               <h4><sup>R$</sup>99,99<span> / mês</span></h4>
               <ul>
                 <li>GPS Block</li>
                 <li>GUINCHO - REBOQUE.24h</li>
               </ul>
               <div class="btn-wrap">
-                <a href="{{route('site.checkout', ['id_plano' => 18])}}" class="btn-buy">Quero esse</a>
+                <a href="{{route('site.comprar_plano', ['id_plano' => 18])}}" class="btn-buy">Quero esse</a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="100">
             <div class="box featured">
-              <h3>PLANO A.1</h3>
-              <h4><sup>R$</sup>135,00<span> / mês</span></h4>
-              <ul>
-                <li>GUINCHO - REBOQUE.24h</li>
-                <li>PANE SECA | ELÉTRICA</li>
-                <li>PANE MECÂNICA</li>
-                <li>CHAVEIRO AUTO | RESIDENCIAL</li>
-                <li>ALAGAMENTO | ENCHENTE</li>
-              </ul>
-              <div class="btn-wrap">
-                <a href="{{route('site.checkout', ['id_plano' => 2])}}" class="btn-buy">Quero esse</a>
+              <div class="box-beneficios">
+                <a href="https://www.facebook.com/aicbrasil2009" class="box-link" target="_blank">
+                    <div class="box-beneficio-quadrado">
+                        <p class="titulo-box">
+                            AIC BANK & IMOB.
+                        </p>
+                        <div class="conteudo-box">
+                            <ul class="text-start mb-0">
+                                <li>ADM. CONDOMÍNIOS</li>
+                                <li>IMOBILIÁRIA</li>
+                                <li>GARANTIDORA E SEGURADORA</li>
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://www.facebook.com/AiCBRASILSAUDE" class="box-link" target="_blank">
+                    <div class="box-beneficio-redondo mx-auto d-flex justify-content align-items-center">
+                        <p class="titulo-box text-center my-auto flex-grow-1">
+                            SAÚDE <br>
+                             & <br>
+                            CIA
+                        </p>
+                    </div>
+                </a>
+                <a href="http://www.companyhero.com/afiliados/JADSONLINC25" class="box-link" target="_blank">
+                    <div class="box-beneficio-quadrado box-beneficio-ultimo">
+                        <p class="titulo-box">
+                            COWORKING
+                        </p>
+                        <div class="conteudo-box">
+                            <ul class="text-start">
+                                <li>ESCRITÓRIO VIRTUAL</li>
+                                <li>ANTI-MULTAS (RECURSO)</li>
+                                <li>REGISTRO DE MARCAS</li>
+                            </ul>
+                        </div>
+                    </div>
+                </a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="100">
             <div class="box">
-              <h3>PLANO B.2</h3>
-              <h4><sup>R$</sup>170,00<span> / mês</span></h4>
+                <div class="box-image mb-3">
+                    <img src="site/img/logo_juridico.png" height="150" />
+                </div>
+              <h3>ASSISTÊNCIA JURÍDICA 24h!</h3>
+              <p class="text-center">A partir de:</p>
+              <h4><sup>R$</sup>99,00<span> / mês</span></h4>
               <ul>
-                <li>ALAGAMENTO | ENCHENTE</li>
-                <li>CHAVEIRO AUTO | RESIDENCIAL</li>
-                <li>FURTO | ROUBO | INCÊNDIO</li>
-                <li>GUINCHO - REBOQUE.24h</li>
-                <li>GUARDA DO VEÍCULO</li>
-                <li>PANE SECA | ELÉTRICA</li>
-                <li>PANE MECÂNICA</li>
-                <li>E MAIS...</li>
               </ul>
               <div class="btn-wrap">
-                <a href="{{route('site.checkout', ['id_plano' => 4])}}" class="btn-buy">Quero esse</a>
+                <a href="{{route('planos')."#planos_juridico"}}" class="btn-buy">Ver planos</a>
               </div>
             </div>
           </div>
@@ -251,6 +250,38 @@
 
       </div>
     </section><!-- End Pricing Section -->
+    
+    <!-- ======= Propagandas ======= -->
+    <div class="container" data-aos="fade-up">
+      <div class="section-title">
+        <h2>Mais Produtos</h2>
+      </div>
+      <div class="Images text-center">
+        <div class="siema mySiema">
+            <div class="image-siema img-responsive">
+                <a href="https://www.facebook.com/AiCBRASIL.IES" target="_blank">
+                    <img src="site/img/ad1.jpeg" height="650">
+                </a>
+            </div>
+            <div class="image-siema img-responsive"><img src="site/img/ad2.jpeg"></div>
+            <div class="image-siema img-responsive"><img src="site/img/ad4.jpeg"></div>
+            <div class="image-siema img-responsive">
+                <a href="https://www.facebook.com/aicbrasil2009" target="_blank">
+                    <img src="site/img/ad5.jpeg">
+                </a>
+            </div>
+            <div class="image-siema img-responsive"><img src="site/img/ad8.jpeg"></div>
+            <div class="image-siema img-responsive"><img src="site/img/ad9.jpeg"></div>
+            <div class="image-siema img-responsive"><img src="site/img/ad10.jpeg"></div>
+            <div class="image-siema img-responsive"><img src="site/img/ad11.jpeg"></div>
+            <div class="image-siema img-responsive"><img src="site/img/ad12.jpeg"></div>
+            </div>
+            <a href="#!" class="carousel-control-prev" control="true">‹</a>
+            <a href="#!" class="carousel-control-next" control="true">›</a>
+        </div>
+    </div>
+    <!-- ======= End Propagandas ======= -->
+
 
     <!-- ======= Frequently Asked Questions Section ======= -->
     <section id="faq" class="faq section-bg">
@@ -367,11 +398,12 @@
 
       </div>
     </section><!-- End Contact Section -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <a href="https://wa.me/5508003482342?text=Quero%20saber%20mais%20sobre%20a%20AIC%20Brasil%20Assistência%2024h" style="position:fixed;width:60px;height:60px;bottom:80px;right:10px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
-    z-index:1000;" target="_blank">
-        <i style="margin-top:16px" class="fa fa-whatsapp"></i>
+    <a href="https://wa.me/5508003482342?text=Quero%20saber%20mais%20sobre%20a%20AIC%20Brasil%20Assistência%2024h" data-bs-toggle="tooltip" data-bs-placement="top" id="botao_whatsapp" title="Contato no Whatsapp" target="_blank" >
+        <i style="margin-top:10px; font-size: 40px;" class="bx bxl-whatsapp"></i>
     </a>
+    <button id="botao_doacao" data-bs-toggle="tooltip" data-bs-placement="top" title="Faça uma doação">
+        <i style="margin-top:10px; font-size: 40px;" class="bx bx-donate-heart"></i>
+    </button>
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
@@ -380,19 +412,19 @@
 
       <div class="me-md-auto text-center text-md-start">
         <div class="copyright">
-          &copy; Copyright <strong><span>AIC Brasil</span></strong>. Todos os Direitos Reservados
+          &copy; Copyright <strong><span>AIC Brasil</span> CNPJ: 46.476.232|0001-11</strong>. Todos os Direitos Reservados
         </div>
         <div class="credits">
           <!-- All the links in the footer should remain intact. -->
           <!-- You can delete the links only if you purchased the pro version. -->
           <!-- Licensing information: https://bootstrapmade.com/license/ -->
           <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/onepage-multipurpose-bootstrap-template/ -->
-          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+          Design por <a href="https://bootstrapmade.com/">BootstrapMade</a>
         </div>
       </div>
       <div class="social-links text-center text-md-right pt-3 pt-md-0">
         <a href="https://www.facebook.com/AiCBrasilCARs/" class="facebook"><i class="bx bxl-facebook"></i></a>
-        <a href="https://www.instagram.com/aic_brasil/" class="instagram"><i class="bx bxl-instagram"></i></a>
+        <a href="https://www.instagram.com/aic_brasil/" class="instagram"><i class="bx bxl-instagram"></i></a>s
         <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
       </div>
     </div>
@@ -400,6 +432,41 @@
 
   <div id="preloader"></div>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div class="modal fade" tabindex="-1" id="modal-doacao">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Doação</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="text-center">
+                        <a href="https://www.asaas.com/c/674960587769" class="d-block" target="_blank">
+                            <i style="margin-top:10px; font-size: 50px;" class="bx bx-donate-heart"></i>
+                        </a>
+                    </div>
+                    <p class="text-center">
+                        <b>Doar pelo ASAAS</b>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-center">
+                        <a href="https://www.paypal.com/donate/?hosted_button_id=E7PZYWUJXQRUU" class="d-block" target="_blank">
+                            <i style="margin-top:10px; font-size: 40px;" class="bi bi-paypal"></i>
+                        </a>
+                    </div>
+                    <p class="text-center">
+                        <b>Doar pelo Paypal</b>
+                    </p>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Vendor JS Files -->
   <script src="site/vendor/purecounter/purecounter_vanilla.js"></script>
@@ -409,9 +476,11 @@
   <script src="site/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="site/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="site/vendor/php-email-form/validate.js"></script>
-
+  <script src="/dist/js/jquery.min.js"></script>
+  <script src="site/vendor/siema/siema.min.js"></script>
+  
   <!-- Template Main JS File -->
-  <script src="site/js/main.js"></script>
+  <script src="site/js/main1.js"></script>
 
 </body>
 

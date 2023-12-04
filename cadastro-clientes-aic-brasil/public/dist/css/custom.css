@@ -20,3 +20,7 @@ table{
 .valign-bottom{
     vertical-align: bottom;
 }
+
+.input-filter{
+    width: 100%;
+}

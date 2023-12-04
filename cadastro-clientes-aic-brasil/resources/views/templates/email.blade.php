@@ -5,7 +5,7 @@
         Estamos muito felizes em tê-lo(a) conosco, conte com a gente sempre que precisar! <br/>
     </p>
     <div style="border: 1px solid #6c97c3; border-radius: 10px; padding: 10px; text-align:left;margin-bottom: 10px;">
-        <h4 style="padding-bottom: 0;">Dados da assinatura:</h4>
+        <h4 style="padding-bottom: 0;">Dados da Pedido:</h4>
         <b>Apólice:</b> {{$assinatura->codigo_assinatura}}<br/>
         <b>Data de emissão:</b> {{getDataPorExtenso($assinatura->adesao)}}<br/>
         <b>Titular:</b> {{$assinatura->nome_cliente}} <br>

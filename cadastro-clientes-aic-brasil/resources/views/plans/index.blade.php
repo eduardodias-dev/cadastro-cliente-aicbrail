@@ -11,7 +11,7 @@
                 <table class="table table-striped table-bordered" id="table-planos" class="display">
                     <thead>
                     <tr class="table-info">
-                        <th>Id GalaxPay</th>
+                        <th>Id</th>
                         <th>Nome</th>
                         <th>Ativo</th>
                         <th>Ações</th>
@@ -20,7 +20,7 @@
                     <tbody>
                         @foreach ($plans as $plan)
                             <tr>
-                                <td>{{$plan['id_galaxpay']}}</td>
+                                <td>{{$plan['id']}}</td>
                                 <td>{{$plan['nome']}}</td>
                                 <td>
                                     @if($plan['ativo'])
@@ -54,7 +54,7 @@
             </div>
 
         @endif
-        <h3>Adicionar Plano GalaxPay</h3>
+        {{-- <h3>Adicionar Plano GalaxPay</h3>
         <form action="{{route('plans.add')}}" method="POST">
             @csrf
             <select name="galaxPayId" class="form-control ml-1" value="">
@@ -67,7 +67,7 @@
                 @endisset
             </select>
             <button type="submit" class="btn btn-sm btn-outline-primary ml-2">Adicionar à base</button>
-        </form>
+        </form> --}}
     </main>
     <script>
         $(document).ready( function () {
