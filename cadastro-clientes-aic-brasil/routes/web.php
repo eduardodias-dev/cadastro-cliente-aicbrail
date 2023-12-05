@@ -16,7 +16,7 @@ use App\Http\Controllers\AdminController;
 |
 */
 
-Route::get('/', "SiteController@home");
+Route::get('/', "SiteController@home")->name('index');
 
 Route::prefix("admin")->middleware('auth')->group(function(){
     Route::get('', function () {

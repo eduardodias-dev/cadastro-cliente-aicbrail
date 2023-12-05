@@ -2084,7 +2084,7 @@ h5{
     display: block;
 }
 @media screen and (max-width: 1440px) {
-  
+
   .image-siema img{
     height: 400px;
   }
@@ -2095,7 +2095,7 @@ h5{
 }
 
 @media screen and (max-width: 768px) {
-  
+
   .image-siema img{
     height: 200px;
   }
@@ -2106,7 +2106,7 @@ h5{
 }
 
 @media screen and (max-width: 400px) {
-  
+
   .image-siema img{
     height: 150px;
   }
@@ -2114,4 +2114,8 @@ h5{
     .carousel-control-next{
     display: none;
   }
+}
+
+.content-wrapper{
+    margin-top: 150px;
 }
