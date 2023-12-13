@@ -1,6 +1,9 @@
 @extends('templates.site')
 @section('title', 'Bem-vindo à AIC Brasil!')
 @section('content')
+
+
+
 <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex align-items-center">
     <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
@@ -16,6 +19,71 @@
       </div>
     </div>
   </section><!-- End Hero -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <!-- Centered Icon -->
+            <div class="center-icon">
+              <!-- You can replace the below with your desired icon or use an icon library -->
+              <img src="/site/img/logo_nova.png" height="80"></a>
+            </div>
+          <!-- Title -->
+          <div class="modal-title-container">
+          </div>
+
+          <div class="clickable-boxes text-center">
+              <!-- Clickable Boxes -->
+              <!-- Box 1 -->
+              <a href="{{route('create.bank.account', ['type' => 'pf'])}}" class="box-link-modal box-primary" target="_blank">
+                Abertura de Conta PF 100% Digital
+              </a>
+              <!-- Box 2 -->
+              <a href="{{route('create.bank.account', ['type' => 'pj'])}}" class="box-link-modal box-success"  target="_blank">
+                Abertura de Conta PJ 100% Digital
+              </a>
+          </div>
+
+          <div class="bottom-box mt-3">
+              <!-- Subtitle -->
+              <h5 class="modal-title text-center">Garantidora</h5>
+              <!-- Smaller Subtitle with Arrow Icon -->
+              <p class="small-text text-center">
+                <span class="arrow-icon">&#8594;</span>
+                Cota / Taxa de Condomínio / Consórcio
+              </p>
+          </div>
+
+          <!-- Subtitle 2 -->
+            <h5 class="subtitle">Crédito P/ Condomínio</h5>
+
+            <!-- Unordered List -->
+            <ul class="credit-list">
+                <li>Fundo Reserva</li>
+                <li>Fundo Obra</li>
+                <li>Fundo Manutenção</li>
+                <li>Fundo Investimento</li>
+            </ul>
+
+            <!-- Bottom Box -->
+            <div class="bottom-box text-left">
+                <p>
+                    <span class="arrow-icon">&#8594;</span>
+                    Consulte as Condições e Regulamento
+                </p>
+                <p>
+                    <span class="arrow-icon">&#8594;</span>
+                    Programa válido até 01/04/2024
+                </p>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <main id="main">
 

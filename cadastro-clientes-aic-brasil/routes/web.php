@@ -24,11 +24,6 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     });
     Route::get('/clients', [AdminController::class, 'clients'])->name('client.list');
     Route::get('/clients/{id}', [AdminController::class, 'clientById'])->name('client.detail');
-    // Route::get('/customers', [AdminController::class, 'customers'])->name('customer.list');
-    // Route::get('/customers/{id}', [AdminController::class, 'customerById'])->name('customer.detail');
-    // Route::get('/subscriptions', [AdminController::class, 'subscriptions'])->name('subscriptions.list');
-    // Route::get('/subscriptions/{id:int}', [AdminController::class, 'subscriptionById'])->name('subscription.detail');
-    // Route::post('/subscription/add', [AdminController::class, 'addSubscriptionById'])->name('subscription.add');
     Route::get('/plans', [AdminController::class, 'getPlans'])->name('plans.list');
     Route::post('/plans', [AdminController::class, 'addPlan'])->name('plans.add');
     Route::post('/plans/activate', [AdminController::class, 'activatePlan'])->name('plans.activate');
@@ -49,13 +44,10 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/comprar-plano/{id_plano}', [SiteController::class, 'comprar_plano'])->name('site.comprar_plano');
-//Route::post('/checkout', [SiteController::class, 'checkout_post'])->name('checkout.post');
 Route::get('/vieworder', [SiteController::class, 'view_pacote'])->name('view.order');
 Route::post('/vieworder', [SiteController::class, 'view_order_post'])->name('view.order.post');
 
 Route::get('/pdf/{ordercode}/{sendEmail?}', 'HomeController@pdf');
-// Route::post('/viewContract/{ordercode}/{sendEmail?}/{showReport?}', 'SiteController@view_contract');
-//Route::post('transaction/update', 'SiteController@updateTransaction');
 Route::get('check/queue', 'JobsController@verificarFilaAssinaturas');
 Route::get('carrinho','SiteController@cart')->name('cart.index');
 Route::post('carrinho','SiteController@cart_add')->name('cart.add');
@@ -63,9 +55,9 @@ Route::post('remover-carrinho','SiteController@cart_remove')->name('cart.remove'
 Route::get('limpar-carrinho','SiteController@cart_clear')->name('cart.clear');
 Route::get('checkout/confirm', 'SiteController@checkout_confirm')->name('checkout.confirm');
 Route::post('checkout/confirm', 'SiteController@checkout_post')->name('checkout.finalize');
+Route::get('bank/create-account/{type}', 'SiteController@createBankAccount')->name('create.bank.account');
 
 Route::get('/downloadapolice', [SiteController::class, 'download_apolice'])->name('download_apolice');
-
 Route::get('/planos', [SiteController::class, 'list_plans'])->name('planos');
 
 Route::get('forget-password', 'Auth\ForgotPasswordController@getEmail');

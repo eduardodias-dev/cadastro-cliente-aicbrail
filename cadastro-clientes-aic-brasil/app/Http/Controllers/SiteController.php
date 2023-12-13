@@ -187,7 +187,7 @@ class SiteController extends Controller
         return view('site.checkout_confirm',['session_id' => $session_id, 'planos' => $planos, 'aid' => $aid]);
     }
 
-    public function view_order(Request $request){
+    public function view_order(){
         return view('site.vieworder');
     }
 
@@ -299,7 +299,19 @@ class SiteController extends Controller
         return view('site.list_plan', ['planos' => $planos, 'planosJuridicos' => $planosJuridicos]);
     }
 
+    public function createBankAccount(string $type, Request $request){
+        $type = strtolower($type);
 
+        if($type == 'pj'){
+            return view('site.create_bank_pj');
+        }
+        else if($type == 'pf'){
+            return view('site.create_bank_pf');
+        }
+        else{
+            abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
+        }
+    }
 
     //Private methods
 
