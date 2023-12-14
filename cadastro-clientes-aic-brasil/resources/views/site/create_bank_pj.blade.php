@@ -43,8 +43,9 @@
         <img src="/site/img/logo_nova.png" height="80"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA JURÍDICA</h4>
-  <form>
-    <label for="name">Nome:</label>
+  <form method="post" action="{{route('create.bank.account.post', ['type' => 'pj'])}}">
+    @csrf
+    <label for="name">Razão Social:</label>
     <input type="text" id="name" name="name" class="form-control" required>
 
     <label for="document">Documento (CNPJ):</label>

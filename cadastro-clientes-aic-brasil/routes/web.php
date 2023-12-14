@@ -56,6 +56,7 @@ Route::get('limpar-carrinho','SiteController@cart_clear')->name('cart.clear');
 Route::get('checkout/confirm', 'SiteController@checkout_confirm')->name('checkout.confirm');
 Route::post('checkout/confirm', 'SiteController@checkout_post')->name('checkout.finalize');
 Route::get('bank/create-account/{type}', 'SiteController@createBankAccount')->name('create.bank.account');
+Route::post('bank/create-account/{type}', 'SiteController@createBankAccountPost')->name('create.bank.account.post');
 
 Route::get('/downloadapolice', [SiteController::class, 'download_apolice'])->name('download_apolice');
 Route::get('/planos', [SiteController::class, 'list_plans'])->name('planos');

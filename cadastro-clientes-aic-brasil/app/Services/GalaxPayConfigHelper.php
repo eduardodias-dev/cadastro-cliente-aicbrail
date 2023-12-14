@@ -15,7 +15,7 @@ class GalaxPayConfigHelper{
             //  'URL' => 'https://api.galaxpay.com.br/v2'
             'galaxID' => '5473',
             'galaxHash' => '83Mw5u8988Qj6fZqS4Z8K7LzOo1j28S706R0BeFe',
-            'URL' => 'https://api.sandbox.cloud.galaxpay.com.br/v2'
+            'URL' => 'https://api.sandbox.cel.cash/v2'
         );
     }
 

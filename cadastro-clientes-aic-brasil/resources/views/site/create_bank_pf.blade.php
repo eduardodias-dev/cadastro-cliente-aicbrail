@@ -43,7 +43,8 @@
         <img src="/site/img/logo_nova.png" height="80"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA FÍSICA</h4>
-  <form>
+  <form method="post" action="{{route('create.bank.account.post', ['type' => 'pf'])}}">
+    @csrf
     <label for="name">Nome:</label>
     <input type="text" id="name" name="name" class="form-control" required>
 
@@ -79,6 +80,26 @@
 
       <label for="state">Estado:</label>
       <input type="text" id="state" name="state" class="form-control" required>
+    </fieldset>
+
+    <fieldset>
+        <legend>Tipo de Profissional</legend>
+
+        <label for="internalName">Profissão:</label>
+        <select id="internalName" name="internalName" class="form-select" required>
+            <option value="lawyer">Advogado</option>
+            <option value="doctor">Médico</option>
+            <option value="accountant">Contador</option>
+            <option value="realtor">Corretor Imobiliário</option>
+            <option value="broker">Corretor</option>
+            <option value="physicalEducator">Educador Físico</option>
+            <option value="physiotherapist">Fisioterapeuta</option>
+            <option value="others">Outros</option>
+        </select>
+
+        <label for="inscription">Inscrição do profissional (CREA, OAB, CRM, etc...):</label>
+        <input type="text" id="inscription" name="inscription" class="form-control" required>
+
     </fieldset>
 
     <label for="softDescriptor">Nome para exibição na Fatura:</label>

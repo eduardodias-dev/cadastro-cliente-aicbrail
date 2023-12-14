@@ -7,6 +7,7 @@ use App\Pacote;
 use App\LogIntegracao;
 use App\FilaConfirmacaoPacote;
 use App\FilaConfirmacaoAssinatura;
+use App\ViewModels\BankAccountViewModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -121,6 +122,23 @@ class GalaxPayService
             Log::warning("Não foi possível recuperar o link: ".$e->getMessage());
         }
         return null;
+    }
+
+    public function CreateBankSubAccount(BankAccountViewModel $data){
+        $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
+        $tokenObject = GalaxPayConfigHelper::getToken("company.write");
+
+        // print_r($tokenObject['access_token']);
+        print_r(json_encode((array) $data));
+
+        die();
+
+        $response = Http::withToken($tokenObject['access_token'])
+                        ->post($configs['URL']."/company/subaccount", (array) $data);
+
+        // print_r(json_encode($response->json()));
+
+        return $response;
     }
 
 }

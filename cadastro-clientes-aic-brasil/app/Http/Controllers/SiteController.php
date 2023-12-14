@@ -13,11 +13,17 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Mail\EnvioEmailApolice;
 use App\Services\CheckoutService;
+use App\Services\GalaxPayService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\ViewModels\AddressViewModel;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\ViewModels\CheckoutViewModel;
 use Illuminate\Support\Facades\Storage;
+use App\ViewModels\LegalBankAccountViewModel;
+use App\ViewModels\PersonBankAccountViewModel;
+use App\ViewModels\Professional;
 use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller
@@ -313,6 +319,71 @@ class SiteController extends Controller
         }
     }
 
+    public function createBankAccountPost(string $type, Request $request){
+        $requestData = $request->input();
+
+        if($type == 'pj'){
+            $bankAccountViewModel = new LegalBankAccountViewModel();
+
+            $bankAccountViewModel->name = $requestData['name'];
+            $bankAccountViewModel->document = $requestData['document'];
+            $bankAccountViewModel->nameDisplay = $requestData['nameDisplay'];
+            $bankAccountViewModel->phone = $requestData['phone'];
+            $bankAccountViewModel->emailContact = $requestData['emailContact'];
+            $bankAccountViewModel->responsibleDocument = $requestData['responsibleDocument'];
+            $bankAccountViewModel->typeCompany = $requestData['typeCompany'];
+            $bankAccountViewModel->softDescriptor = $requestData['softDescriptor'];
+            $bankAccountViewModel->cnae = $requestData['cnae'];
+
+            $bankAccountViewModel->logo = $this->getBase64Logo();
+
+            $address = new AddressViewModel();
+            $address->zipcode = $requestData['zipcode'];
+            $address->street = $requestData['street'];
+            $address->number = $requestData['number'];
+            $address->complement = $requestData['complement'];
+            $address->neighborhood = $requestData['neighborhood'];
+            $address->city = $requestData['city'];
+            $address->state = $requestData['state'];
+
+            $bankAccountViewModel->Address = (array) $address;
+
+        }
+        else if($type == 'pf'){
+            $bankAccountViewModel = new PersonBankAccountViewModel();
+
+            $bankAccountViewModel->name = $requestData['name'];
+            $bankAccountViewModel->document = $requestData['document'];
+            $bankAccountViewModel->phone = $requestData['phone'];
+            $bankAccountViewModel->emailContact = $requestData['emailContact'];
+            $bankAccountViewModel->softDescriptor = $requestData['softDescriptor'];
+
+            $bankAccountViewModel->logo = $this->getBase64Logo();
+
+            $address = new AddressViewModel();
+            $address->zipcode = $requestData['zipcode'];
+            $address->street = $requestData['street'];
+            $address->number = $requestData['number'];
+            $address->complement = $requestData['complement'];
+            $address->neighborhood = $requestData['neighborhood'];
+            $address->city = $requestData['city'];
+            $address->state = $requestData['state'];
+
+            $bankAccountViewModel->Address = (array) $address;
+
+            $professional = new Professional();
+            $professional->inscription = $requestData['inscription'];
+            $professional->internalName = $requestData['internalName'];
+
+            $bankAccountViewModel->Professional = (array) $professional;
+        }
+
+        $service = new GalaxPayService();
+        $service->CreateBankSubAccount($bankAccountViewModel);
+
+        //TODO: return result and create the page confirming.
+    }
+
     //Private methods
 
     private function validarCliente($request, $checkout = 0){
@@ -397,4 +468,18 @@ class SiteController extends Controller
         }
     }
 
+    private function getBase64Logo(){
+        $path = public_path('site/img/logo_aic_bank.jpeg');
+
+        if(File::exists($path)){
+
+            $imageData = file_get_contents($path);
+
+            $base64 = base64_encode($imageData);
+
+            return $base64;
+        }
+
+        return null;
+    }
 }
