@@ -22,7 +22,9 @@ use Illuminate\Support\Facades\Mail;
 use App\ViewModels\CheckoutViewModel;
 use Illuminate\Support\Facades\Storage;
 use App\ViewModels\LegalBankAccountViewModel;
+use App\ViewModels\LegalMandatoryDocumentsViewModel;
 use App\ViewModels\PersonBankAccountViewModel;
+use App\ViewModels\PersonMandatoryDocumentsViewModel;
 use App\ViewModels\Professional;
 use Illuminate\Support\Facades\Validator;
 
@@ -377,11 +379,46 @@ class SiteController extends Controller
 
             $bankAccountViewModel->Professional = (array) $professional;
         }
+        else{
+            abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
+        }
 
-        $service = new GalaxPayService();
-        $service->CreateBankSubAccount($bankAccountViewModel);
+        //$service = new GalaxPayService();
+        //$service->CreateBankSubAccount($bankAccountViewModel);
+
+        return redirect()->route('mandatory.documents', ['type' => $type]);
 
         //TODO: return result and create the page confirming.
+    }
+
+
+    public function formMandatoryDocuments(string $type, Request $request){
+        $type = strtolower($type);
+        if($type == 'pf'){
+            return view('site.form_mandatory_docs_bank_pf');
+        }
+        else if($type == 'pj'){
+            return view('site.form_mandatory_docs_bank_pj');
+        }
+        else{
+            abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
+        }
+    }
+
+    public function formMandatoryDocumentsPost(string $type, Request $request){
+        $type = strtolower($type);
+
+        if($type == 'pf'){
+            $mandatoryDocumentsViewModel = new PersonMandatoryDocumentsViewModel();
+        }
+        else if($type == 'pj'){
+            $mandatoryDocumentsViewModel = new LegalMandatoryDocumentsViewModel();
+        }
+        else {
+            abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
+        }
+
+        return null;
     }
 
     //Private methods

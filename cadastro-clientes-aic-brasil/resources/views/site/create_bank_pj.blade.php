@@ -105,7 +105,10 @@
     <label for="cnae">CNAE:</label>
     <input type="text" id="cnae" name="cnae" class="form-control" required>
 
-    <button type="submit" class="btn btn-primary">Enviar</button>
+    <button type="submit" class="btn btn-primary form-control mt-2 mb-5">
+        Enviar
+    </button>
+
   </form>
 
 

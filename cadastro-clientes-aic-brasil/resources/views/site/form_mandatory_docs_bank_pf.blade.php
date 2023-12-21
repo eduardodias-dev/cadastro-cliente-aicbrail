@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Criar Conta Digital PF</title>
+  <title>Criar Conta Digital PF - Envio de Documentos Necessários</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -42,68 +42,59 @@
     <div class="flex justify-content-center text-center">
         <img src="/site/img/logo_nova.png" height="80"></a>
     </div>
-    <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA FÍSICA</h4>
-  <form method="post" action="{{route('create.bank.account.post', ['type' => 'pf'])}}">
+    <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA FÍSICA - Envio dos Documentos Necessários</h4>
+  <form method="post" action="{{route('mandatory.documents.post', ['type' => 'pf'])}}">
     @csrf
-    <label for="name">Nome:</label>
-    <input type="text" id="name" name="name" class="form-control" required>
-
-    <label for="document">Documento (CPF):</label>
-    <input type="text" id="document" name="document" class="form-control" required>
-
-    <label for="phone">Telefone:</label>
-    <input type="tel" id="phone" name="phone" class="form-control" required>
-
-    <label for="emailContact">E-mail:</label>
-    <input type="email" id="emailContact" name="emailContact" class="form-control" required>
-
     <fieldset>
-      <legend>Endereço</legend>
+        <legend>Dados Pessoais</legend>
 
-      <label for="zipcode">CEP:</label>
-      <input type="text" id="zipcode" name="zipcode" class="form-control" required>
+        <label for="motherName">Nome da mãe:</label>
+        <input type="text" id="motherName" name="motherName" class="form-control" required>
 
-      <label for="street">Rua:</label>
-      <input type="text" id="street" name="street" class="form-control" required>
+        <label for="birthDate">Data de Nascimento:</label>
+        <input type="date" id="birthDate" name="birthDate" class="form-control" required>
 
-      <label for="number">Número:</label>
-      <input type="text" id="number" name="number" class="form-control" required>
+        <label for="monthlyIncome">Renda mensal:</label>
+        <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required>
 
-      <label for="complement">Complemento:</label>
-      <input type="text" id="complement" name="complement" class="form-control">
+        <label for="about">Sobre o negócio (CPF):</label>
+        <textarea id="about" name="about" class="form-control" required></textarea>
 
-      <label for="neighborhood">Bairro:</label>
-      <input type="text" id="neighborhood" name="neighborhood" class="form-control" required>
+        <label for="socialMediaLink">Link de mídia social:</label>
+        <input type="text" id="socialMediaLink" name="socialMediaLink" class="form-control" required>
 
-      <label for="city">Cidade:</label>
-      <input type="text" id="city" name="city" class="form-control" required>
-
-      <label for="state">Estado:</label>
-      <input type="text" id="state" name="state" class="form-control" required>
     </fieldset>
 
     <fieldset>
-        <legend>Tipo de Profissional</legend>
+        <legend>Documentos Pessoais</legend>
 
-        <label for="internalName">Profissão:</label>
-        <select id="internalName" name="internalName" class="form-select" required>
-            <option value="lawyer">Advogado</option>
-            <option value="doctor">Médico</option>
-            <option value="accountant">Contador</option>
-            <option value="realtor">Corretor Imobiliário</option>
-            <option value="broker">Corretor</option>
-            <option value="physicalEducator">Educador Físico</option>
-            <option value="physiotherapist">Fisioterapeuta</option>
-            <option value="others">Outros</option>
-        </select>
+        <hr />
+        <h4>CNH</h4>
+        <label for="cnh_selfie">Selfie Segurando a CNH:</label>
+        <input type="file" id="cnh_selfie" name="cnh_selfie" class="form-control" required>
 
-        <label for="inscription">Inscrição do profissional (CREA, OAB, CRM, etc...):</label>
-        <input type="text" id="inscription" name="inscription" class="form-control" required>
+        <label for="cnh_picture">Foto da CNH digital ou física aberta (frente + verso):</label>
+        <input type="file" id="cnh_picture" name="cnh_picture" class="form-control" required>
+
+        <label for="cnh_address">Foto do comprovante de endereço:</label>
+        <input type="file" id="cnh_address" name="cnh_address" class="form-control" required>
+
+        <hr />
+        <h4>RG</h4>
+
+        <label for="rg_selfie">Selfie Segurando o RG:</label>
+        <input type="file" id="rg_selfie" name="rg_selfie" class="form-control" required>
+
+        <label for="rg_front">Foto da frente do RG:</label>
+        <input type="file" id="rg_front" name="rg_front" class="form-control" required>
+
+        <label for="rg_back">Foto do verso do RG:</label>
+        <input type="file" id="rg_back" name="rg_back" class="form-control" required>
+
+        <label for="rg_address">Foto do comprovante de endereço:</label>
+        <input type="file" id="rg_address" name="rg_address" class="form-control" required>
 
     </fieldset>
-
-    <label for="softDescriptor">Nome para exibição na Fatura:</label>
-    <input type="text" id="softDescriptor" name="softDescriptor" class="form-control" required>
 
     <button type="submit" class="btn btn-primary form-control mt-2 mb-5">
         Enviar

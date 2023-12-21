@@ -57,6 +57,8 @@ Route::get('checkout/confirm', 'SiteController@checkout_confirm')->name('checkou
 Route::post('checkout/confirm', 'SiteController@checkout_post')->name('checkout.finalize');
 Route::get('bank/create-account/{type}', 'SiteController@createBankAccount')->name('create.bank.account');
 Route::post('bank/create-account/{type}', 'SiteController@createBankAccountPost')->name('create.bank.account.post');
+Route::get('bank/mandatory-documents/{type}', 'SiteController@formMandatoryDocuments')->name('mandatory.documents');
+Route::post('bank/mandatory-documents/{type}', 'SiteController@formMandatoryDocumentsPost')->name('mandatory.documents.post');
 
 Route::get('/downloadapolice', [SiteController::class, 'download_apolice'])->name('download_apolice');
 Route::get('/planos', [SiteController::class, 'list_plans'])->name('planos');
