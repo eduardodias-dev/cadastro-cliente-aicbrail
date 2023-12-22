@@ -43,7 +43,7 @@
         <img src="/site/img/logo_nova.png" height="80"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA FÍSICA - Envio dos Documentos Necessários</h4>
-  <form method="post" action="{{route('mandatory.documents.post', ['type' => 'pf'])}}">
+  <form method="post" action="{{route('mandatory.documents.post', ['type' => 'pf'])}}" enctype="multipart/form-data">
     @csrf
     <fieldset>
         <legend>Dados Pessoais</legend>

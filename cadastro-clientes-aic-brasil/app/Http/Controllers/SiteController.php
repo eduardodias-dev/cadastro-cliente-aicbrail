@@ -17,14 +17,25 @@ use App\Services\GalaxPayService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\ViewModels\AddressViewModel;
+use App\ViewModels\AssociateViewModel;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\ViewModels\CheckoutViewModel;
+use App\ViewModels\CompanyDocuments;
 use Illuminate\Support\Facades\Storage;
 use App\ViewModels\LegalBankAccountViewModel;
+use App\ViewModels\LegalCNHDocument;
+use App\ViewModels\LegalDocuments;
 use App\ViewModels\LegalMandatoryDocumentsViewModel;
 use App\ViewModels\PersonBankAccountViewModel;
 use App\ViewModels\PersonMandatoryDocumentsViewModel;
+use App\ViewModels\LegalFields;
+use App\ViewModels\LegalRGDocument;
+use App\ViewModels\PersonalDocuments;
+use App\ViewModels\PersonCNHDocument;
+use App\ViewModels\PersonDocuments;
+use App\ViewModels\PersonFields;
+use App\ViewModels\PersonRGDocument;
 use App\ViewModels\Professional;
 use Illuminate\Support\Facades\Validator;
 
@@ -410,9 +421,72 @@ class SiteController extends Controller
 
         if($type == 'pf'){
             $mandatoryDocumentsViewModel = new PersonMandatoryDocumentsViewModel();
+
+            $fields = new PersonFields();
+            $fields->motherName = $request['motherName'];
+            $fields->birthDate = $request['birthDate'];
+            $fields->monthlyIncome = $request['monthlyIncome'];
+            $fields->about = $request['about'];
+            $fields->socialMediaLink = $request['socialMediaLink'];
+
+            $personDocuments = new PersonDocuments();
+            $personDocuments->Personal = new PersonalDocuments();
+            $personDocuments->Personal->CNH = new PersonCNHDocument();
+            $personDocuments->Personal->CNH->selfie = $this->getBase64File($request->file('cnh_selfie'));
+            $personDocuments->Personal->CNH->picture = $this->getBase64File($request->file('cnh_picture'));
+            $personDocuments->Personal->CNH->address = $this->getBase64File($request->file('cnh_address'));
+
+            $personDocuments->Personal->RG = new PersonRGDocument();
+            $personDocuments->Personal->RG->selfie = $this->getBase64File($request->file('rg_selfie'));
+            $personDocuments->Personal->RG->front = $this->getBase64File($request->file('rg_front'));
+            $personDocuments->Personal->RG->back = $this->getBase64File($request->file('rg_back'));
+            $personDocuments->Personal->RG->address = $this->getBase64File($request->file('rg_address'));
+
+            $mandatoryDocumentsViewModel->Fields = $fields;
+            $mandatoryDocumentsViewModel->Documents = $personDocuments;
+
+            die(json_encode((array)$mandatoryDocumentsViewModel));
+
         }
         else if($type == 'pj'){
             $mandatoryDocumentsViewModel = new LegalMandatoryDocumentsViewModel();
+
+            $fields = new LegalFields();
+            $fields->monthlyIncome = $request['monthlyIncome'];
+            $fields->about = $request['about'];
+            $fields->socialMediaLink = $request['socialMediaLink'];
+
+            $associate = new AssociateViewModel();
+            $associate->document = $request['document'];
+            $associate->name = $request['name'];
+            $associate->motherName = $request['motherName'];
+            $associate->birthDate = $request['birthDate'];
+            $associate->type = $request['type'];
+
+            $legalDocuments = new LegalDocuments();
+
+            $legalDocuments->Company = new CompanyDocuments();
+            $legalDocuments->Company->lastContract = $this->getBase64File($request->file('lastContract'));
+            $legalDocuments->Company->cnpjCard = $this->getBase64File($request->file('cnpjCard'));
+            $legalDocuments->Company->electionRecord = $this->getBase64File($request->file('electionRecord'));
+            $legalDocuments->Company->statute = $this->getBase64File($request->file('statute'));
+
+            $legalDocuments->Documents = new PersonalDocuments();
+
+            $legalDocuments->Documents->CNH = new LegalCNHDocument();
+            $legalDocuments->Documents->CNH->selfie = $this->getBase64File($request->file('cnh_selfie'));
+            $legalDocuments->Documents->CNH->picture = $this->getBase64File($request->file('cnh_picture'));
+
+            $legalDocuments->Documents->RG = new LegalRGDocument();
+            $legalDocuments->Documents->RG->selfie = $this->getBase64File($request->file('rg_selfie'));
+            $legalDocuments->Documents->RG->front = $this->getBase64File($request->file('rg_front'));
+            $legalDocuments->Documents->RG->back = $this->getBase64File($request->file('rg_back'));
+
+            $mandatoryDocumentsViewModel->Fields = $fields;
+            $mandatoryDocumentsViewModel->Associate = $associate;
+            $mandatoryDocumentsViewModel->Documents = $legalDocuments;
+
+            die(json_encode((array)$mandatoryDocumentsViewModel));
         }
         else {
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
@@ -518,5 +592,15 @@ class SiteController extends Controller
         }
 
         return null;
+    }
+
+    private function getBase64File($fileInput){
+        $fileInput->store('uploads/mandatory_documents');
+
+        $fileContents = file_get_contents($fileInput->getRealPath());
+
+        $base64File = base64_encode($fileContents);
+
+        return $base64File;
     }
 }

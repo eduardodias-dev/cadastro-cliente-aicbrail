@@ -19,6 +19,10 @@ class PersonDocuments{
     public $Personal;
 }
 
+class PersonalDocuments {
+    public $CNH;
+    public $RG;
+}
 class PersonCNHDocument{
     public $selfie;
     public $picture;

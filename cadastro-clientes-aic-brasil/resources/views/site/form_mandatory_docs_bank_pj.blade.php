@@ -43,7 +43,7 @@
         <img src="/site/img/logo_nova.png" height="80"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA JURÍDICA - Envio dos Documentos Necessários</h4>
-  <form method="post" action="{{route('mandatory.documents.post', ['type' => 'pj'])}}">
+  <form method="post" action="{{route('mandatory.documents.post', ['type' => 'pj'])}}" enctype="multipart/form-data">
     @csrf
     <label for="monthlyIncome">Renda mensal:</label>
     <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required>
