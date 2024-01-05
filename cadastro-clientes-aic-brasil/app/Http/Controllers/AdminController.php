@@ -6,6 +6,7 @@ use Exception;
 use App\Pacote;
 use App\Cliente;
 use App\Afiliados;
+use App\Assinatura;
 use App\LogIntegracao;
 use App\CodigoAfiliados;
 use Illuminate\Http\Request;
@@ -205,6 +206,37 @@ class AdminController extends Controller
             DB::rollBack();
             Log::error($e->getMessage());
             return response()->json(["mensagem" => 'Erro ao remover Afiliado.', 'erro' => 1]);
+        }
+    }
+
+    public function aprovarPacote(Request $request){
+        $id_pacote = $request['id_pacote'];
+        $enviarApolice = !empty($request['enviarApolice']) &&  $request['enviarApolice'] == '1' ? true : false;
+
+        $pacote = Pacote::find($id_pacote);
+
+        $this->confirmarAssinatura($pacote->codigo, $enviarApolice);
+
+        $pacote->status = 'ativo';
+        $pacote->save();
+        return redirect()->route('pacotes.detail', ['id' => intval($id_pacote)]);
+    }
+
+    private function confirmarAssinatura($codigoPacote, $enviarApolice = false)
+    {
+        $assinaturas = DB::select('SELECT * from v_assinaturas_detalhe where codigo_pacote = ?', [$codigoPacote]);
+        if(count($assinaturas) > 0){
+            $assinatura_detalhe = $assinaturas[0];
+            $assinatura = Assinatura::find($assinatura_detalhe->id_assinatura);
+
+            $assinatura->status = "ativa";
+            print "Assinatura processada: ".$assinatura_detalhe->codigo_assinatura;
+            $assinatura->save();
+
+            if($enviarApolice){
+
+                $this->enviarEmailBemvindo($codigoPacote, $assinatura_detalhe->emails, 1);
+            }
         }
     }
 }

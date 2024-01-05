@@ -8,6 +8,19 @@
             <div class="row py-3">
                 <div class="col-md">
                     <h2>Pedido: {{$pacote->codigo}}</h2>
+                    <a class="btn btn-outline-primary" href="{{$pacote->link_boleto}}" title="Ver Boleto" target="_blank">
+                        Ver Boleto
+                        <i class="fa fa-file"></i>
+                    </a>
+                    <form action="{{route("pacotes.aprovar")}}" method="post" style="display: inline-block">
+                        @csrf
+                        <input type="hidden" name="id_pacote" value="{{$pacote->id_pacote}}">
+                        <input type="hidden" name="enviarApolice" value="0">
+                        <button class="btn btn-outline-success" type="submit" title="Confirmar Pagamento e ativar Assinaturas" target="_blank">
+                            Ativar Assinaturas
+                            <i class="fa fa-check"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
             <div class="row">
