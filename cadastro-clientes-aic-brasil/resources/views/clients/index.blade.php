@@ -8,31 +8,6 @@
                 <h3 class="card-title">Clientes</h3>
             </div>
             <div class="card-body">
-                {{-- <h3>Filtro</h3>
-                <form method="GET" class="form-inline">
-                    <label class="ml-2">Email:</label>
-                    <input type="text" name="emails" value="" class="form-control ml-1"/>
-
-                    <label class="ml-2">Documento:</label>
-                    <input type="text" name="documents" value="" class="form-control ml-1"/>
-
-                    <label class="ml-2">Status:</label>
-                    <select name="status" class="form-control ml-1" value="">
-                        <option value="">Selecione...</option>
-                        <option value="active">Ativo</option>
-                        <option value="inactive">Inativo</option>
-                        <option value="delayed">Pagamento Atrasado</option>
-                        <option value="withoutSubscriptionOrCharge">Não possui assinatura</option>
-                    </select>
-
-                    <label class="ml-2">Data Criação:</label>
-                    <input type="date" name="createdAtFrom" value="" class="form-control ml-1" />
-
-                    <br />
-                    <br />
-                    <br />
-                    <button type="submit" class="btn btn-outline-info ml-2">Filtrar</button> --}}
-                {{-- </form><br/> --}}
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" id="table-clientes" class="display">
                         <thead>
@@ -48,6 +23,18 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {{-- @if(isset($clients) && count($clients) > 0)
+                            <tr>
+                                <td><input type="text" class="input-filter" onchange="filter('#table-clientes', 0)"/></td>
+                                <td><input type="text" class="input-filter" onchange="filter('#table-clientes', 1)"/></td>
+                                <td><input type="text" class="input-filter" onchange="filter('#table-clientes', 2)"/></td>
+                                <td><input type="text" class="input-filter" onchange="filter('#table-clientes', 3)"/></td>
+                                <td><input type="text" class="input-filter" onchange="filter('#table-clientes', 4)"/></td>
+                                <td><input type="text" class="input-filter" onchange="filter('#table-clientes', 5)"/></td>
+                                <td><input type="text" class="input-filter" onchange="filter('#table-clientes', 6)"/></td>
+                                <td></td>
+                            </tr>
+                            @endif --}}
                             @foreach ($clients as $client)
                                 <tr>
                                     <td>{{$client['id']}}</td>
@@ -77,9 +64,4 @@
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready( function () {
-            $('#table-clientes').DataTable();
-        } );
-    </script>
 @endsection

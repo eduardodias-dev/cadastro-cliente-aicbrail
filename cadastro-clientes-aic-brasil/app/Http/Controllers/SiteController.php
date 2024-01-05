@@ -2,46 +2,130 @@
 
 namespace App\Http\Controllers;
 
-use App\Email;
 use App\Plano;
 use Exception;
-use App\Cliente;
-use App\Veiculo;
-use App\Endereco;
-use App\Telefone;
+use App\Pacote;
 use App\Assinatura;
 use \Mpdf\Mpdf as PDF;
+use App\LogIntegracao;
+use App\Services\CartHelper;
 use Illuminate\Http\Request;
-use App\Adicionais_Assinatura;
+use Illuminate\Http\Response;
 use App\Mail\EnvioEmailApolice;
-use App\Services\GalaxPayService;
+use App\Services\CheckoutService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use App\ViewModels\CheckoutViewModel;
 use Illuminate\Support\Facades\Storage;
-use App\Assinatura_Adicionais_Assinatura;
-use App\LogIntegracao;
 use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller
 {
     private $hash = "024c0b517d4c84afc32cc517ad1dd66e";
-    public function home(){
-        return view('site.index');
+    private $minutesCookie = 7*24*60;
+
+    public function home(Request $request){
+        $affiliateId = $request->cookie('aid');
+
+        if($request->input('aid') && ($affiliateId == '' || $affiliateId == null)){
+            $affiliateId = $request->input('aid');
+        }
+
+        $response = response()->view('site.index');
+        $response->cookie('aid', $affiliateId, $this->minutesCookie);
+        return $response;
     }
 
-    public function checkout(Request $request, $id_plano){
-        $plano = Plano::find($id_plano);
-        $club_beneficio = Adicionais_Assinatura::where(['id_tipo_adicional_assinatura'=> '1', 'ativo' => '1'])->get();
-        $cobertura_24horas = Adicionais_Assinatura::where(['id_tipo_adicional_assinatura'=> '2', 'ativo' => '1'])->get();
-        $comprar_seguros = Adicionais_Assinatura::where(['id_tipo_adicional_assinatura'=> '3', 'ativo' => '1'])->get();
-        $session_id = session()->getId();
-        return view('site.checkout', [
-                                        'club_beneficio' => $club_beneficio,
-                                        'cobertura_24horas' => $cobertura_24horas,
-                                        'comprar_seguros' => $comprar_seguros,
-                                        'plano' => $plano,
-                                        'session_id' => $session_id
+    public function cart_add(Request $request)
+    {
+        $affiliateId = $request->cookie('aid');
+        if($request->input('aid') && ($affiliateId == '' || $affiliateId == null)){
+            $affiliateId = $request->input('aid');
+        }
+
+        session()->remove('erros');
+        $data = $request->all();
+        $validation = $this->validarCliente($data);
+
+        //implementar aparição de erros na view.
+        if($validation->fails()){
+            // return response()->json([
+            //     'success' => false,
+            //     'message' => 'Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)',
+            //     'errors' => json_encode($validation->errors())
+            //     ]
+            // );
+            session()->flash('erros', $validation->errors());
+
+            return redirect()->route('site.comprar_plano', ['id_plano' => $data['plan_id']])
+                            ->withInput();
+        }
+
+        $data['valor_calculado'] = CartHelper::getValorCalculado($data, $data['plan_price']);
+
+        $cart = session()->get('carrinho');
+        $dados_cliente = session()->get('dados_cliente');
+        if(!$cart)
+        {
+            if(!isset($cart[$data['plan_id']]))
+            {
+                $cart[$data['plan_id']] = $data;
+            }
+        }else{
+            $cart[$data['plan_id']] = $data;
+        }
+
+        if(!$dados_cliente){
+            session()->put('dados_cliente', $data);
+        }
+
+        session()->put('carrinho', $cart);
+
+        $response = new Response('Redirecting ...',301);
+        $response->cookie('aid', $affiliateId, $this->minutesCookie);
+
+        return $response->withHeaders(['Location' => '/carrinho']);
+    }
+
+    public function cart(){
+        $planos = Plano::where(['ativo_venda' => '1'])->get()->toArray();
+
+        return view('site.cart', ['planos' => $planos]);
+    }
+
+    public function cart_remove(Request $request){
+        $planId = $request->input('plan_id');
+        $cart = session()->get('carrinho');
+
+        if(isset($cart) && isset($cart[$planId]))
+        {
+            unset($cart[$planId]);
+            if(count($cart) >= 1)
+                session()->put('carrinho', $cart);
+            else
+                session()->remove('carrinho');
+        }
+
+        return redirect()->route('cart.index');
+    }
+
+    public function cart_clear(){
+        $cart = session()->get('carrinho');
+        if(isset($cart))
+            session()->remove('carrinho');
+
+        return redirect()->route('cart.index');
+    }
+
+    public function comprar_plano($id_plano){
+        $checkoutViewModel = CheckoutViewModel::CreateStandardCheckoutView($id_plano);
+        return view('site.comprar_plano', [
+                                        'club_beneficio' => $checkoutViewModel->adicionais_club_beneficio,
+                                        'cobertura_24horas' => $checkoutViewModel->adicionais_cobertura_24horas,
+                                        'comprar_seguros' => $checkoutViewModel->adicionais_comprar_seguros,
+                                        'plano' => $checkoutViewModel->plano,
+                                        'session_id' => $checkoutViewModel->session_id
                                     ]);
     }
 
@@ -49,63 +133,58 @@ class SiteController extends Controller
     {
         try{
             $data = $request->all();
-            $validation = $this->validarCliente($data);
-            $plano = Plano::find($data['plan_id']);
-            $data['valor_calculado'] = $plano->preco;
+            $validation = $this->validarCliente($data, 1);
 
             if($validation->fails()){
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)',
-                    'errors' => json_encode($validation->errors())
-                    ]
-                );
+                // return response()->json([
+                //     'success' => false,
+                //     'message' => 'Ops... Parece que temos problemas com seus dados, por favor preencha corretamente :)',
+                //     'errors' => json_encode($validation->errors())
+                //     ]
+                // );
+                session()->flash('erros', $validation->errors());
+                Log::Debug(print_r($validation->errors));
+
+                return redirect()->route('checkout.confirm')
+                            ->withInput();
             }
 
-            $savedClient = $this->adicionarCliente($data);
-            if($savedClient != null){
-                $savedSubscription = $this->adicionarAssinatura($data, $savedClient->id, $data['plan_id']);
-
-                if($savedSubscription != null){
-                    $service = new GalaxPayService;
-                    $result = $service->CreateSubscription($savedSubscription->id, $savedClient->id, $data['forma_pagamento'], $this->getCardData($data));
-
-                    if(isset($result->json()['Subscription'])){
-                        try{
-                            $this->enviarEmailBemVindo($result->json()['Subscription']['myId'], $data['email']);
-                        }catch(Exception $ex){
-                            Log::warning("Erro ao executar envio de email: ".$ex->getMessage());
-                        }
-                    }
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Adicionado com sucesso!',
-                        'result' => json_encode($result->json())
-                    ]);
-                }
-                else
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Ops... Ocorreu um erro ao salvar sua assinatura, por favor entre em contato com o suporte.',
-                        ]
-                    );
+            $cart = session()->get('carrinho');
+            if(!isset($cart)){
+                return redirect()->to('/');
             }
-            else{
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Ops... Ocorreu um erro ao salvar seu cadastro, por favor entre em contato com o suporte.',
-                    ]
-                );
-            }
-        }catch(Exception $e){
-            return response()->json([
-                'success' => false,
-                'message' => 'Ops... Ocorreu um erro ao salvar seu cadastro, por favor entre em contato com o suporte.',
-                'exception' => $e->getMessage()
-                ]
-            );
+
+            $cart['dados_pagamento'] = ['cliente' => $data];
+            $cart['codigo_afiliado'] = $request->cookie('aid');
+            session()->flash('assinatura_criada', 1);
+
+            $checkoutService = new CheckoutService();
+            $result = $checkoutService->realizarCheckoutByCart($cart);
+
+            session()->remove('carrinho');
+
+            return redirect()->route('view.order', ['codigo_pacote' => $result['Subscription']['myId']]);
         }
+        catch(Exception $e)
+        {
+            session()->flash('erros', $e->getMessage());
+
+            throw $e;
+            Log::Debug(print_r($e->getMessage()));
+
+            return redirect()
+                ->route('checkout.confirm')
+                ->withInput();
+        }
+    }
+
+    public function checkout_confirm(Request $request){
+        $planos = Plano::where(['ativo_venda' => '1'])->get()->toArray();
+        $session_id = session()->getId();
+
+        $aid = $request->cookie('aid');
+
+        return view('site.checkout_confirm',['session_id' => $session_id, 'planos' => $planos, 'aid' => $aid]);
     }
 
     public function view_order(Request $request){
@@ -135,7 +214,49 @@ class SiteController extends Controller
             // die(json_encode($data['adicionais_assinatura']));
         }
 
-        return view('site.order_partial', ['subscription' => $data, 'error' => $error]);
+        return view('site.order_partial', ['subscriptions' => $data, 'error' => $error]);
+    }
+
+    public function view_pacote(Request $request){
+        $ordercode = $request->get('codigo_pacote');
+        $result = DB::select('SELECT * from v_assinaturas_detalhe where codigo_pacote = ?', [$ordercode]);
+        $pacote = Pacote::where(['codigo'=>$ordercode])->first();
+        $error = (count($result) <= 0);
+        $subscriptions = array();
+        if(!$error){
+            $data = (array)$result;
+            foreach($data as $assinatura){
+                $assinatura = (array)$assinatura;
+                $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$assinatura['codigo_assinatura']]);
+
+                $transform_array = [];
+                $grouped_array = array();
+                foreach($adicionais as $adicional){
+                    array_push($transform_array, (array)$adicional);
+                }
+
+                foreach($transform_array as $element){
+                    $grouped_array[$element['tipo_adicional']][] = $element;
+                }
+
+                $assinatura['adicionais_assinatura'] = $grouped_array;
+                array_push($subscriptions, $assinatura);
+            }
+            // die(json_encode($data['adicionais_assinatura']));
+        }
+
+        return view('site.vieworder', ['codigo_pacote' => $ordercode, 'subscriptions' => $subscriptions, 'error' => $error, 'pacote' => $pacote]);
+    }
+
+    public function download_apolice(Request $request){
+        $codigo_pacote = $request->get('codigo_pacote');
+
+        $checkoutService = new CheckoutService();
+        $nomeArquivo = $checkoutService->gerarApolicePeloPacote($codigo_pacote);
+
+        $arquivo = storage_path(getFilePathByArray(['app','public',$nomeArquivo]));
+
+        return response()->file($arquivo, ['Content-disposition:attachment; filename="'.$nomeArquivo.'"']);
     }
 
     public function updateTransaction(Request $request)
@@ -149,17 +270,17 @@ class SiteController extends Controller
         $transaction = $request->get("Transaction");
         $subscriptionMyId = $transaction["subscriptionMyId"];
         $data = DB::select("SELECT * from v_assinaturas_integracao where codigo_assinatura = ?;", [$subscriptionMyId]);
-        
+
         if(count($data) <= 0)
             return response()->json(['error' => 'Assinatura Nao encontrada.'], 404);
-            
+
         if($transaction["status"] == "authorized" ||
             $transaction["status"] == "payedBoleto" ||
             $transaction["status"] == "payedPix")
             {
                 $this->confirmarAssinatura($subscriptionMyId, $transaction);
             }
-        
+
         $log = new LogIntegracao();
         $log->resultado = json_encode($request->all());
         $log->acao = 'Atualizar Status Pagamento';
@@ -171,107 +292,22 @@ class SiteController extends Controller
         return response()->json(['message' => 'Operacao executada com sucesso.'], 200);
     }
 
-    private function view_contract($ordercode, $sendEmail = 0, $showReport = 0)
-    {
-        $assinatura = DB::select('SELECT * from v_assinaturas_detalhe where codigo_assinatura = ?', [$ordercode]);
-        if(count($assinatura) > 0)
-            $assinatura = $assinatura[0];
+    public function list_plans(){
+        $planos = Plano::where(['ativo_venda' => '1', 'juridico' => null])->orderBy('preco','asc')->get();
+        $planosJuridicos = Plano::where(['ativo_venda' => '1', 'juridico' => '1'])->orderBy('preco','asc')->get();
 
-        $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$ordercode]);
-        $filename = $this->gerarApolice($ordercode, $assinatura, $adicionais);
-
-        if($sendEmail == 1)
-            Mail::to($assinatura->emails)
-                ->send(new EnvioEmailApolice($assinatura, storage_path('app/public/'.$filename), $adicionais));
-
-        if($showReport == 1)
-            return Storage::disk('public')->download($filename, 'Request', [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="'.$filename.'"'
-            ]);
-
-        return 1;
+        return view('site.list_plan', ['planos' => $planos, 'planosJuridicos' => $planosJuridicos]);
     }
 
-    private function adicionarCliente($data)
-    {
-        DB::beginTransaction();
-        try{
-            $newCliente = new Cliente;
 
-            $newCliente->id_galaxpay = 0;
-            $newCliente->tipo_cadastro = $data['tipo_cadastro'];
-            $newCliente->nome = $data['nome'];
-            $newCliente->documento = $data['cpfcnpj'];
-            $newCliente->status = 'active';
-            $newCliente->sexo = $data['sexo'];
-            $newCliente->dataNascimento = date_create_from_format("d/m/Y", $data['datanasc']);
-            $newCliente->nome_representante = $data['nome_representante'];
-            $newCliente->cpf_representante = $data['cpf_representante'];
 
-            $result = $newCliente->save();
+    //Private methods
 
-            if(!$result)
-                return null;
-
-            $data['client_id'] = $newCliente->id;
-
-            $clienteEmail = new Email;
-            $clienteEmail->client_id = $newCliente->id;
-            $clienteEmail->endereco = $data['email'];
-            $clienteEmail->save();
-
-            $clienteEndereco = new Endereco;
-            $clienteEndereco->client_id = $newCliente->id;
-            $clienteEndereco->cep = str_replace('-','',$data['cep']);
-            $clienteEndereco->rua = $data['logradouro'];
-            $clienteEndereco->numero = $data['numero'];
-            $clienteEndereco->complemento = $data['complemento'];
-            $clienteEndereco->bairro = $data['bairro'];
-            $clienteEndereco->cidade = $data['cidade'];
-            $clienteEndereco->estado = $data['estado'];
-            $clienteEndereco->save();
-
-            $clienteTelefone = new Telefone;
-            $clienteTelefone->client_id = $newCliente->id;
-            $clienteTelefone->numero = $data['celular'];
-            $clienteTelefone->save();
-
-            $veiculo = new Veiculo;
-
-            $veiculo->client_id = $newCliente->id;
-            $veiculo->chassi = $data['chassi'];
-            $veiculo->placa = $data['placa_veiculo'];
-            $veiculo->renavam = $data['renavam'];
-            $veiculo->tipo = $data['tipo_veiculo'];
-            $veiculo->anoFabricacao = $data['ano_fabricacao'];
-            $veiculo->anoModelo = $data['ano_fabricacao'];
-            $veiculo->marca = $data['marca_veiculo'];
-            $veiculo->modelo = $data['modelo_veiculo'];
-            $veiculo->cor = $data['cor_veiculo'];
-            $veiculo->cambio = "";
-            $veiculo->fipeCodigo = "";
-            $veiculo->fipeValor = "";
-
-            $veiculo->save();
-
-            DB::commit();
-
-            return $newCliente;
-        }catch(Exception $e){
-
-            DB::rollback();
-            throw $e;
-        }
-
-        return null;
+    private function validarCliente($request, $checkout = 0){
+        return Validator::make($request, $this->regras($request["tipo_cadastro"], $checkout));
     }
 
-    private function validarCliente($request){
-        return Validator::make($request, $this->regras($request["tipo_cadastro"]));
-    }
-
-    private function regras($tipoCadastro){
+    private function regras($tipoCadastro, $checkout){
         $arrRegras = [
             'nome' => 'required|string|max:255',
             'cpfcnpj' => 'required|regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/',
@@ -289,111 +325,10 @@ class SiteController extends Controller
         if($tipoCadastro == "J"){
             $arrRegras['cpfcnpj'] = 'required|regex:/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/';
         }
-
+        // if($checkout != 1){
+        //     $arrRegras['tipo_veiculo'] = 'required|string';
+        // }
         return $arrRegras;
-    }
-
-    private function adicionarAssinatura($data, $client_id, $plan_id){
-        DB::beginTransaction();
-        $result = 0;
-        try{
-
-            $newAssinatura = new Assinatura;
-            $newAssinatura->plan_id = $plan_id;
-            $newAssinatura->client_id = $client_id;
-            $newAssinatura->valor = $data['valor_calculado'];
-            $newAssinatura->quantidade = 1;//$data['quantidade'];
-            $newAssinatura->periodicidade = 'mensal';
-            $newAssinatura->status = 'pendente';
-            $newAssinatura->info_adicional = '';
-            $newAssinatura->adesao = date('Y-m-d H:i:s');
-            //$newAssinatura->cobertura_terceiros = $data['cobertura_terceiros'];
-            $newAssinatura->melhor_vencimento = $data['melhor_vencimento'];
-            $newAssinatura->tipo_pagamento = $data['forma_pagamento'];
-            $newAssinatura->protecao_veicular = $data['comprar_protecao_veicular'];
-
-            $result = $newAssinatura->save();
-
-            $newAssinatura->codigo_assinatura = $this->getCogigoAssinatura($newAssinatura);
-
-            $beneficios = isset($data['club_beneficio']) ? $data['club_beneficio'] : [];
-            foreach($beneficios as $item){
-                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
-
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $item;
-                $adicionalAssinatura->deletado = false;
-
-                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
-                $adicionalAssinatura->save();
-            }
-
-            $coberturas = isset($data['cobertura_24horas']) ? $data['cobertura_24horas'] : [];
-
-            foreach($coberturas as $item){
-                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
-
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $item;
-                $adicionalAssinatura->deletado = false;
-
-                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
-                $adicionalAssinatura->save();
-            }
-
-            $cobertura_24horas_incluso_plano = Adicionais_Assinatura::where('incluso_nos_planos', 'LIKE', '%'.$plan_id.'%')->get();
-            foreach($cobertura_24horas_incluso_plano as $incluso){
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $incluso->id;
-                $adicionalAssinatura->deletado = false;
-
-                $adicionalAssinatura->save();
-            }
-
-            $seguros = isset($data['comprar_seguros']) ? $data['comprar_seguros'] : [];
-            foreach($seguros as $item){
-                $adicionalAssinaturaValor = Adicionais_Assinatura::find($item);
-
-                $adicionalAssinatura = new Assinatura_Adicionais_Assinatura;
-                $adicionalAssinatura->assinatura_id = $newAssinatura->id;
-                $adicionalAssinatura->adicional_assinatura_id = $item;
-                $adicionalAssinatura->deletado = false;
-
-                $newAssinatura->valor += $adicionalAssinaturaValor->valor;
-                $adicionalAssinatura->save();
-            }
-
-            $newAssinatura->save();
-
-            DB::commit();
-
-            return $newAssinatura;
-        }catch(Exception $e){
-            $result = 0;
-            DB::rollBack();
-
-            throw $e;
-        }
-
-        return null;
-    }
-
-    private function getCardData($data){
-        $card_data = [
-            "card_number" => $data['card_number'],
-            "card_holder" => $data['card_holder'],
-            "card_expires_at" => $data['card_expires_at'],
-            "card_cvv" => $data['card_cvv']
-        ];
-
-        return $card_data;
-    }
-
-    private function getCogigoAssinatura($assinatura){
-        return "AICBR-".date_format(date_create($assinatura->adesao), "Ydm")."".$assinatura->id;
     }
 
     private function enviarEmailBemvindo($ordercode, $emailCliente, $enviarApolice = 0){
@@ -449,4 +384,5 @@ class SiteController extends Controller
             $this->enviarEmailBemvindo($codigoAssinatura, $assinatura_detalhe->emails, 1);
         }
     }
+
 }

@@ -1,6 +1,6 @@
-<div style="margin-top: 10px;">
+<div style="margin-top: 30px;">
     <h2 style="font-weight: lighter;">Importante:</h2>
-    <p style="font-size: 12px">
+    <p style="font-size: 12px;text-align: justify;" class="text-justify">
         LEI GERAL DE PROTEÇÃO DE DADOS PESSOAIS (LGPD)
         A AIC Brasil e empresas do seu grupo econômico tem o compromisso de proteger a sua privacidade e respeitar os seus direitos de
         confidencialidade e proteção de dados nos termos das leis e regulamentos aplicáveis.

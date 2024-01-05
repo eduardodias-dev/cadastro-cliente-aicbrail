@@ -12,7 +12,7 @@ class GalaxPayConfigHelper{
         return array(
             'galaxID' => '2976',
             'galaxHash' => 'XlE71qUbKn1o53UnXqG4I40fIiOpWqVfFf77N5Py',
-            'URL' => 'https://api.galaxpay.com.br/v2'
+             'URL' => 'https://api.galaxpay.com.br/v2'
             //'galaxID' => '5473',
             //'galaxHash' => '83Mw5u8988Qj6fZqS4Z8K7LzOo1j28S706R0BeFe',
             //'URL' => 'https://api.sandbox.cloud.galaxpay.com.br/v2'

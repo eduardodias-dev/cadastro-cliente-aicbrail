@@ -7,7 +7,7 @@
     </p>
     <div style="border: 1px solid #6c97c3; border-radius: 10px; padding: 10px; text-align:left;margin-bottom: 10px;">
         <h4 style="padding-bottom: 0;">Dados da assinatura:</h4>
-        <b>Apólice:</b> {{$assinatura->codigo_assinatura}}<br/>
+        <b>Pedido:</b> {{$assinatura->codigo_pacote}}<br/>
         <b>Data de emissão:</b> {{getDataPorExtenso($assinatura->adesao)}}<br/>
         <b>Titular:</b> {{$assinatura->nome_cliente}} <br>
         <b>Telefone:</b> {{$assinatura->telefone}} <br>

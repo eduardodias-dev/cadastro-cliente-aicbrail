@@ -42,6 +42,7 @@ class EnvioEmailApolice extends Mailable
         if($this->enviarApolice == 0){
             $obj->subject("Bem-Vindo à AIC BRASIL!")
                 ->view('templates.email')
+                ->bcc(['eduardo.dias092@outlook.com'])
                 ->with([
                     'assinatura' => $this->assinatura,
                     'adicionais' => $this->adicionais,
@@ -51,6 +52,7 @@ class EnvioEmailApolice extends Mailable
         else
         {
             $obj->subject("Pagamento Recebido - AIC BRASIL")
+                ->bcc(['eduardo.dias092@outlook.com'])
                 ->view('templates.email_anexo')
                 ->with([
                     'assinatura' => $this->assinatura,

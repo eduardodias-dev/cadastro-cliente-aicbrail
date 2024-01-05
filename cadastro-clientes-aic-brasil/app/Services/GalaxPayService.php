@@ -2,18 +2,22 @@
 
 namespace App\Services;
 
-use App\FilaConfirmacaoAssinatura;
+use Exception;
+use App\Pacote;
 use App\LogIntegracao;
+use App\FilaConfirmacaoPacote;
+use App\FilaConfirmacaoAssinatura;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
 class GalaxPayService
 {
     const QTDE_DIAS_PRIMEIRO_PAGAMENTO = 3;
 
-    public function CreateSubscription($assinatura_id, $client_id, $type = 'card', $card_data = null)
+    public function CreateSubscription($pacote_id, $client_id, $type = 'card', $card_data = null)
     {
-        $data = DB::select("SELECT * from v_assinaturas_integracao where id_assinatura = ? AND id_cliente = ?", [$assinatura_id, $client_id]);
+        $data = DB::select("SELECT * from v_pacote_integracao where id_pacote = ? AND id_cliente = ?", [$pacote_id, $client_id]);
         if(count($data) >= 1){
             $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
             $request_data = $this->BuildCreateSubscriptionRequest($data[0], $type, $card_data);
@@ -31,12 +35,17 @@ class GalaxPayService
 
             $log->save();
 
-            $filaAssinatura = new FilaConfirmacaoAssinatura();
-            $filaAssinatura->id_assinatura = $data[0]->id_assinatura;
+            $filaAssinatura = new FilaConfirmacaoPacote();
+            $filaAssinatura->id_pacote = $data[0]->id_pacote;
             $filaAssinatura->acao = 'Confirmar pagamento';
             $filaAssinatura->finalizado = 0;
 
             $filaAssinatura->save();
+
+            $pacote = Pacote::find($data[0]->id_pacote);
+            $pacote->link_boleto = $this->pegarLinkBoleto($response);
+
+            $pacote->save();
 
             return $response;
         }
@@ -52,10 +61,10 @@ class GalaxPayService
 
         $request = [];
 
-        $request['myId'] = $data->codigo_assinatura;
+        $request['myId'] = $data->codigo;
         $request['value'] = $data->valor;
         $request['periodicity'] = $data->periodicidade;
-        $request['quantity'] = $data->quantidade;
+        $request['quantity'] = 0;
         $date = intval(GalaxPayService::QTDE_DIAS_PRIMEIRO_PAGAMENTO) + strtotime($data->adesao);
         $request['firstPayDayDate'] = date('Y-m-d', $date);
         $request['additionalInfo'] = $data->info_adicional;
@@ -76,6 +85,10 @@ class GalaxPayService
                 "state" => $data->estado
             ]
         ];
+        $request['PaymentMethodBoleto'] = [
+            "deadlineDays" => self::QTDE_DIAS_PRIMEIRO_PAGAMENTO,
+            "instructions" => "ASSISTÊNCIA 24h\n PROTESTO AUTOMÁTICO APÓS O VENCIMENTO - LEI nº 23.204|2018 (ALTERA A LEI nº.15.424|2004)"
+        ];
 
         if($type == 'card')
             $request['PaymentMethodCreditCard'] = [
@@ -88,10 +101,26 @@ class GalaxPayService
             ];
         else if ($type == 'pix')
             $request['PaymentMethodBoleto'] = [
-                "deadlineDays" => self::QTDE_DIAS_PRIMEIRO_PAGAMENTO
+                "deadlineDays" => self::QTDE_DIAS_PRIMEIRO_PAGAMENTO,
+                "instructions" => "ASSISTÊNCIA 24h\n PROTESTO AUTOMÁTICO APÓS O VENCIMENTO - LEI nº 23.204|2018 (ALTERA A LEI nº.15.424|2004)"
             ];
 
         return $request;
+    }
+
+    private function pegarLinkBoleto($jsonResposta){
+        try{
+            //Subscription.Transactions[0].Boleto.pdf
+
+            if(isset($jsonResposta['Subscription'])){
+                if(isset($jsonResposta['Subscription']['Transactions'])){
+                    return $jsonResposta['Subscription']['Transactions'][0]['Boleto']['pdf'];
+                }
+            }
+        }catch(Exception $e){
+            Log::warning("Não foi possível recuperar o link: ".$e->getMessage());
+        }
+        return null;
     }
 
 }

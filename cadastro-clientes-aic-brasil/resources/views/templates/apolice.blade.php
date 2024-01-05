@@ -42,6 +42,7 @@
             </tr>
         </tbody>
     </table>
+    @if(count($adicionais) > 0)
     <h3 style="font-weight: 100; text-align: center; margin-bottom:5px;padding-bottom:0;">
         PRODUTOS CONTRATADOS
     </h3>
@@ -63,6 +64,7 @@
             @endforeach
         </tbody>
     </table>
+    @endif
     <hr/>
     <div style="margin-top: 10px;">
         <h2 style="font-weight: lighter;">Importante:</h2>
