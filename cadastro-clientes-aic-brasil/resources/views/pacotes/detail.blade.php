@@ -2,25 +2,51 @@
 @section('title', 'Pacote')
 
 @section('content')
+    @if (session()->has('message'))
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ session('message') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    @endif
     <div class="container-fluid px-3" style="background: white;">
         <div class="main-form mt-2" style="min-height: 600px;">
             <hr>
             <div class="row py-3">
                 <div class="col-md">
                     <h2>Pedido: {{$pacote->codigo}}</h2>
+
+                    @if(strtoupper($pacote->status) == "ATIVO")
+                        <button class="btn btn-outline-success" type="button" disabled>
+                            Assinaturas Ativas
+                            <i class="fa fa-check"></i>
+                        </button>
+                    @else
+                        <form action="{{route("pacotes.aprovar")}}" method="post" style="display: inline-block">
+                            @csrf
+                            <input type="hidden" name="id_pacote" value="{{$pacote->id_pacote}}">
+                            <input type="hidden" name="enviarApolice" value="0">
+                                <button class="btn btn-outline-success" type="submit" title="Confirmar Pagamento e ativar Assinaturas">
+                                    Ativar Assinaturas
+                                    <i class="fa fa-check"></i>
+                                </button>
+                        </form>
+                    @endif
+                    @if(strtoupper($pacote->status) == "ATIVO")
+                        <form action="{{route("pacotes.envio.email")}}" method="post" style="display: inline-block">
+                            @csrf
+                            <input type="hidden" name="id_pacote" value="{{$pacote->id_pacote}}">
+                            <button class="btn btn-outline-info" type="submit" title="Enviar Apólice por Email" target="_blank">
+                                Enviar Apólice por Email
+                                <i class="fa fa-envelope"></i>
+                            </button>
+                        </form>
+                    @endif
                     <a class="btn btn-outline-primary" href="{{$pacote->link_boleto}}" title="Ver Boleto" target="_blank">
                         Ver Boleto
                         <i class="fa fa-file"></i>
                     </a>
-                    <form action="{{route("pacotes.aprovar")}}" method="post" style="display: inline-block">
-                        @csrf
-                        <input type="hidden" name="id_pacote" value="{{$pacote->id_pacote}}">
-                        <input type="hidden" name="enviarApolice" value="0">
-                        <button class="btn btn-outline-success" type="submit" title="Confirmar Pagamento e ativar Assinaturas" target="_blank">
-                            Ativar Assinaturas
-                            <i class="fa fa-check"></i>
-                        </button>
-                    </form>
                 </div>
             </div>
             <div class="row">
