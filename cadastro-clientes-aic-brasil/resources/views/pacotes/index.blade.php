@@ -45,9 +45,4 @@
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready( function () {
-            $('#table-pacotes').DataTable();
-        } );
-    </script>
 @endsection

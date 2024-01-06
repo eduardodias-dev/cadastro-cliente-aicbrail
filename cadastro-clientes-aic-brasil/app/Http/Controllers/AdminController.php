@@ -6,15 +6,18 @@ use Exception;
 use App\Pacote;
 use App\Cliente;
 use App\Afiliados;
+use App\Assinatura;
+use \Mpdf\Mpdf as PDF;
 use App\LogIntegracao;
 use App\CodigoAfiliados;
 use Illuminate\Http\Request;
+use App\Mail\EnvioEmailApolice;
 use App\Services\IPlanoDBService;
 use Illuminate\Support\Facades\DB;
 use App\Services\IClienteDBService;
 use Illuminate\Support\Facades\Log;
-use App\Services\Integration\IClientSenderIntegrationService;
-use App\Services\Integration\IClientReceiverIntegrationService;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -206,5 +209,105 @@ class AdminController extends Controller
             Log::error($e->getMessage());
             return response()->json(["mensagem" => 'Erro ao remover Afiliado.', 'erro' => 1]);
         }
+    }
+
+    public function aprovarPacote(Request $request){
+        $id_pacote = $request['id_pacote'];
+        $enviarApolice = !empty($request['enviarApolice']) &&  $request['enviarApolice'] == '1' ? true : false;
+
+        $pacote = Pacote::find($id_pacote);
+
+        $this->confirmarAssinatura($pacote->codigo, $enviarApolice);
+
+        $pacote->status = 'ativo';
+        $result = $pacote->save();
+
+        if($result)
+            session()->flash('message', 'Pacote ativado com sucesso!');
+
+        return redirect()->route('pacotes.detail', ['id' => intval($id_pacote)]);
+    }
+
+    public function enviarApoliceManualmente(Request $request)
+    {
+        $id_pacote = $request['id_pacote'];
+        $pacote = Pacote::find($id_pacote);
+
+        $assinaturas = DB::select('SELECT * from v_assinaturas_detalhe where codigo_pacote = ?', [$pacote->codigo]);
+        if(count($assinaturas) > 0){
+            $assinatura_detalhe = $assinaturas[0];
+
+            $this->enviarEmailBemvindo($pacote->codigo, $assinatura_detalhe->emails, 1);
+
+            session()->flash('message', 'Enviado com sucesso!');
+        }
+
+
+        return redirect()->route('pacotes.detail', ['id' => intval($id_pacote)]);
+    }
+
+    private function confirmarAssinatura($codigoPacote, $enviarApolice = false)
+    {
+        $assinaturas = DB::select('SELECT * from v_assinaturas_detalhe where codigo_pacote = ?', [$codigoPacote]);
+
+        if(count($assinaturas) > 0){
+            foreach($assinaturas as $assinatura_detalhe){
+                $assinatura = Assinatura::find($assinatura_detalhe->id_assinatura);
+
+                $assinatura->status = "ativa";
+                $assinatura->save();
+            }
+
+            if($enviarApolice){
+
+                $this->enviarEmailBemvindo($codigoPacote, $assinatura_detalhe->emails, 1);
+            }
+        }
+    }
+
+    private function enviarEmailBemvindo($ordercode, $emailCliente, $enviarApolice = 0){
+
+        $pacote = DB::select('SELECT * from v_assinaturas_detalhe where codigo_pacote = ?', [$ordercode]);
+        if(count($pacote) <= 0)
+            return;
+
+        $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$ordercode]);
+        $adicionais = null;
+
+        $filename = $this->gerarApolice($ordercode, $pacote, $adicionais);
+
+        Mail::to($emailCliente)
+             ->send(new EnvioEmailApolice($pacote[0], storage_path('app/public/'.$filename), $adicionais, $enviarApolice));
+
+        return 1;
+    }
+
+    private function gerarApolice($ordercode, $assinaturas, $adicionais = null ){
+        $filename = 'apolice_'.$ordercode.'.pdf';
+        $mpdf = new PDF();
+        $pathfile = storage_path(getFilePathByArray(['app','public','capa_apolice.pdf']));
+
+        $mpdf->SetSourceFile($pathfile);
+        $tplId = $mpdf->ImportPage(1);
+        $mpdf->useTemplate($tplId);
+
+        foreach($assinaturas as $assinatura){
+            // Do not add page until page template set, as it is inserted at the start of each page
+            $adicionais = DB::select('SELECT * FROM v_adicionais_assinatura WHERE codigo_assinatura = ?', [$assinatura->codigo_assinatura]);
+
+            $pathfile = storage_path(getFilePathByArray(['app','public','template_apolice.pdf']));
+            $mpdf->SetSourceFile($pathfile);
+            $tplId = $mpdf->ImportPage(1);
+            $mpdf->SetPageTemplate($tplId);
+            $mpdf->AddPage('P','','','','','','','25');
+
+            $html = view('templates.apolice', ['assinatura' => $assinatura, 'adicionais' => $adicionais])->render();
+
+            $mpdf->WriteHTML(strtoupper($html));
+        }
+
+        Storage::disk('public')->put($filename, $mpdf->Output($filename, 'S'));
+
+        return $filename;
     }
 }

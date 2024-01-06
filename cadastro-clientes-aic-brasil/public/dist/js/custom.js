@@ -2,8 +2,14 @@ $(document).ready( function () {
     $('[data-toggle="tooltip"]').tooltip()
     $('#table-clientes').DataTable();
     $('#table-afiliados').DataTable();
-    $('#table-pacotes').DataTable();
+    $('#table-pacotes').DataTable({
+        order: [[0, 'desc']]
+    });
     $('#table-plans').DataTable();
+    $('form').submit(function() {
+        $('button').prop('disabled', true);
+    });
+
 
     $('#btnSalvarNovoCodigoAfiliado').click(function(){
         $btn = $(this);

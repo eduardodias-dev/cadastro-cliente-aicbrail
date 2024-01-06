@@ -43,6 +43,8 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     Route::post('/afiliados/novo', [AdminController::class, 'novoAfiliado'])->name('afiliados.novo');
     Route::post('/afiliados/novo-codigo', [AdminController::class, 'novoCodigoAfiliado'])->name('afiliados.novoCodigo');
     Route::post('/afiliados/remover', [AdminController::class, 'removerAfiliado'])->name('afiliados.remover');
+    Route::post('/pacotes/aprovar-manualmente', [AdminController::class, 'aprovarPacote'])->name('pacotes.aprovar');
+    Route::post('/pacotes/enviar-email-manualmente', [AdminController::class, 'enviarApoliceManualmente'])->name('pacotes.envio.email');
 });
 
 Auth::routes();

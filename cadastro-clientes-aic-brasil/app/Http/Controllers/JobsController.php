@@ -30,7 +30,7 @@ class JobsController extends Controller
         foreach($filas as $fila){
             $pacote = Pacote::find($fila->id_pacote);
 
-            $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['myIds' => $pacote->codigo_assinatura]);
+            $response = $this->clientIntegrationService->getClientSubscriptions(0, 100, ['myIds' => $pacote->codigo]);
             if($response->successful() == false || count($response->json()['Subscriptions']) <= 0){
                 die(print_r($response->json()));
                 throw new Exception("Não foi possível recuperar o pacote. \n".json_encode($response->error()));
@@ -39,23 +39,26 @@ class JobsController extends Controller
             //die(print_r($subs['Subscriptions']));
             foreach($subs['Subscriptions'] as $subscription){
                 $transaction = $subscription['Transactions'][0];
+
+                print 'Status assinatura do pacote '.$pacote->codigo.': '. $transaction["status"];
+
                 if($transaction["status"] == "authorized" ||
                     $transaction["status"] == "payedBoleto" ||
                     $transaction["status"] == "payedPix")
                 {
-                    $this->confirmarAssinatura($pacote->codigo_assinatura);
+                    $this->confirmarAssinatura($pacote->codigo);
 
                     $fila->finalizado = 1;
 
                 }
-                print "Assinatura processada: ".$pacote->codigo;
+                // print "Assinatura processada: ".$pacote->codigo;
 
             }
 
             $fila->save();
         }
 
-        return '<br>Executado com sucesso: '.count($filas).' processadas';
+        return ' Executado com sucesso: '.count($filas).' processadas';
     }
 
     private function confirmarAssinatura($codigoPacote)

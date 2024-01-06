@@ -123,4 +123,24 @@ class GalaxPayService
         return null;
     }
 
+    public function CreateTransactionForSubscription($pacote_id, $transaction_data)
+    {
+        $pacote = Pacote::find($pacote_id);
+        $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
+
+        $request_data = array(
+            "myId" => $transaction_data["myId"],
+            "value" => $transaction_data["value"],
+            "payday" => $transaction_data["payday"],
+            "payedOutsideGalaxPay" => $transaction_data["payedOutsideGalaxPay"],
+            "additionalInfo" => $transaction_data["additionalInfo"]
+        );
+
+        $token_object = GalaxPayConfigHelper::getToken("subscriptions.write");
+
+        $response = Http::withToken($token_object['access_token'])
+                        ->post($configs['URL'].'/transactions/{subscriptionId}/myId/add', $request_data);
+
+        return $response->json();
+    }
 }
