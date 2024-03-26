@@ -14,6 +14,7 @@ use Illuminate\Http\Response;
 use App\Mail\EnvioEmailApolice;
 use App\Services\CheckoutService;
 use App\Services\GalaxPayService;
+use App\Services\SubcontaDBService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\ViewModels\AddressViewModel;
@@ -334,6 +335,7 @@ class SiteController extends Controller
 
     public function createBankAccountPost(string $type, Request $request){
         $requestData = $request->input();
+        $service = new GalaxPayService();
 
         if($type == 'pj'){
             $bankAccountViewModel = new LegalBankAccountViewModel();
@@ -361,6 +363,11 @@ class SiteController extends Controller
 
             $bankAccountViewModel->Address = (array) $address;
 
+            $subcontaService = new SubcontaDBService();
+            $result = $subcontaService->AddSubcontaPJ($bankAccountViewModel);
+            if($result == 1){
+                $responseViewModel = $service->CreateBankSubAccount($bankAccountViewModel);
+            }
         }
         else if($type == 'pf'){
             $bankAccountViewModel = new PersonBankAccountViewModel();
@@ -389,13 +396,16 @@ class SiteController extends Controller
             $professional->internalName = $requestData['internalName'];
 
             $bankAccountViewModel->Professional = (array) $professional;
+
+            $subcontaService = new SubcontaDBService();
+            $result = $subcontaService->AddSubcontaPF($bankAccountViewModel);
+            if($result == 1){
+                $responseViewModel = $service->CreateBankSubAccount($bankAccountViewModel);
+            }
         }
         else{
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
         }
-
-        $service = new GalaxPayService();
-        $responseViewModel = $service->CreateBankSubAccount($bankAccountViewModel);
 
         //return redirect()->route('mandatory.documents', ['type' => $type]);
 

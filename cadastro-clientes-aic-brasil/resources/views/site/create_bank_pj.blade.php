@@ -99,7 +99,7 @@
       <input type="text" id="state" name="state" class="form-control" required>
     </fieldset>
 
-    <label for="softDescriptor">Descrição Suave:</label>
+    <label for="softDescriptor">Nome para aparecer na fatura:</label>
     <input type="text" id="softDescriptor" name="softDescriptor" class="form-control" required>
 
     <label for="cnae">CNAE:</label>
