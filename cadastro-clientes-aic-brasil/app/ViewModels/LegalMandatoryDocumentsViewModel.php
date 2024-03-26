@@ -25,7 +25,7 @@ class AssociateViewModel{
 
 class LegalDocuments{
     public $Company;
-    public $Documents;
+    public $Personal;
 }
 
 class CompanyDocuments{

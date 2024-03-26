@@ -82,16 +82,16 @@
         <legend>Documentos</legend>
 
         <label for="lastContract">Contrato social:</label>
-        <input type="file" id="lastContract" name="lastContract" class="form-control" required>
+        <input type="file" id="lastContract" name="lastContract" class="form-control">
 
         <label for="cnpjCard">Documento CNPJ:</label>
-        <input type="file" id="cnpjCard" name="cnpjCard" class="form-control" required>
+        <input type="file" id="cnpjCard" name="cnpjCard" class="form-control">
 
         <label for="electionRecord">Ata de eleição da diretoria:</label>
-        <input type="file" id="electionRecord" name="electionRecord" class="form-control" required>
+        <input type="file" id="electionRecord" name="electionRecord" class="form-control">
 
         <label for="statute">Estatuto:</label>
-        <input type="file" id="statute" name="statute" class="form-control" required>
+        <input type="file" id="statute" name="statute" class="form-control">
 
     </fieldset>
 
@@ -101,22 +101,22 @@
         <hr />
         <h4>CNH</h4>
         <label for="cnh_selfie">Selfie Segurando a CNH:</label>
-        <input type="file" id="cnh_selfie" name="cnh_selfie" class="form-control" required>
+        <input type="file" id="cnh_selfie" name="cnh_selfie" class="form-control">
 
         <label for="cnh_picture">Foto da CNH digital ou física aberta (frente + verso):</label>
-        <input type="file" id="cnh_picture" name="cnh_picture" class="form-control" required>
+        <input type="file" id="cnh_picture" name="cnh_picture" class="form-control">
 
         <hr />
         <h4>RG</h4>
 
         <label for="rg_selfie">Selfie Segurando o RG:</label>
-        <input type="file" id="rg_selfie" name="rg_selfie" class="form-control" required>
+        <input type="file" id="rg_selfie" name="rg_selfie" class="form-control">
 
         <label for="rg_front">Foto da frente do RG:</label>
-        <input type="file" id="rg_front" name="rg_front" class="form-control" required>
+        <input type="file" id="rg_front" name="rg_front" class="form-control">
 
         <label for="rg_back">Foto do verso do RG:</label>
-        <input type="file" id="rg_back" name="rg_back" class="form-control" required>
+        <input type="file" id="rg_back" name="rg_back" class="form-control">
 
     </fieldset>
 

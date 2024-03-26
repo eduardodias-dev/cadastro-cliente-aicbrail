@@ -351,7 +351,7 @@ class SiteController extends Controller
             $bankAccountViewModel->logo = $this->getBase64Logo();
 
             $address = new AddressViewModel();
-            $address->zipcode = $requestData['zipcode'];
+            $address->zipCode = $requestData['zipcode'];
             $address->street = $requestData['street'];
             $address->number = $requestData['number'];
             $address->complement = $requestData['complement'];
@@ -374,7 +374,7 @@ class SiteController extends Controller
             $bankAccountViewModel->logo = $this->getBase64Logo();
 
             $address = new AddressViewModel();
-            $address->zipcode = $requestData['zipcode'];
+            $address->zipCode = $requestData['zipcode'];
             $address->street = $requestData['street'];
             $address->number = $requestData['number'];
             $address->complement = $requestData['complement'];
@@ -394,12 +394,14 @@ class SiteController extends Controller
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
         }
 
-        //$service = new GalaxPayService();
-        //$service->CreateBankSubAccount($bankAccountViewModel);
+        $service = new GalaxPayService();
+        $responseViewModel = $service->CreateBankSubAccount($bankAccountViewModel);
 
-        return redirect()->route('mandatory.documents', ['type' => $type]);
+        //return redirect()->route('mandatory.documents', ['type' => $type]);
 
         //TODO: return result and create the page confirming.
+
+        return response()->json((array)$responseViewModel);
     }
 
 
@@ -471,19 +473,19 @@ class SiteController extends Controller
             $legalDocuments->Company->electionRecord = $this->getBase64File($request->file('electionRecord'));
             $legalDocuments->Company->statute = $this->getBase64File($request->file('statute'));
 
-            $legalDocuments->Documents = new PersonalDocuments();
+            $legalDocuments->Personal = new PersonalDocuments();
 
-            $legalDocuments->Documents->CNH = new LegalCNHDocument();
-            $legalDocuments->Documents->CNH->selfie = $this->getBase64File($request->file('cnh_selfie'));
-            $legalDocuments->Documents->CNH->picture = $this->getBase64File($request->file('cnh_picture'));
+            $legalDocuments->Personal->CNH = new LegalCNHDocument();
+            $legalDocuments->Personal->CNH->selfie = $this->getBase64File($request->file('cnh_selfie'));
+            $legalDocuments->Personal->CNH->picture = $this->getBase64File($request->file('cnh_picture'));
 
-            $legalDocuments->Documents->RG = new LegalRGDocument();
-            $legalDocuments->Documents->RG->selfie = $this->getBase64File($request->file('rg_selfie'));
-            $legalDocuments->Documents->RG->front = $this->getBase64File($request->file('rg_front'));
-            $legalDocuments->Documents->RG->back = $this->getBase64File($request->file('rg_back'));
+            $legalDocuments->Personal->RG = new LegalRGDocument();
+            $legalDocuments->Personal->RG->selfie = $this->getBase64File($request->file('rg_selfie'));
+            $legalDocuments->Personal->RG->front = $this->getBase64File($request->file('rg_front'));
+            $legalDocuments->Personal->RG->back = $this->getBase64File($request->file('rg_back'));
 
             $mandatoryDocumentsViewModel->Fields = $fields;
-            $mandatoryDocumentsViewModel->Associate = $associate;
+            $mandatoryDocumentsViewModel->Associate = array($associate);
             $mandatoryDocumentsViewModel->Documents = $legalDocuments;
 
             die(json_encode((array)$mandatoryDocumentsViewModel));
@@ -595,12 +597,16 @@ class SiteController extends Controller
     }
 
     private function getBase64File($fileInput){
-        $fileInput->store('uploads/mandatory_documents');
+        if($fileInput != null && $fileInput){
+            $fileInput->store('uploads/mandatory_documents');
 
-        $fileContents = file_get_contents($fileInput->getRealPath());
+            $fileContents = file_get_contents($fileInput->getRealPath());
 
-        $base64File = base64_encode($fileContents);
+            $base64File = base64_encode($fileContents);
 
-        return $base64File;
+            return $base64File;
+        }
+
+        return null;
     }
 }

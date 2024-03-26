@@ -8,6 +8,7 @@ use App\LogIntegracao;
 use App\FilaConfirmacaoPacote;
 use App\FilaConfirmacaoAssinatura;
 use App\ViewModels\BankAccountViewModel;
+use App\ViewModels\ResponseViewModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -128,17 +129,36 @@ class GalaxPayService
         $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
         $tokenObject = GalaxPayConfigHelper::getToken("company.write");
 
-        // print_r($tokenObject['access_token']);
-        print_r(json_encode((array) $data));
-
-        die();
-
         $response = Http::withToken($tokenObject['access_token'])
-                        ->post($configs['URL']."/company/subaccount", (array) $data);
+                    ->post($configs['URL']."/company/subaccount", (array) $data);
 
-        // print_r(json_encode($response->json()));
+        $responseViewModel = new ResponseViewModel();
 
-        return $response;
+        if($response->successful()){
+            $responseViewModel->sucesso = 1;
+            $responseViewModel->mensagem = "Conta criada com sucesso!";
+        }
+        else{
+            $status_code = $response->status();
+            $responseViewModel->sucesso = 0;
+
+            if($status_code == 400){
+                $responseViewModel->mensagem = $response->json()['error']['message'];
+            }
+            else
+            {
+                $responseViewModel->mensagem = "Ocorreu um erro inesperado ao criar a subconta, por favor entre em contato com o suporte.";
+            }
+        }
+
+        $log_integracao = new LogIntegracao();
+        $log_integracao->acao = "Criação de subconta";
+        $log_integracao->data_integracao = date('Y-m-d H:i:s');
+        $log_integracao->resultado = json_encode(["status" => $response->status(), "dados" => $response->json()]);
+
+        $log_integracao->save();
+
+        return $responseViewModel;
     }
 
 }

@@ -14,7 +14,7 @@ abstract class BankAccountViewModel
 }
 
 class AddressViewModel{
-    public $zipcode;
+    public $zipCode;
     public $street;
     public $number;
     public $complement;
