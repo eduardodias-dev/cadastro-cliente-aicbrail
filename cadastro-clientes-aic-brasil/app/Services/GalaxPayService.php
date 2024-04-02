@@ -7,6 +7,7 @@ use App\Pacote;
 use App\LogIntegracao;
 use App\FilaConfirmacaoPacote;
 use App\FilaConfirmacaoAssinatura;
+use App\Subconta;
 use App\ViewModels\BankAccountViewModel;
 use App\ViewModels\ResponseViewModel;
 use Illuminate\Support\Facades\DB;
@@ -137,6 +138,21 @@ class GalaxPayService
         if($response->successful()){
             $responseViewModel->sucesso = 1;
             $responseViewModel->mensagem = "Conta criada com sucesso!";
+
+            $subconta = Subconta::find($data->id);
+            if($subconta != null)
+            {
+                $objectResponse = $response->json();
+                $subconta->galaxPayId = $objectResponse["Company"]["galaxPayId"];
+                $subconta->galaxId = $objectResponse["Company"]["ApiAuth"]["galaxId"];
+                $subconta->galaxHash = $objectResponse["Company"]["ApiAuth"]["galaxHash"];
+
+                $subconta->save();
+            }
+            else
+            {
+                Log::warning("Subconta não encontrada no banco de dados. ID: ". $data->id);
+            }
         }
         else{
             $status_code = $response->status();
@@ -153,6 +169,44 @@ class GalaxPayService
 
         $log_integracao = new LogIntegracao();
         $log_integracao->acao = "Criação de subconta";
+        $log_integracao->data_integracao = date('Y-m-d H:i:s');
+        $log_integracao->resultado = json_encode(["status" => $response->status(), "dados" => $response->json()]);
+
+        $log_integracao->save();
+
+        return $responseViewModel;
+    }
+
+    public function SendMandatoryDocuments(array $data, int $subconta_id){
+        $subconta = Subconta::find($subconta_id);
+
+        $configs = GalaxPayConfigHelper::GetGalaxPayConfigurationWithSubaccountData($subconta->galaxId, $subconta->galaxHash);
+        $tokenObject = GalaxPayConfigHelper::getTokenFromSubaccount("company.write", $subconta->galaxId, $subconta->galaxHash);
+
+        $response = Http::withToken($tokenObject['access_token'])
+                    ->post($configs['URL']."/company/mandatory-documents", (array) $data);
+
+        $responseViewModel = new ResponseViewModel();
+
+        if($response->successful()){
+            $responseViewModel->sucesso = 1;
+            $responseViewModel->mensagem = "Documentos enviados com sucesso!";
+        }
+        else{
+            $status_code = $response->status();
+            $responseViewModel->sucesso = 0;
+
+            if($status_code == 400){
+                $responseViewModel->mensagem = $response->json()['error']['message'];
+            }
+            else
+            {
+                $responseViewModel->mensagem = "Ocorreu um erro inesperado ao enviar os documentos, por favor entre em contato com o suporte.";
+            }
+        }
+
+        $log_integracao = new LogIntegracao();
+        $log_integracao->acao = "Envio Documentos obrigatórios de subconta";
         $log_integracao->data_integracao = date('Y-m-d H:i:s');
         $log_integracao->resultado = json_encode(["status" => $response->status(), "dados" => $response->json()]);
 

@@ -4,6 +4,7 @@ namespace App\ViewModels;
 
 abstract class BankAccountViewModel
 {
+    public $id;
     public $name;
     public $document;
     public $phone;
@@ -11,6 +12,7 @@ abstract class BankAccountViewModel
     public $logo;
     public $softDescriptor;
     public $Address;
+    public $canAccessPlatform = true;
 }
 
 class AddressViewModel{

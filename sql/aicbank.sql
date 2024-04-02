@@ -41,3 +41,8 @@ CREATE TABLE subconta_profissional (
     atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (subconta_id) REFERENCES subconta(id)
 );
+
+
+ALTER TABLE subconta ADD COLUMN galaxPayId INT;
+ALTER TABLE subconta ADD COLUMN galaxId VARCHAR(255);
+ALTER TABLE subconta ADD COLUMN galaxHash VARCHAR(255);

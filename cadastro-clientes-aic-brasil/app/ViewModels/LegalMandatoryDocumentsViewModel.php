@@ -2,7 +2,7 @@
 
 namespace App\ViewModels;
 
-class LegalMandatoryDocumentsViewModel implements IMandatoryDocumentsViewModel{
+class LegalMandatoryDocumentsViewModel extends MandatoryDocumentsViewModel{
 
     public $Fields;
     public $Associate;

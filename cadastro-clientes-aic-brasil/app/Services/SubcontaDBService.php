@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Subconta;
 use App\Subconta_Endereco;
 use App\Subconta_Profissional;
-use App\ViewModels\AddressViewModel;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -39,7 +38,7 @@ class SubcontaDBService
 
             DB::commit();
 
-            return 1;
+            return $subconta->id;
         }
         catch(Exception $e)
         {
@@ -77,7 +76,7 @@ class SubcontaDBService
 
             DB::commit();
 
-            return 1;
+            return $subconta->id;
         }
         catch(Exception $e)
         {

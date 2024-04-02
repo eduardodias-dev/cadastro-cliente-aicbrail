@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Plano;
 use Exception;
 use App\Pacote;
+use App\Subconta;
 use App\Assinatura;
 use \Mpdf\Mpdf as PDF;
 use App\LogIntegracao;
@@ -12,33 +13,33 @@ use App\Services\CartHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Mail\EnvioEmailApolice;
+use App\ViewModels\LegalFields;
+use App\ViewModels\PersonFields;
+use App\ViewModels\Professional;
 use App\Services\CheckoutService;
 use App\Services\GalaxPayService;
-use App\Services\SubcontaDBService;
+use App\ViewModels\LegalDocuments;
 use Illuminate\Support\Facades\DB;
+use App\Services\SubcontaDBService;
+use App\ViewModels\LegalRGDocument;
+use App\ViewModels\PersonDocuments;
 use Illuminate\Support\Facades\Log;
 use App\ViewModels\AddressViewModel;
-use App\ViewModels\AssociateViewModel;
+use App\ViewModels\CompanyDocuments;
+use App\ViewModels\LegalCNHDocument;
+use App\ViewModels\PersonRGDocument;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\ViewModels\CheckoutViewModel;
-use App\ViewModels\CompanyDocuments;
-use Illuminate\Support\Facades\Storage;
-use App\ViewModels\LegalBankAccountViewModel;
-use App\ViewModels\LegalCNHDocument;
-use App\ViewModels\LegalDocuments;
-use App\ViewModels\LegalMandatoryDocumentsViewModel;
-use App\ViewModels\PersonBankAccountViewModel;
-use App\ViewModels\PersonMandatoryDocumentsViewModel;
-use App\ViewModels\LegalFields;
-use App\ViewModels\LegalRGDocument;
 use App\ViewModels\PersonalDocuments;
 use App\ViewModels\PersonCNHDocument;
-use App\ViewModels\PersonDocuments;
-use App\ViewModels\PersonFields;
-use App\ViewModels\PersonRGDocument;
-use App\ViewModels\Professional;
+use App\ViewModels\AssociateViewModel;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\ViewModels\LegalBankAccountViewModel;
+use App\ViewModels\PersonBankAccountViewModel;
+use App\ViewModels\LegalMandatoryDocumentsViewModel;
+use App\ViewModels\PersonMandatoryDocumentsViewModel;
 
 class SiteController extends Controller
 {
@@ -336,7 +337,7 @@ class SiteController extends Controller
     public function createBankAccountPost(string $type, Request $request){
         $requestData = $request->input();
         $service = new GalaxPayService();
-
+        $subconta_id = 0;
         if($type == 'pj'){
             $bankAccountViewModel = new LegalBankAccountViewModel();
 
@@ -364,10 +365,16 @@ class SiteController extends Controller
             $bankAccountViewModel->Address = (array) $address;
 
             $subcontaService = new SubcontaDBService();
-            $result = $subcontaService->AddSubcontaPJ($bankAccountViewModel);
-            if($result == 1){
-                $responseViewModel = $service->CreateBankSubAccount($bankAccountViewModel);
+            $result_id = $subcontaService->AddSubcontaPJ($bankAccountViewModel);
+
+            //die(print_r($result_id));
+
+            if($result_id != 0){
+                $bankAccountViewModel->id = $result_id;
+                $subconta_id = $result_id;
+                $service->CreateBankSubAccount($bankAccountViewModel);
             }
+
         }
         else if($type == 'pf'){
             $bankAccountViewModel = new PersonBankAccountViewModel();
@@ -398,24 +405,30 @@ class SiteController extends Controller
             $bankAccountViewModel->Professional = (array) $professional;
 
             $subcontaService = new SubcontaDBService();
-            $result = $subcontaService->AddSubcontaPF($bankAccountViewModel);
-            if($result == 1){
-                $responseViewModel = $service->CreateBankSubAccount($bankAccountViewModel);
+            $result_id = $subcontaService->AddSubcontaPF($bankAccountViewModel);
+
+            if($result_id != 0){
+                $bankAccountViewModel->id = $result_id;
+                $subconta_id = $result_id;
+                $service->CreateBankSubAccount($bankAccountViewModel);
             }
         }
         else{
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
         }
 
-        //return redirect()->route('mandatory.documents', ['type' => $type]);
+        session()->put("subconta_id", $subconta_id);
+
+        return redirect()
+                ->route('mandatory.documents', ['type' => $type])
+                ->with('subconta_id', $subconta_id);
 
         //TODO: return result and create the page confirming.
-
-        return response()->json((array)$responseViewModel);
     }
 
 
-    public function formMandatoryDocuments(string $type, Request $request){
+    public function formMandatoryDocuments(string $type){
+        $subconta_id = session()->get('subconta_id');
         $type = strtolower($type);
         if($type == 'pf'){
             return view('site.form_mandatory_docs_bank_pf');
@@ -431,6 +444,9 @@ class SiteController extends Controller
     public function formMandatoryDocumentsPost(string $type, Request $request){
         $type = strtolower($type);
 
+        $subconta_id = $request['subconta_id'];
+
+        $responseViewModel = null;
         if($type == 'pf'){
             $mandatoryDocumentsViewModel = new PersonMandatoryDocumentsViewModel();
 
@@ -457,8 +473,10 @@ class SiteController extends Controller
             $mandatoryDocumentsViewModel->Fields = $fields;
             $mandatoryDocumentsViewModel->Documents = $personDocuments;
 
-            die(json_encode((array)$mandatoryDocumentsViewModel));
+            //die(json_encode((array)$mandatoryDocumentsViewModel));
 
+            $service = new GalaxPayService();
+            $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, intval($subconta_id));
         }
         else if($type == 'pj'){
             $mandatoryDocumentsViewModel = new LegalMandatoryDocumentsViewModel();
@@ -498,13 +516,15 @@ class SiteController extends Controller
             $mandatoryDocumentsViewModel->Associate = array($associate);
             $mandatoryDocumentsViewModel->Documents = $legalDocuments;
 
-            die(json_encode((array)$mandatoryDocumentsViewModel));
+            //die(json_encode((array)$mandatoryDocumentsViewModel));
+            $service = new GalaxPayService();
+            $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, intval($subconta_id));
         }
         else {
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
         }
 
-        return null;
+        return $responseViewModel;
     }
 
     //Private methods
