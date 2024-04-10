@@ -417,24 +417,22 @@ class SiteController extends Controller
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
         }
 
-        session()->put("subconta_id", $subconta_id);
-
         return redirect()
-                ->route('mandatory.documents', ['type' => $type])
-                ->with('subconta_id', $subconta_id);
+                ->route('mandatory.documents', ['type' => $type, 'subconta_id' => $subconta_id]);
 
         //TODO: return result and create the page confirming.
     }
 
 
-    public function formMandatoryDocuments(string $type){
-        $subconta_id = session()->get('subconta_id');
+    public function formMandatoryDocuments(string $type, Request $request){
+        $subconta_id = $request->get("subconta_id");
         $type = strtolower($type);
+
         if($type == 'pf'){
-            return view('site.form_mandatory_docs_bank_pf');
+            return view('site.form_mandatory_docs_bank_pf', ['subconta_id' => $subconta_id]);
         }
         else if($type == 'pj'){
-            return view('site.form_mandatory_docs_bank_pj');
+            return view('site.form_mandatory_docs_bank_pj', ['subconta_id' => $subconta_id]);
         }
         else{
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
@@ -443,7 +441,6 @@ class SiteController extends Controller
 
     public function formMandatoryDocumentsPost(string $type, Request $request){
         $type = strtolower($type);
-
         $subconta_id = $request['subconta_id'];
 
         $responseViewModel = null;
@@ -476,7 +473,7 @@ class SiteController extends Controller
             //die(json_encode((array)$mandatoryDocumentsViewModel));
 
             $service = new GalaxPayService();
-            $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, intval($subconta_id));
+            $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, $subconta_id);
         }
         else if($type == 'pj'){
             $mandatoryDocumentsViewModel = new LegalMandatoryDocumentsViewModel();
@@ -505,7 +502,7 @@ class SiteController extends Controller
 
             $legalDocuments->Personal->CNH = new LegalCNHDocument();
             $legalDocuments->Personal->CNH->selfie = $this->getBase64File($request->file('cnh_selfie'));
-            $legalDocuments->Personal->CNH->picture = $this->getBase64File($request->file('cnh_picture'));
+            $legalDocuments->Personal->CNH->picture = [ $this->getBase64File($request->file('cnh_picture')) ];
 
             $legalDocuments->Personal->RG = new LegalRGDocument();
             $legalDocuments->Personal->RG->selfie = $this->getBase64File($request->file('rg_selfie'));
@@ -518,7 +515,7 @@ class SiteController extends Controller
 
             //die(json_encode((array)$mandatoryDocumentsViewModel));
             $service = new GalaxPayService();
-            $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, intval($subconta_id));
+            $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, $subconta_id);
         }
         else {
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");

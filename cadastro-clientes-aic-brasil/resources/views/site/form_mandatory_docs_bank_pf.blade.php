@@ -116,10 +116,10 @@
   <script src="/dist/plugins/inputmask/jquery.inputmask.min.js"></script>
   <script src="/dist/plugins/datetimepicker/jquery.datetimepicker.full.js"></script>
   <script src="/site/vendor/siema/siema.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="/site/js/main1.js"></script>
-
+  <script src="/site/js/form_mandatory_docs_pf.js"></script>
 </body>
 
 </html>

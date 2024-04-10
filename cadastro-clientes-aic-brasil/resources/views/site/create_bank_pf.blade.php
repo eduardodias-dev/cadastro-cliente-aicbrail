@@ -43,16 +43,16 @@
         <img src="/site/img/logo_nova.png" height="80"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA FÍSICA</h4>
-  <form method="post" action="{{route('create.bank.account.post', ['type' => 'pf'])}}">
+  <form method="post" action="{{route('create.bank.account.post', ['type' => 'pf'])}}" id="form_bank_pf">
     @csrf
     <label for="name">Nome:</label>
     <input type="text" id="name" name="name" class="form-control" required>
 
     <label for="document">Documento (CPF):</label>
-    <input type="text" id="document" name="document" class="form-control" required>
+    <input type="text" id="document" name="document" class="form-control" maxlength="20" required>
 
     <label for="phone">Telefone:</label>
-    <input type="tel" id="phone" name="phone" class="form-control" required>
+    <input type="tel" id="phone" name="phone" class="form-control" email required>
 
     <label for="emailContact">E-mail:</label>
     <input type="email" id="emailContact" name="emailContact" class="form-control" required>
@@ -124,9 +124,11 @@
   <script src="/dist/plugins/inputmask/jquery.inputmask.min.js"></script>
   <script src="/dist/plugins/datetimepicker/jquery.datetimepicker.full.js"></script>
   <script src="/site/vendor/siema/siema.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/localization/messages_pt_BR.min.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="/site/js/main1.js"></script>
+  <script src="/site/js/create_bank_pf.js"></script>
 
 </body>
 

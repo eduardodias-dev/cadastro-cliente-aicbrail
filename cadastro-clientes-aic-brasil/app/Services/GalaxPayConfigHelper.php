@@ -75,6 +75,7 @@ class GalaxPayConfigHelper{
     public static function getTokenFromSubaccount($scopes, $galaxId, $galaxHash)
     {
         $configs = self::GetGalaxPayConfigurationWithSubaccountData($galaxId, $galaxHash);
+        //die(print_r($configs));
 
         $request = Http::withBasicAuth($configs['galaxID'], $configs['galaxHash'])
                         ->post($configs['URL'].'/token',
@@ -94,7 +95,7 @@ class GalaxPayConfigHelper{
         $token['scope']        = $request['scope'];
         $token['expires_in']   = date('Y-m-d H:i:s', $expires_in+strtotime('now'));
 
-        $token->save();
+        //$token->save();
 
         return $token;
     }

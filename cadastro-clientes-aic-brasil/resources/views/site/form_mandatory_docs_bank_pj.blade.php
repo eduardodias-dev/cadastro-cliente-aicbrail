@@ -45,7 +45,7 @@
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA JURÍDICA - Envio dos Documentos Necessários</h4>
   <form method="post" action="{{route('mandatory.documents.post', ['type' => 'pj'])}}" enctype="multipart/form-data">
     @csrf
-    <input type="hidden" name="subconta_id" value="{{session()->get("subconta_id")}}" readonly="readonly" />
+    <input type="hidden" name="subconta_id" value="{{$subconta_id}}" readonly="readonly" />
 
     <label for="monthlyIncome">Renda mensal:</label>
     <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required>
@@ -141,9 +141,10 @@
   <script src="/dist/plugins/inputmask/jquery.inputmask.min.js"></script>
   <script src="/dist/plugins/datetimepicker/jquery.datetimepicker.full.js"></script>
   <script src="/site/vendor/siema/siema.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="/site/js/main1.js"></script>
+  <script src="/site/js/form_mandatory_docs_pj.js"></script>
 
 </body>
 

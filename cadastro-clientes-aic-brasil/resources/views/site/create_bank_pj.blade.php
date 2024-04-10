@@ -43,7 +43,7 @@
         <img src="/site/img/logo_nova.png" height="80"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA JURÍDICA</h4>
-  <form method="post" action="{{route('create.bank.account.post', ['type' => 'pj'])}}">
+  <form method="post" action="{{route('create.bank.account.post', ['type' => 'pj'])}}" id="form_bank_pj">
     @csrf
     <label for="name">Razão Social:</label>
     <input type="text" id="name" name="name" class="form-control" required>
@@ -124,9 +124,11 @@
   <script src="/dist/plugins/inputmask/jquery.inputmask.min.js"></script>
   <script src="/dist/plugins/datetimepicker/jquery.datetimepicker.full.js"></script>
   <script src="/site/vendor/siema/siema.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/localization/messages_pt_BR.min.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="/site/js/main1.js"></script>
+  <script src="/site/js/create_bank_pj.js"></script>
 
 </body>
 

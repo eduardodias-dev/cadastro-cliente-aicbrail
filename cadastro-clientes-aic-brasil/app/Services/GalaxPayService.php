@@ -177,15 +177,16 @@ class GalaxPayService
         return $responseViewModel;
     }
 
-    public function SendMandatoryDocuments(array $data, int $subconta_id){
+    public function SendMandatoryDocuments(array $data, $subconta_id){
         $subconta = Subconta::find($subconta_id);
 
         $configs = GalaxPayConfigHelper::GetGalaxPayConfigurationWithSubaccountData($subconta->galaxId, $subconta->galaxHash);
         $tokenObject = GalaxPayConfigHelper::getTokenFromSubaccount("company.write", $subconta->galaxId, $subconta->galaxHash);
 
         $response = Http::withToken($tokenObject['access_token'])
-                    ->post($configs['URL']."/company/mandatory-documents", (array) $data);
+        ->post($configs['URL']."/company/mandatory-documents", (array) $data);
 
+        die(print_r($response->json()));
         $responseViewModel = new ResponseViewModel();
 
         if($response->successful()){
