@@ -130,6 +130,7 @@ class GalaxPayService
         $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
         $tokenObject = GalaxPayConfigHelper::getToken("company.write");
 
+        // die(json_encode($data));
         $response = Http::withToken($tokenObject['access_token'])
                     ->post($configs['URL']."/company/subaccount", (array) $data);
 
@@ -186,7 +187,7 @@ class GalaxPayService
         $response = Http::withToken($tokenObject['access_token'])
         ->post($configs['URL']."/company/mandatory-documents", (array) $data);
 
-        die(print_r($response->json()));
+        // die(print_r($response->json()));
         $responseViewModel = new ResponseViewModel();
 
         if($response->successful()){

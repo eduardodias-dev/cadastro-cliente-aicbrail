@@ -75,7 +75,6 @@ class GalaxPayConfigHelper{
     public static function getTokenFromSubaccount($scopes, $galaxId, $galaxHash)
     {
         $configs = self::GetGalaxPayConfigurationWithSubaccountData($galaxId, $galaxHash);
-        //die(print_r($configs));
 
         $request = Http::withBasicAuth($configs['galaxID'], $configs['galaxHash'])
                         ->post($configs['URL'].'/token',

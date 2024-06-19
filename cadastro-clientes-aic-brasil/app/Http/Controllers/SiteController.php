@@ -342,19 +342,19 @@ class SiteController extends Controller
             $bankAccountViewModel = new LegalBankAccountViewModel();
 
             $bankAccountViewModel->name = $requestData['name'];
-            $bankAccountViewModel->document = $requestData['document'];
+            $bankAccountViewModel->document = removeSpecialCharacters($requestData['document']);
             $bankAccountViewModel->nameDisplay = $requestData['nameDisplay'];
-            $bankAccountViewModel->phone = $requestData['phone'];
+            $bankAccountViewModel->phone = removeSpecialCharacters($requestData['phone']);
             $bankAccountViewModel->emailContact = $requestData['emailContact'];
-            $bankAccountViewModel->responsibleDocument = $requestData['responsibleDocument'];
+            $bankAccountViewModel->responsibleDocument = removeSpecialCharacters($requestData['responsibleDocument']);
             $bankAccountViewModel->typeCompany = $requestData['typeCompany'];
-            $bankAccountViewModel->softDescriptor = $requestData['softDescriptor'];
-            $bankAccountViewModel->cnae = $requestData['cnae'];
+            $bankAccountViewModel->softDescriptor = substr($requestData['softDescriptor'], 0, 17);
+            $bankAccountViewModel->cnae = removeSpecialCharacters($requestData['cnae']);
 
             $bankAccountViewModel->logo = $this->getBase64Logo();
 
             $address = new AddressViewModel();
-            $address->zipCode = $requestData['zipcode'];
+            $address->zipCode = removeSpecialCharacters($requestData['zipcode']);
             $address->street = $requestData['street'];
             $address->number = $requestData['number'];
             $address->complement = $requestData['complement'];
@@ -380,15 +380,15 @@ class SiteController extends Controller
             $bankAccountViewModel = new PersonBankAccountViewModel();
 
             $bankAccountViewModel->name = $requestData['name'];
-            $bankAccountViewModel->document = $requestData['document'];
-            $bankAccountViewModel->phone = $requestData['phone'];
+            $bankAccountViewModel->document = removeSpecialCharacters($requestData['document']);
+            $bankAccountViewModel->phone = removeSpecialCharacters($requestData['phone']);
             $bankAccountViewModel->emailContact = $requestData['emailContact'];
-            $bankAccountViewModel->softDescriptor = $requestData['softDescriptor'];
+            $bankAccountViewModel->softDescriptor = substr($requestData['softDescriptor'], 0, 17);
 
             $bankAccountViewModel->logo = $this->getBase64Logo();
 
             $address = new AddressViewModel();
-            $address->zipCode = $requestData['zipcode'];
+            $address->zipCode =removeSpecialCharacters($requestData['zipcode']);
             $address->street = $requestData['street'];
             $address->number = $requestData['number'];
             $address->complement = $requestData['complement'];
@@ -407,6 +407,7 @@ class SiteController extends Controller
             $subcontaService = new SubcontaDBService();
             $result_id = $subcontaService->AddSubcontaPF($bankAccountViewModel);
 
+            //todo: save the account only when the integration is successful
             if($result_id != 0){
                 $bankAccountViewModel->id = $result_id;
                 $subconta_id = $result_id;
@@ -521,6 +522,7 @@ class SiteController extends Controller
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
         }
 
+        die(print_r($responseViewModel));
         return $responseViewModel;
     }
 
