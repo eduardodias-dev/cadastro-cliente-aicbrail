@@ -13,6 +13,10 @@ abstract class BankAccountViewModel
     public $softDescriptor;
     public $Address;
     public $canAccessPlatform = true;
+    public $galaxPayId;
+    public $galaxId;
+    public $galaxHash;
+
 }
 
 class AddressViewModel{

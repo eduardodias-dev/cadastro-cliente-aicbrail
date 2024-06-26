@@ -17,6 +17,7 @@ use App\ViewModels\LegalFields;
 use App\ViewModels\PersonFields;
 use App\ViewModels\Professional;
 use App\Services\CheckoutService;
+use App\Services\GalaxPayConfigHelper;
 use App\Services\GalaxPayService;
 use App\ViewModels\LegalDocuments;
 use Illuminate\Support\Facades\DB;
@@ -40,6 +41,7 @@ use App\ViewModels\LegalBankAccountViewModel;
 use App\ViewModels\PersonBankAccountViewModel;
 use App\ViewModels\LegalMandatoryDocumentsViewModel;
 use App\ViewModels\PersonMandatoryDocumentsViewModel;
+use App\ViewModels\ResponseViewModel;
 
 class SiteController extends Controller
 {
@@ -189,8 +191,6 @@ class SiteController extends Controller
         catch(Exception $e)
         {
             session()->flash('erros', $e->getMessage());
-
-            throw $e;
             Log::Debug(print_r($e->getMessage()));
 
             return redirect()
@@ -336,8 +336,10 @@ class SiteController extends Controller
 
     public function createBankAccountPost(string $type, Request $request){
         $requestData = $request->input();
-        $service = new GalaxPayService();
+        $service = new GalaxPayService(new GalaxPayConfigHelper());
         $subconta_id = 0;
+        $responseViewModel = new ResponseViewModel();
+
         if($type == 'pj'){
             $bankAccountViewModel = new LegalBankAccountViewModel();
 
@@ -348,7 +350,7 @@ class SiteController extends Controller
             $bankAccountViewModel->emailContact = $requestData['emailContact'];
             $bankAccountViewModel->responsibleDocument = removeSpecialCharacters($requestData['responsibleDocument']);
             $bankAccountViewModel->typeCompany = $requestData['typeCompany'];
-            $bankAccountViewModel->softDescriptor = substr($requestData['softDescriptor'], 0, 17);
+            $bankAccountViewModel->softDescriptor = $requestData['softDescriptor'];
             $bankAccountViewModel->cnae = removeSpecialCharacters($requestData['cnae']);
 
             $bankAccountViewModel->logo = $this->getBase64Logo();
@@ -364,15 +366,17 @@ class SiteController extends Controller
 
             $bankAccountViewModel->Address = (array) $address;
 
-            $subcontaService = new SubcontaDBService();
-            $result_id = $subcontaService->AddSubcontaPJ($bankAccountViewModel);
-
-            //die(print_r($result_id));
-
-            if($result_id != 0){
-                $bankAccountViewModel->id = $result_id;
+            $responseViewModel = $service->CreateBankSubAccount($bankAccountViewModel);
+            $result_id = 0;
+            //todo: save the account only when the integration is successful
+            if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
+                $bankAccountViewModel->galaxPayId = $responseViewModel->dados["galaxPayId"];
+                $bankAccountViewModel->galaxId = $responseViewModel->dados["galaxId"];
+                $bankAccountViewModel->galaxHash = $responseViewModel->dados["galaxHash"];
+                
+                $subcontaService = new SubcontaDBService();
+                $result_id = $subcontaService->AddSubcontaPJ($bankAccountViewModel);
                 $subconta_id = $result_id;
-                $service->CreateBankSubAccount($bankAccountViewModel);
             }
 
         }
@@ -383,7 +387,7 @@ class SiteController extends Controller
             $bankAccountViewModel->document = removeSpecialCharacters($requestData['document']);
             $bankAccountViewModel->phone = removeSpecialCharacters($requestData['phone']);
             $bankAccountViewModel->emailContact = $requestData['emailContact'];
-            $bankAccountViewModel->softDescriptor = substr($requestData['softDescriptor'], 0, 17);
+            $bankAccountViewModel->softDescriptor = $requestData['softDescriptor'];
 
             $bankAccountViewModel->logo = $this->getBase64Logo();
 
@@ -404,24 +408,33 @@ class SiteController extends Controller
 
             $bankAccountViewModel->Professional = (array) $professional;
 
-            $subcontaService = new SubcontaDBService();
-            $result_id = $subcontaService->AddSubcontaPF($bankAccountViewModel);
-
+            $responseViewModel = $service->CreateBankSubAccount($bankAccountViewModel);
+            $result_id = 0;
             //todo: save the account only when the integration is successful
-            if($result_id != 0){
-                $bankAccountViewModel->id = $result_id;
+            if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
+                $bankAccountViewModel->galaxPayId = $responseViewModel->dados["galaxPayId"];
+                $bankAccountViewModel->galaxId = $responseViewModel->dados["galaxId"];
+                $bankAccountViewModel->galaxHash = $responseViewModel->dados["galaxHash"];
+                
+                $subcontaService = new SubcontaDBService();
+                $result_id = $subcontaService->AddSubcontaPF($bankAccountViewModel);
                 $subconta_id = $result_id;
-                $service->CreateBankSubAccount($bankAccountViewModel);
             }
         }
         else{
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
         }
 
-        return redirect()
-                ->route('mandatory.documents', ['type' => $type, 'subconta_id' => $subconta_id]);
-
-        //TODO: return result and create the page confirming.
+        if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
+            return redirect()
+                    ->route('mandatory.documents', ['type' => $type, 'subconta_id' => $subconta_id]);
+        }
+        else{
+            return redirect()
+                    ->back()
+                    ->withErrors([$responseViewModel->erros])
+                    ->withInput();
+        }
     }
 
 
@@ -473,7 +486,7 @@ class SiteController extends Controller
 
             //die(json_encode((array)$mandatoryDocumentsViewModel));
 
-            $service = new GalaxPayService();
+            $service = new GalaxPayService(new GalaxPayConfigHelper());
             $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, $subconta_id);
         }
         else if($type == 'pj'){
@@ -515,7 +528,7 @@ class SiteController extends Controller
             $mandatoryDocumentsViewModel->Documents = $legalDocuments;
 
             //die(json_encode((array)$mandatoryDocumentsViewModel));
-            $service = new GalaxPayService();
+            $service = new GalaxPayService(new GalaxPayConfigHelper());
             $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, $subconta_id);
         }
         else {

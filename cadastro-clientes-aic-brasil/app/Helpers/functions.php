@@ -242,3 +242,47 @@ function getDadosDaSessao($itemSessao, $chave){
 
     return '';
 }
+
+function formatCreateAccountErrors(string $error){
+    $finalString = '';
+
+    $pieces = explode(':', $error);
+    if(count($pieces) > 1){
+        $field = $pieces[0];
+        $message = $pieces[1];
+        
+        $fieldnames = explode('.', $field);
+
+        $finalString = getFieldNameinPortuguese(end($fieldnames)).': '.$message;
+    }
+    else{
+        $finalString = $error;
+    }
+
+    return $finalString;
+}
+
+function getFieldNameinPortuguese(string $field){
+    $fieldNames = [
+        "softDescriptor" => "Nome para exibição na Fatura",
+        "internalName" => "Profissão",
+        "inscription" => "Inscrição do profissional",
+        "name" => "Nome",
+        "document" => "Documento",
+        "phone" => "Telefone",
+        "emailContact" => "E-mail",
+        "zipcode" => "CEP",
+        "street" => "Rua",
+        "number" => "Número",
+        "complement" => "Complemento",
+        "neighborhood" => "Bairro",
+        "city" => "Cidade",
+        "state" => "Estado",
+        "nameDisplay" => "Nome para Exibição",
+        "responsibleDocument" => "Documento do Responsável",
+        "typeCompany" => "Tipo de Empresa",
+        "cnae" => "CNAE"
+    ];
+
+    return isset($fieldNames[$field]) ? $fieldNames[$field] : $field;
+}

@@ -14,12 +14,13 @@ use App\Assinatura;
 use \Mpdf\Mpdf as PDF;
 use App\Mail\EmailBoasVindas;
 use App\Adicionais_Assinatura;
-use App\Mail\EnvioEmailApolice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Assinatura_Adicionais_Assinatura;
+use App\Services\GalaxPayService;
+use App\Services\GalaxPayConfigHelper;
 
 class CheckoutService
 {
@@ -33,7 +34,7 @@ class CheckoutService
                 $savedSubscription = $this->adicionarAssinatura($checkoutData, $savedClient->id, $checkoutData['plan_id'], 0);
 
                 if($savedSubscription != null){
-                    $service = new GalaxPayService;
+                    $service = new GalaxPayService(new GalaxPayConfigHelper());
                     $result = $service->CreateSubscription($savedSubscription->id, $savedClient->id, $checkoutData['forma_pagamento'], $this->getCardData($checkoutData));
 
 
@@ -104,7 +105,7 @@ class CheckoutService
 
             $pacote->save();
 
-            $service = new GalaxPayService;
+            $service = new GalaxPayService(new GalaxPayConfigHelper());
             $result = $service->CreateSubscription($pacote->id, $pacote->client_id, $cliente_pagador['forma_pagamento'], $this->getCardData($cliente_pagador));
 
             if($result != null && isset($result->json()['Subscription'])){

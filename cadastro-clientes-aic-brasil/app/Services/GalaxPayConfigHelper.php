@@ -7,7 +7,7 @@ use Exception;
 use Illuminate\Support\Facades\Http;
 
 class GalaxPayConfigHelper{
-    public static function GetGalaxPayServiceConfiguration()
+    public function GetGalaxPayServiceConfiguration()
     {
         return array(
             // 'galaxID' => '2976',
@@ -19,7 +19,7 @@ class GalaxPayConfigHelper{
         );
     }
 
-    public static function GetGalaxPayConfigurationWithSubaccountData($galaxID, $galaxHash)
+    public function GetGalaxPayConfigurationWithSubaccountData($galaxID, $galaxHash)
     {
         return array(
             // 'galaxID' => '2976',
@@ -31,7 +31,7 @@ class GalaxPayConfigHelper{
         );
     }
 
-    public static function getToken(string $scopes){
+    public function getToken(string $scopes){
         $token = Token::orderByDesc('expires_in')->first();
 
         if($token != null){
@@ -46,7 +46,7 @@ class GalaxPayConfigHelper{
         return $token;
     }
 
-    private static function requestTokenFromExternalService(string $scopes){
+    private function requestTokenFromExternalService(string $scopes){
         $configs = self::GetGalaxPayServiceConfiguration();
 
         $request = Http::withBasicAuth($configs['galaxID'], $configs['galaxHash'])
@@ -72,7 +72,7 @@ class GalaxPayConfigHelper{
         return $token;
     }
 
-    public static function getTokenFromSubaccount($scopes, $galaxId, $galaxHash)
+    public function getTokenFromSubaccount($scopes, $galaxId, $galaxHash)
     {
         $configs = self::GetGalaxPayConfigurationWithSubaccountData($galaxId, $galaxHash);
 

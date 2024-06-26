@@ -61,6 +61,10 @@ class SubcontaDBService
             $subconta->emailContact = $accountViewModel->emailContact;
             $subconta->logo = $accountViewModel->logo;
             $subconta->softDescriptor = $accountViewModel->softDescriptor;
+            $subconta->galaxPayId = $accountViewModel->galaxPayId;
+            $subconta->galaxId = $accountViewModel->galaxId;
+            $subconta->galaxHash = $accountViewModel->galaxHash;
+            
             $subconta->save();
 
             $address = $this->CriarSubcontaEndereco($accountViewModel->Address);

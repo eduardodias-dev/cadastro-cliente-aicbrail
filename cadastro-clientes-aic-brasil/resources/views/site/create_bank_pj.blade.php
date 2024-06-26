@@ -43,25 +43,34 @@
         <img src="/site/img/logo_nova.png" height="80"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA JURÍDICA</h4>
-  <form method="post" action="{{route('create.bank.account.post', ['type' => 'pj'])}}" id="form_bank_pj">
+    <form method="post" action="{{route('create.bank.account.post', ['type' => 'pj'])}}" id="form_bank_pj">
+    @if ($errors->any())
+      <div class="alert alert-danger">
+          <ul>
+              @foreach ($errors->all() as $error)
+                  <li>{{ formatCreateAccountErrors($error) }}</li>
+              @endforeach
+          </ul>
+      </div>
+    @endif
     @csrf
     <label for="name">Razão Social:</label>
-    <input type="text" id="name" name="name" class="form-control" required>
+    <input type="text" id="name" name="name" class="form-control" value="{{old('name')}}" required>
 
     <label for="document">Documento (CNPJ):</label>
-    <input type="text" id="document" name="document" class="form-control" required>
+    <input type="text" id="document" name="document" class="form-control" value="{{old('document')}}" required>
 
     <label for="nameDisplay">Nome para Exibição:</label>
-    <input type="text" id="nameDisplay" name="nameDisplay" class="form-control" required>
+    <input type="text" id="nameDisplay" name="nameDisplay" class="form-control" value="{{old('nameDisplay')}}" required>
 
     <label for="phone">Telefone:</label>
-    <input type="tel" id="phone" name="phone" class="form-control" required>
+    <input type="tel" id="phone" name="phone" class="form-control" value="{{old('phone')}}" required>
 
     <label for="emailContact">E-mail:</label>
-    <input type="email" id="emailContact" name="emailContact" class="form-control" required>
+    <input type="email" id="emailContact" name="emailContact" class="form-control" value="{{old('emailContact')}}" required>
 
     <label for="responsibleDocument">Documento do Responsável (CPF):</label>
-    <input type="text" id="responsibleDocument" name="responsibleDocument" class="form-control" required>
+    <input type="text" id="responsibleDocument" name="responsibleDocument" class="form-control" value="{{old('responsibleDocument')}}" required>
 
     <label for="typeCompany">Tipo de Empresa:</label>
     <select id="typeCompany" name="typeCompany" class="form-select" required>
@@ -78,32 +87,32 @@
       <legend>Endereço</legend>
 
       <label for="zipcode">CEP:</label>
-      <input type="text" id="zipcode" name="zipcode" class="form-control" required>
+      <input type="text" id="zipcode" name="zipcode" class="form-control" value="{{old('zipcode')}}" required>
 
       <label for="street">Rua:</label>
-      <input type="text" id="street" name="street" class="form-control" required>
+      <input type="text" id="street" name="street" class="form-control" value="{{old('street')}}" required>
 
       <label for="number">Número:</label>
-      <input type="text" id="number" name="number" class="form-control" required>
+      <input type="text" id="number" name="number" class="form-control" value="{{old('number')}}" required>
 
       <label for="complement">Complemento:</label>
-      <input type="text" id="complement" name="complement" class="form-control">
+      <input type="text" id="complement" name="complement" class="form-control" value="{{old('complement')}}" >
 
       <label for="neighborhood">Bairro:</label>
-      <input type="text" id="neighborhood" name="neighborhood" class="form-control" required>
+      <input type="text" id="neighborhood" name="neighborhood" class="form-control" value="{{old('neighborhood')}}" required>
 
       <label for="city">Cidade:</label>
-      <input type="text" id="city" name="city" class="form-control" required>
+      <input type="text" id="city" name="city" class="form-control" value="{{old('city')}}" required>
 
       <label for="state">Estado:</label>
-      <input type="text" id="state" name="state" class="form-control" required>
+      <input type="text" id="state" name="state" class="form-control" value="{{old('state')}}" required>
     </fieldset>
 
     <label for="softDescriptor">Nome para aparecer na fatura:</label>
-    <input type="text" id="softDescriptor" name="softDescriptor" class="form-control" required>
+    <input type="text" id="softDescriptor" name="softDescriptor" class="form-control" value="{{old('softDescriptor')}}" required>
 
     <label for="cnae">CNAE:</label>
-    <input type="text" id="cnae" name="cnae" class="form-control" required>
+    <input type="text" id="cnae" name="cnae" class="form-control" value="{{old('cnae')}}" required>
 
     <button type="submit" class="btn btn-primary form-control mt-2 mb-5">
         Enviar

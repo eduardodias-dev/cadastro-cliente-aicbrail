@@ -13,19 +13,25 @@ use App\ViewModels\ResponseViewModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Services\GalaxPayConfigHelper;
 
 class GalaxPayService
 {
     const QTDE_DIAS_PRIMEIRO_PAGAMENTO = 3;
+    private $galaxPayConfigHelper;
+
+    public function __construct(GalaxPayConfigHelper $galaxPayConfigHelper){
+        $this->galaxPayConfigHelper = $galaxPayConfigHelper;
+    }
 
     public function CreateSubscription($pacote_id, $client_id, $type = 'card', $card_data = null)
     {
         $data = DB::select("SELECT * from v_pacote_integracao where id_pacote = ? AND id_cliente = ?", [$pacote_id, $client_id]);
         if(count($data) >= 1){
-            $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
+            $configs = $this->galaxPayConfigHelper->GetGalaxPayServiceConfiguration();
             $request_data = $this->BuildCreateSubscriptionRequest($data[0], $type, $card_data);
 
-            $token_object = GalaxPayConfigHelper::getToken("subscriptions.write");
+            $token_object = $this->galaxPayConfigHelper->getToken("subscriptions.write");
 
             $response = Http::withToken($token_object['access_token'])
                             ->post($configs['URL'].'/subscriptions', $request_data);
@@ -126,41 +132,44 @@ class GalaxPayService
         return null;
     }
 
-    public function CreateBankSubAccount(BankAccountViewModel $data){
-        $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
-        $tokenObject = GalaxPayConfigHelper::getToken("company.write");
+    public function CreateBankSubAccount(BankAccountViewModel $data) : ResponseViewModel{
+        $configs = $this->galaxPayConfigHelper->GetGalaxPayServiceConfiguration();
+        $tokenObject = $this->galaxPayConfigHelper->getToken("company.write");
 
-        // die(json_encode($data));
         $response = Http::withToken($tokenObject['access_token'])
                     ->post($configs['URL']."/company/subaccount", (array) $data);
 
         $responseViewModel = new ResponseViewModel();
 
         if($response->successful()){
+            $objectResponse = $response->json();
+            
             $responseViewModel->sucesso = 1;
             $responseViewModel->mensagem = "Conta criada com sucesso!";
-
-            $subconta = Subconta::find($data->id);
-            if($subconta != null)
-            {
-                $objectResponse = $response->json();
-                $subconta->galaxPayId = $objectResponse["Company"]["galaxPayId"];
-                $subconta->galaxId = $objectResponse["Company"]["ApiAuth"]["galaxId"];
-                $subconta->galaxHash = $objectResponse["Company"]["ApiAuth"]["galaxHash"];
-
-                $subconta->save();
-            }
-            else
-            {
-                Log::warning("Subconta não encontrada no banco de dados. ID: ". $data->id);
-            }
+            $responseViewModel->dados = array(
+                "galaxPayId" => $objectResponse["Company"]["galaxPayId"],
+                "galaxId" => $objectResponse["Company"]["ApiAuth"]["galaxId"],
+                "galaxHash" => $objectResponse["Company"]["ApiAuth"]["galaxHash"],
+            );
         }
         else{
             $status_code = $response->status();
             $responseViewModel->sucesso = 0;
 
             if($status_code == 400){
-                $responseViewModel->mensagem = $response->json()['error']['message'];
+                $errorObject = $response->json()['error'];
+                $responseViewModel->mensagem = $errorObject['message']."\n";
+                $detalhesErro = array();
+
+                array_push($detalhesErro, $errorObject['message']);
+                if(isset($errorObject['details'])){
+                    foreach($errorObject['details'] as $key => $detailArray){
+                        $detail = implode("\n", $detailArray);
+                        array_push($detalhesErro, "$key: $detail");
+                    }
+                }
+
+                $responseViewModel->erros = $detalhesErro;
             }
             else
             {
@@ -181,8 +190,8 @@ class GalaxPayService
     public function SendMandatoryDocuments(array $data, $subconta_id){
         $subconta = Subconta::find($subconta_id);
 
-        $configs = GalaxPayConfigHelper::GetGalaxPayConfigurationWithSubaccountData($subconta->galaxId, $subconta->galaxHash);
-        $tokenObject = GalaxPayConfigHelper::getTokenFromSubaccount("company.write", $subconta->galaxId, $subconta->galaxHash);
+        $configs = $this->galaxPayConfigHelper->GetGalaxPayConfigurationWithSubaccountData($subconta->galaxId, $subconta->galaxHash);
+        $tokenObject = $this->galaxPayConfigHelper->getTokenFromSubaccount("company.write", $subconta->galaxId, $subconta->galaxHash);
 
         $response = Http::withToken($tokenObject['access_token'])
         ->post($configs['URL']."/company/mandatory-documents", (array) $data);

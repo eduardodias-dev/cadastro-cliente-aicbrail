@@ -43,43 +43,52 @@
         <img src="/site/img/logo_nova.png" height="80"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA FÍSICA</h4>
+    @if ($errors->any())
+      <div class="alert alert-danger" style="max-width: 600px; margin: 0 auto;">
+          <ul>
+              @foreach ($errors->all() as $error)
+                  <li>{{ formatCreateAccountErrors($error) }}</li>
+              @endforeach
+          </ul>
+      </div>
+    @endif
   <form method="post" action="{{route('create.bank.account.post', ['type' => 'pf'])}}" id="form_bank_pf">
     @csrf
     <label for="name">Nome:</label>
-    <input type="text" id="name" name="name" class="form-control" required>
+    <input type="text" id="name" name="name" class="form-control" value="{{old('name')}}" required>
 
     <label for="document">Documento (CPF):</label>
-    <input type="text" id="document" name="document" class="form-control" maxlength="20" required>
+    <input type="text" id="document" name="document" class="form-control" maxlength="20" value="{{old('document')}}" required>
 
     <label for="phone">Telefone:</label>
-    <input type="tel" id="phone" name="phone" class="form-control" email required>
+    <input type="tel" id="phone" name="phone" class="form-control" value="{{old('phone')}}" required>
 
     <label for="emailContact">E-mail:</label>
-    <input type="email" id="emailContact" name="emailContact" class="form-control" required>
+    <input type="email" id="emailContact" name="emailContact" class="form-control" value="{{old('emailContact')}}" required>
 
     <fieldset>
       <legend>Endereço</legend>
 
       <label for="zipcode">CEP:</label>
-      <input type="text" id="zipcode" name="zipcode" class="form-control" required>
+      <input type="text" id="zipcode" name="zipcode" class="form-control" value="{{old('zipcode')}}" required>
 
       <label for="street">Rua:</label>
-      <input type="text" id="street" name="street" class="form-control" required>
+      <input type="text" id="street" name="street" class="form-control" value="{{old('street')}}" required>
 
       <label for="number">Número:</label>
-      <input type="text" id="number" name="number" class="form-control" required>
+      <input type="text" id="number" name="number" class="form-control" value="{{old('number')}}" required>
 
       <label for="complement">Complemento:</label>
-      <input type="text" id="complement" name="complement" class="form-control">
+      <input type="text" id="complement" name="complement" class="form-control" value="{{old('complement')}}">
 
       <label for="neighborhood">Bairro:</label>
-      <input type="text" id="neighborhood" name="neighborhood" class="form-control" required>
+      <input type="text" id="neighborhood" name="neighborhood" class="form-control" value="{{old('neighborhood')}}" required>
 
       <label for="city">Cidade:</label>
-      <input type="text" id="city" name="city" class="form-control" required>
+      <input type="text" id="city" name="city" class="form-control" value="{{old('city')}}" required>
 
       <label for="state">Estado:</label>
-      <input type="text" id="state" name="state" class="form-control" required>
+      <input type="text" id="state" name="state" class="form-control" value="{{old('state')}}" required>
     </fieldset>
 
     <fieldset>
@@ -98,12 +107,12 @@
         </select>
 
         <label for="inscription">Inscrição do profissional (CREA, OAB, CRM, etc...):</label>
-        <input type="text" id="inscription" name="inscription" class="form-control" required>
+        <input type="text" id="inscription" name="inscription" class="form-control" value="{{old('inscription')}}" required>
 
     </fieldset>
 
     <label for="softDescriptor">Nome para exibição na Fatura:</label>
-    <input type="text" id="softDescriptor" name="softDescriptor" class="form-control" required>
+    <input type="text" id="softDescriptor" name="softDescriptor" class="form-control" value="{{old('softDescriptor')}}" required>
 
     <button type="submit" class="btn btn-primary form-control mt-2 mb-5">
         Enviar
