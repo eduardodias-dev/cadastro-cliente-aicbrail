@@ -232,7 +232,6 @@ class SiteController extends Controller
             }
 
             $data['adicionais_assinatura'] = $grouped_array;
-            // die(json_encode($data['adicionais_assinatura']));
         }
 
         return view('site.order_partial', ['subscriptions' => $data, 'error' => $error]);
@@ -263,7 +262,6 @@ class SiteController extends Controller
                 $assinatura['adicionais_assinatura'] = $grouped_array;
                 array_push($subscriptions, $assinatura);
             }
-            // die(json_encode($data['adicionais_assinatura']));
         }
 
         return view('site.vieworder', ['codigo_pacote' => $ordercode, 'subscriptions' => $subscriptions, 'error' => $error, 'pacote' => $pacote]);
@@ -437,7 +435,6 @@ class SiteController extends Controller
         }
     }
 
-
     public function formMandatoryDocuments(string $type, Request $request){
         $subconta_id = $request->get("subconta_id");
         $type = strtolower($type);
@@ -462,9 +459,10 @@ class SiteController extends Controller
             $mandatoryDocumentsViewModel = new PersonMandatoryDocumentsViewModel();
 
             $fields = new PersonFields();
-            $fields->motherName = $request['motherName'];
-            $fields->birthDate = $request['birthDate'];
-            $fields->monthlyIncome = $request['monthlyIncome'];
+            $fields->motherName = removeSpecialCharacters($request['motherName']);
+            $birthDate = date_create_from_format("d/m/Y", $request['birthDate']);
+            $fields->birthDate = date_format($birthDate, "Y-m-d");
+            $fields->monthlyIncome = removeSpecialCharacters($request['monthlyIncome']);
             $fields->about = $request['about'];
             $fields->socialMediaLink = $request['socialMediaLink'];
 
@@ -472,7 +470,7 @@ class SiteController extends Controller
             $personDocuments->Personal = new PersonalDocuments();
             $personDocuments->Personal->CNH = new PersonCNHDocument();
             $personDocuments->Personal->CNH->selfie = $this->getBase64File($request->file('cnh_selfie'));
-            $personDocuments->Personal->CNH->picture = $this->getBase64File($request->file('cnh_picture'));
+            $personDocuments->Personal->CNH->picture = [ $this->getBase64File($request->file('cnh_picture')) ];
             $personDocuments->Personal->CNH->address = $this->getBase64File($request->file('cnh_address'));
 
             $personDocuments->Personal->RG = new PersonRGDocument();
@@ -483,8 +481,6 @@ class SiteController extends Controller
 
             $mandatoryDocumentsViewModel->Fields = $fields;
             $mandatoryDocumentsViewModel->Documents = $personDocuments;
-
-            //die(json_encode((array)$mandatoryDocumentsViewModel));
 
             $service = new GalaxPayService(new GalaxPayConfigHelper());
             $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, $subconta_id);
@@ -498,10 +494,11 @@ class SiteController extends Controller
             $fields->socialMediaLink = $request['socialMediaLink'];
 
             $associate = new AssociateViewModel();
-            $associate->document = $request['document'];
+            $associate->document = removeSpecialCharacters($request['document']);
             $associate->name = $request['name'];
             $associate->motherName = $request['motherName'];
-            $associate->birthDate = $request['birthDate'];
+            $birthDate = date_create_from_format("d/m/Y", $request['birthDate']);
+            $associate->birthDate = date_format($birthDate, "Y-m-d");
             $associate->type = $request['type'];
 
             $legalDocuments = new LegalDocuments();
@@ -527,7 +524,6 @@ class SiteController extends Controller
             $mandatoryDocumentsViewModel->Associate = array($associate);
             $mandatoryDocumentsViewModel->Documents = $legalDocuments;
 
-            //die(json_encode((array)$mandatoryDocumentsViewModel));
             $service = new GalaxPayService(new GalaxPayConfigHelper());
             $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, $subconta_id);
         }
@@ -535,7 +531,20 @@ class SiteController extends Controller
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
         }
 
-        die(print_r($responseViewModel));
+        //Todo: Enviar para a página nova com os dados da conta criada.
+        if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
+            session()->flash('mensagem', $responseViewModel->mensagem);
+
+            return redirect()
+                    ->route("home");
+        }
+        else{
+            return redirect()
+                    ->back()
+                    ->withErrors([$responseViewModel->erros])
+                    ->withInput();
+        }
+
         return $responseViewModel;
     }
 

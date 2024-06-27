@@ -193,10 +193,12 @@ class GalaxPayService
         $configs = $this->galaxPayConfigHelper->GetGalaxPayConfigurationWithSubaccountData($subconta->galaxId, $subconta->galaxHash);
         $tokenObject = $this->galaxPayConfigHelper->getTokenFromSubaccount("company.write", $subconta->galaxId, $subconta->galaxHash);
 
+        // die(json_encode((array) $data));
+
         $response = Http::withToken($tokenObject['access_token'])
         ->post($configs['URL']."/company/mandatory-documents", (array) $data);
 
-        // die(print_r($response->json()));
+        // die(json_encode((array) $data));
         $responseViewModel = new ResponseViewModel();
 
         if($response->successful()){
@@ -208,7 +210,20 @@ class GalaxPayService
             $responseViewModel->sucesso = 0;
 
             if($status_code == 400){
-                $responseViewModel->mensagem = $response->json()['error']['message'];
+                // $responseViewModel->mensagem = $response->json()['error']['message'];
+                $errorObject = $response->json()['error'];
+                $responseViewModel->mensagem = $errorObject['message']."\n";
+                $detalhesErro = array();
+
+                array_push($detalhesErro, $errorObject['message']);
+                if(isset($errorObject['details'])){
+                    foreach($errorObject['details'] as $key => $detailArray){
+                        $detail = implode("\n", $detailArray);
+                        array_push($detalhesErro, "$key: $detail");
+                    }
+                }
+
+                $responseViewModel->erros = $detalhesErro;
             }
             else
             {

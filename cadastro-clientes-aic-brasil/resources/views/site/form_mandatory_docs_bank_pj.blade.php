@@ -43,33 +43,42 @@
         <img src="/site/img/logo_nova.png" height="80"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA JURÍDICA - Envio dos Documentos Necessários</h4>
+    @if ($errors->any())
+      <div class="alert alert-danger" style="max-width: 600px; margin: 0 auto;">
+          <ul>
+              @foreach ($errors->all() as $error)
+                  <li>{{ formatCreateAccountErrors($error) }}</li>
+              @endforeach
+          </ul>
+      </div>
+    @endif
   <form method="post" action="{{route('mandatory.documents.post', ['type' => 'pj'])}}" enctype="multipart/form-data">
     @csrf
     <input type="hidden" name="subconta_id" value="{{$subconta_id}}" readonly="readonly" />
 
     <label for="monthlyIncome">Renda mensal:</label>
-    <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required>
+    <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required value="{{old("monthlyIncome")}}">
 
     <label for="about">Sobre o negócio (CNPJ):</label>
-    <textarea id="about" name="about" class="form-control" required></textarea>
+    <textarea id="about" name="about" class="form-control" required>{{old("about")}}</textarea>
 
     <label for="socialMediaLink">Link de mídia social:</label>
-    <input type="text" id="socialMediaLink" name="socialMediaLink" class="form-control" required>
+    <input type="text" id="socialMediaLink" name="socialMediaLink" class="form-control" required value="{{old("socialMediaLink")}}">
 
     <fieldset>
         <legend>Quadro Societário</legend>
 
         <label for="document">Documento (CPF):</label>
-        <input type="text" id="document" name="document" class="form-control" required>
+        <input type="text" id="document" name="document" class="form-control" required value="{{old("document")}}">
 
         <label for="name">Nome:</label>
-        <input type="text" id="name" name="name" class="form-control" required>
+        <input type="text" id="name" name="name" class="form-control" required value="{{old("name")}}">
 
         <label for="motherName">Nome da mãe:</label>
-        <input type="text" id="motherName" name="motherName" class="form-control" required>
+        <input type="text" id="motherName" name="motherName" class="form-control" required value="{{old("motherName")}}">
 
         <label for="birthDate">Data de Nascimento:</label>
-        <input type="date" id="birthDate" name="birthDate" class="form-control" required>
+        <input type="text" id="birthDate" name="birthDate" class="form-control" placeholder="DD/MM/AAAA" required value="{{old("birthDate")}}">
 
         <label for="type">Tipo de Associado:</label>
         <select id="type" name="type" class="form-select" required>
@@ -84,16 +93,40 @@
         <legend>Documentos</legend>
 
         <label for="lastContract">Contrato social:</label>
-        <input type="file" id="lastContract" name="lastContract" class="form-control">
+        <div class="form-group file-upload-wrapper">
+            <input type="file" id="lastContract" name="lastContract" class="file-input">
+            <label for="file-input" class="file-label">
+              <span class="file-label-text">Escolha um arquivo...</span>
+            </label>
+        </div>
+        {{-- <input type="file" id="lastContract" name="lastContract" class="form-control" placeholder="Escolha um arquivo..."> --}}
 
         <label for="cnpjCard">Documento CNPJ:</label>
-        <input type="file" id="cnpjCard" name="cnpjCard" class="form-control">
+        <div class="form-group file-upload-wrapper">
+            <input type="file" id="cnpjCard" name="cnpjCard" class="file-input">
+            <label for="file-input" class="file-label">
+              <span class="file-label-text">Escolha um arquivo...</span>
+            </label>
+        </div>
+        {{-- <input type="file" id="cnpjCard" name="cnpjCard" class="form-control" placeholder="Escolha um arquivo..."> --}}
 
         <label for="electionRecord">Ata de eleição da diretoria:</label>
-        <input type="file" id="electionRecord" name="electionRecord" class="form-control">
+        <div class="form-group file-upload-wrapper">
+            <input type="file" id="electionRecord" name="electionRecord" class="file-input">
+            <label for="file-input" class="file-label">
+              <span class="file-label-text">Escolha um arquivo...</span>
+            </label>
+        </div>
+        {{-- <input type="file" id="electionRecord" name="electionRecord" class="form-control" placeholder="Escolha um arquivo..."> --}}
 
         <label for="statute">Estatuto:</label>
-        <input type="file" id="statute" name="statute" class="form-control">
+        <div class="form-group file-upload-wrapper">
+            <input type="file" id="statute" name="statute" class="file-input">
+            <label for="file-input" class="file-label">
+              <span class="file-label-text">Escolha um arquivo...</span>
+            </label>
+        </div>
+        {{-- <input type="file" id="statute" name="statute" class="form-control" placeholder="Escolha um arquivo..."> --}}
 
     </fieldset>
 
@@ -103,22 +136,52 @@
         <hr />
         <h4>CNH</h4>
         <label for="cnh_selfie">Selfie Segurando a CNH:</label>
-        <input type="file" id="cnh_selfie" name="cnh_selfie" class="form-control">
+        <div class="form-group file-upload-wrapper">
+            <input type="file" id="cnh_selfie" name="cnh_selfie" class="file-input">
+            <label for="file-input" class="file-label">
+              <span class="file-label-text">Escolha um arquivo...</span>
+            </label>
+        </div>
+        {{-- <input type="file" id="cnh_selfie" name="cnh_selfie" class="form-control" placeholder="Escolha um arquivo..."> --}}
 
         <label for="cnh_picture">Foto da CNH digital ou física aberta (frente + verso):</label>
-        <input type="file" id="cnh_picture" name="cnh_picture" class="form-control">
+        <div class="form-group file-upload-wrapper">
+            <input type="file" id="cnh_picture" name="cnh_picture" class="file-input">
+            <label for="file-input" class="file-label">
+              <span class="file-label-text">Escolha um arquivo...</span>
+            </label>
+        </div>
+        {{-- <input type="file" id="cnh_picture" name="cnh_picture" class="form-control" placeholder="Escolha um arquivo..."> --}}
 
         <hr />
         <h4>RG</h4>
 
         <label for="rg_selfie">Selfie Segurando o RG:</label>
-        <input type="file" id="rg_selfie" name="rg_selfie" class="form-control">
+        <div class="form-group file-upload-wrapper">
+            <input type="file" id="rg_selfie" name="rg_selfie" class="file-input">
+            <label for="file-input" class="file-label">
+              <span class="file-label-text">Escolha um arquivo...</span>
+            </label>
+        </div>
+        {{-- <input type="file" id="rg_selfie" name="rg_selfie" class="form-control" placeholder="Escolha um arquivo..."> --}}
 
         <label for="rg_front">Foto da frente do RG:</label>
-        <input type="file" id="rg_front" name="rg_front" class="form-control">
+        <div class="form-group file-upload-wrapper">
+            <input type="file" id="rg_front" name="rg_front" class="file-input">
+            <label for="file-input" class="file-label">
+              <span class="file-label-text">Escolha um arquivo...</span>
+            </label>
+        </div>
+        {{-- <input type="file" id="rg_front" name="rg_front" class="form-control" placeholder="Escolha um arquivo..."> --}}
 
         <label for="rg_back">Foto do verso do RG:</label>
-        <input type="file" id="rg_back" name="rg_back" class="form-control">
+        <div class="form-group file-upload-wrapper">
+            <input type="file" id="rg_back" name="rg_back" class="file-input">
+            <label for="file-input" class="file-label">
+              <span class="file-label-text">Escolha um arquivo...</span>
+            </label>
+        </div>
+        {{-- <input type="file" id="rg_back" name="rg_back" class="form-control" placeholder="Escolha um arquivo..."> --}}
 
     </fieldset>
 

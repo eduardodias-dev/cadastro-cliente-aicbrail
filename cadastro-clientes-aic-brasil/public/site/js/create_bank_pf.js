@@ -55,4 +55,20 @@ $(document).ready(function(){
     $('[name=phone]').inputmask('(99) 99999-9999');
     $('[name=document]').inputmask('999.999.999-99');
     $('[name=zipcode]').inputmask('99999-999');
+
+    $('#birthDate').datetimepicker({
+      format:'d/m/Y',
+      lang:'pt-BR',
+      i18n:{
+          'pt-BR': { //Português(Brasil)
+                  months: [
+                  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+                  ],
+                  dayOfWeekShort: [
+                  "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"
+                  ],
+                  dayOfWeek: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
+              },
+      }
+  });
 });

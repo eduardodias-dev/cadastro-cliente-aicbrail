@@ -29,6 +29,10 @@ class SubcontaDBService
             $subconta->responsibleDocument = $accountViewModel->responsibleDocument;
             $subconta->typeCompany = $accountViewModel->typeCompany;
             $subconta->cnae = $accountViewModel->cnae;
+            $subconta->galaxPayId = $accountViewModel->galaxPayId;
+            $subconta->galaxId = $accountViewModel->galaxId;
+            $subconta->galaxHash = $accountViewModel->galaxHash;
+            
             $subconta->save();
 
             $address = $this->CriarSubcontaEndereco($accountViewModel->Address);

@@ -281,7 +281,22 @@ function getFieldNameinPortuguese(string $field){
         "nameDisplay" => "Nome para Exibição",
         "responsibleDocument" => "Documento do Responsável",
         "typeCompany" => "Tipo de Empresa",
-        "cnae" => "CNAE"
+        "cnae" => "CNAE",
+        "motherName" => "Nome da mãe",
+        "birthDate" => "Data de nascimento",
+        "monthlyIncome" => "Renda mensal",
+        "about" => "Sobre o negócio",
+        "socialMediaLink" => "Link de mídia social",
+        "type" => "Tipo de Associado",
+        "lastContract" => "Contrato social",
+        "cnpjCard" => "Documento CNPJ",
+        "electionRecord" => "Ata de eleição da diretoria",
+        "statute" => "Estatuto",
+        "selfie" => "Selfie",
+        "picture" => "Foto da CNH",
+        "front" => "Foto da frente do RG",
+        "back" => "Foto do verso do RG",
+        "address" => "Comprovante de Endereço"
     ];
 
     return isset($fieldNames[$field]) ? $fieldNames[$field] : $field;
