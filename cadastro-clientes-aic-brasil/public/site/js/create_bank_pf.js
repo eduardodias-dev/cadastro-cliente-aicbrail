@@ -1,4 +1,6 @@
 $(document).ready(function(){
+    $('#birthDate').inputmask('99/99/9999');
+
     // Adicionando um método de validação personalizado
     $.validator.addMethod("regex", function(value, element, regexp) {
         return this.optional(element) || regexp.test(value);
@@ -21,9 +23,6 @@ $(document).ready(function(){
             },
             phone: {
                 regex: /^\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}$/
-            },
-            document:{
-                regex: /([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})/g
             },
             zipcode: "required",
             street: "required",

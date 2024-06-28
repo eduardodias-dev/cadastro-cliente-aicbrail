@@ -58,58 +58,119 @@
     <fieldset>
         <legend>Dados Pessoais</legend>
 
-        <label for="motherName">Nome da mãe:</label>
-        <input type="text" id="motherName" name="motherName" class="form-control" required value="{{old("motherName")}}">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="motherName">Nome da mãe:</label>
+            <input type="text" id="motherName" name="motherName" class="form-control" required value="{{old("motherName")}}">
+          </div>
+          <div class="col-md-6">
+            <label for="birthDate">Data de Nascimento:</label>
+            <input type="text" id="birthDate" name="birthDate" class="form-control" required value="{{old("birthDate")}}">
+          </div>
+        </div>
 
-        <label for="birthDate">Data de Nascimento:</label>
-        <input type="date" id="birthDate" name="birthDate" class="form-control" required value="{{old("birthDate")}}">
-
-        <label for="monthlyIncome">Renda mensal:</label>
-        <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required value="{{old("monthlyIncome")}}">
-
-        <label for="about">Sobre o negócio:</label>
-        <textarea id="about" name="about" class="form-control">{{old("about")}}</textarea>
-
-        <label for="socialMediaLink">Link de mídia social:</label>
-        <input type="text" id="socialMediaLink" name="socialMediaLink" class="form-control" required value="{{old("socialMediaLink")}}">
-
+        <div class="row">
+          <div class="col-md-6">
+            <label for="monthlyIncome">Renda mensal:</label>
+            <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required value="{{old("monthlyIncome")}}">
+          </div>
+          <div class="col-md-6">
+            <label for="socialMediaLink">Link de mídia social:</label>
+            <input type="text" id="socialMediaLink" name="socialMediaLink" class="form-control" required value="{{old("socialMediaLink")}}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label for="about">Sobre o negócio:</label>
+            <textarea id="about" name="about" class="form-control">{{old("about")}}</textarea>
+          </div>
+        </div>
     </fieldset>
 
     <fieldset>
         <legend>Documentos Pessoais</legend>
-
         <hr />
         <h4>CNH</h4>
-        <label for="cnh_selfie">Selfie Segurando a CNH:</label>
-        <input type="file" id="cnh_selfie" name="cnh_selfie" class="form-control" >
-
-        <label for="cnh_picture">Foto da CNH digital ou física aberta (frente + verso):</label>
-        <input type="file" id="cnh_picture" name="cnh_picture" class="form-control" >
-
-        <label for="cnh_address">Foto do comprovante de endereço:</label>
-        <input type="file" id="cnh_address" name="cnh_address" class="form-control" >
-
+        <div class="row">
+          <div class="col-md-12">
+            <label for="cnh_selfie">Selfie Segurando a CNH:</label>
+            <div class="form-group file-upload-wrapper">
+              <input type="file" id="cnh_selfie" name="cnh_selfie" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text">Escolha um arquivo...</span>
+              </label>
+            </div>
+            {{-- <input type="file" id="cnh_selfie" name="cnh_selfie" class="form-control" > --}}
+          </div>
+          <div class="col-md-12">
+            <label for="cnh_picture">Foto da CNH digital ou física aberta (frente + verso):</label>
+            <div class="form-group file-upload-wrapper">
+              <input type="file" id="cnh_picture" name="cnh_picture" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text">Escolha um arquivo...</span>
+              </label>
+            </div>
+            {{-- <input type="file" id="cnh_picture" name="cnh_picture" class="form-control" > --}}
+          </div>
+          <div class="col-md-12">
+            <label for="cnh_address">Foto do comprovante de endereço:</label>
+            <div class="form-group file-upload-wrapper">
+              <input type="file" id="cnh_address" name="cnh_address" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text">Escolha um arquivo...</span>
+              </label>
+            </div>
+            {{-- <input type="file" id="cnh_address" name="cnh_address" class="form-control" > --}}
+          </div>
+        </div>
         <hr />
         <h4>RG</h4>
-
-        <label for="rg_selfie">Selfie Segurando o RG:</label>
-        <input type="file" id="rg_selfie" name="rg_selfie" class="form-control" >
-
-        <label for="rg_front">Foto da frente do RG:</label>
-        <input type="file" id="rg_front" name="rg_front" class="form-control" >
-
-        <label for="rg_back">Foto do verso do RG:</label>
-        <input type="file" id="rg_back" name="rg_back" class="form-control" >
-
-        <label for="rg_address">Foto do comprovante de endereço:</label>
-        <input type="file" id="rg_address" name="rg_address" class="form-control" >
-
+        <div class="row">
+          <div class="col-md-12">
+            <label for="rg_selfie">Selfie Segurando o RG:</label>
+            <div class="form-group file-upload-wrapper">
+              <input type="file" id="rg_selfie" name="rg_selfie" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text">Escolha um arquivo...</span>
+              </label>
+            </div>
+            {{-- <input type="file" id="rg_selfie" name="rg_selfie" class="form-control" > --}}
+          </div>
+          <div class="col-md-12">
+            <label for="rg_front">Foto da frente do RG:</label>
+            <div class="form-group file-upload-wrapper">
+              <input type="file" id="rg_front" name="rg_front" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text">Escolha um arquivo...</span>
+              </label>
+            </div>
+            {{-- <input type="file" id="rg_front" name="rg_front" class="form-control" > --}}
+          </div>
+          <div class="col-md-12">
+            <label for="rg_back">Foto do verso do RG:</label>
+            <div class="form-group file-upload-wrapper">
+              <input type="file" id="rg_back" name="rg_back" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text">Escolha um arquivo...</span>
+              </label>
+            </div>
+            {{-- <input type="file" id="rg_back" name="rg_back" class="form-control" > --}}
+          </div>
+          <div class="col-md-12">
+            <div class="form-group file-upload-wrapper">
+              <label for="rg_address">Foto do comprovante de endereço:</label>
+              <input type="file" id="rg_address" name="rg_address" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text">Escolha um arquivo...</span>
+              </label>
+            </div>
+            {{-- <input type="file" id="rg_address" name="rg_address" class="form-control" > --}}
+          </div>
+        </div>
     </fieldset>
-
     <button type="submit" class="btn btn-primary form-control mt-2 mb-5">
         Enviar
     </button>
-
   </form>
 
 

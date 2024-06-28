@@ -1,4 +1,6 @@
 $(document).ready(function(){
+    $('#birthDate').inputmask('99/99/9999');
+
     // Adicionando um método de validação personalizado
     $.validator.addMethod("regex", function(value, element, regexp) {
         return this.optional(element) || regexp.test(value);
@@ -64,6 +66,7 @@ $(document).ready(function(){
     /** máscaras */
     $('[name=phone]').inputmask('(99) 99999-9999');
     $('[name=document]').inputmask('99.999.999/9999-99');
+    $('[name=responsibleDocument]').inputmask('999.999.999-99');
     $('[name=zipcode]').inputmask('99999-999');
 
     $('#birthDate').datetimepicker({

@@ -535,8 +535,7 @@ class SiteController extends Controller
         if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
             session()->flash('mensagem', $responseViewModel->mensagem);
 
-            return redirect()
-                    ->route("home");
+            return redirect("/");
         }
         else{
             return redirect()
