@@ -75,7 +75,7 @@
             <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required value="{{old("monthlyIncome")}}">
           </div>
           <div class="col-md-6">
-            <label for="socialMediaLink">Link de mídia social:</label>
+            <label for="socialMediaLink">Rede Social (Instagram, Tiktok, etc.):</label>
             <input type="text" id="socialMediaLink" name="socialMediaLink" class="form-control" required value="{{old("socialMediaLink")}}">
           </div>
         </div>

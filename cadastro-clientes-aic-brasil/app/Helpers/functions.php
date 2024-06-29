@@ -287,7 +287,7 @@ function getFieldNameinPortuguese(string $field){
         "birthDate" => "Data de nascimento",
         "monthlyIncome" => "Renda mensal",
         "about" => "Sobre o negócio",
-        "socialMediaLink" => "Link de mídia social",
+        "socialMediaLink" => "Rede social",
         "type" => "Tipo de Associado",
         "lastContract" => "Contrato social",
         "cnpjCard" => "Documento CNPJ",
@@ -305,6 +305,7 @@ function getFieldNameinPortuguese(string $field){
 
 function printProfissoesAsOptions($selected = ""){
     $profissoes = [
+        "" => "",
         "lawyer" => "Advogado",
         "doctor" => "Médico",
         "accountant" => "Contador",
@@ -326,7 +327,7 @@ function printTiposDeEmpresasAsOptions($selected = ""){
         "ltda" =>"LTDA",
         "eireli" =>"EIRELI",
         "association" =>"Associação",
-        "individualEntrepeneur" =>"Empresário Individual",
+        "individualEntrepreneur" =>"Empresário Individual",
         "mei" =>"MEI",
         "sa" =>"SA",
         "slu" => "SLU"

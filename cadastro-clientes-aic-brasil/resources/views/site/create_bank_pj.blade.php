@@ -86,7 +86,7 @@
       <div class="col-md-6">
         <label for="typeCompany">Tipo de Empresa:</label>
         <select id="typeCompany" name="typeCompany" class="form-select" required>
-          {{printProfissoesAsOptions(old('typeCompany'))}}
+          {{printTiposDeEmpresasAsOptions(old('typeCompany'))}}
         </select>
       </div>
       <div class="col-md-6">

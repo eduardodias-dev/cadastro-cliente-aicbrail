@@ -56,78 +56,102 @@
     @csrf
     <input type="hidden" name="subconta_id" value="{{$subconta_id}}" readonly="readonly" />
 
-    <label for="monthlyIncome">Renda mensal:</label>
-    <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required value="{{old("monthlyIncome")}}">
+    <div class="row">
+      <div class="col-md-4">
+        <label for="monthlyIncome">Renda mensal:</label>
+        <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required value="{{old("monthlyIncome")}}">
+      </div>
+      <div class="col-md-8">
+        <label for="socialMediaLink">Rede Social (Instagram, Tiktok, Website, etc.):</label>
+        <input type="text" id="socialMediaLink" name="socialMediaLink" class="form-control" required value="{{old("socialMediaLink")}}">
+      </div>
+    </div>
 
-    <label for="about">Sobre o negócio (CNPJ):</label>
-    <textarea id="about" name="about" class="form-control" required>{{old("about")}}</textarea>
+    <div class="row">
+      <div class="col-md-12">
+        <label for="about">Sobre o negócio (CNPJ):</label>
+        <textarea id="about" name="about" class="form-control" required>{{old("about")}}</textarea>
+      </div>
+    </div>
 
-    <label for="socialMediaLink">Link de mídia social:</label>
-    <input type="text" id="socialMediaLink" name="socialMediaLink" class="form-control" required value="{{old("socialMediaLink")}}">
 
     <fieldset>
         <legend>Quadro Societário</legend>
 
-        <label for="document">Documento (CPF):</label>
-        <input type="text" id="document" name="document" class="form-control" required value="{{old("document")}}">
+        <div class="row">
+          <div class="col-md-4">
+            <label for="document">Documento (CPF):</label>
+            <input type="text" id="document" name="document" class="form-control" required value="{{old("document")}}">
+          </div>
+          <div class="col-md-8">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" class="form-control" required value="{{old("name")}}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="birthDate">Data de Nascimento:</label>
+            <input type="text" id="birthDate" name="birthDate" class="form-control" placeholder="DD/MM/AAAA" required value="{{old("birthDate")}}">
+          </div>
+          <div class="col-md-8">
+            <label for="motherName">Nome da mãe:</label>
+            <input type="text" id="motherName" name="motherName" class="form-control" required value="{{old("motherName")}}">
+          </div>
+        </div>
 
-        <label for="name">Nome:</label>
-        <input type="text" id="name" name="name" class="form-control" required value="{{old("name")}}">
-
-        <label for="motherName">Nome da mãe:</label>
-        <input type="text" id="motherName" name="motherName" class="form-control" required value="{{old("motherName")}}">
-
-        <label for="birthDate">Data de Nascimento:</label>
-        <input type="text" id="birthDate" name="birthDate" class="form-control" placeholder="DD/MM/AAAA" required value="{{old("birthDate")}}">
-
-        <label for="type">Tipo de Associado:</label>
-        <select id="type" name="type" class="form-select" required>
-          <option value="partner" {{old('type') == 'partner' ? "selected" : ''}}>Sócio</option>
-          <option value="attorney" {{old('type') == 'attorney' ? "selected" : ''}}>Procurador</option>
-          <option value="personinvolved" {{old('type') == 'personinvolved' ? "selected" : ''}}>Pessoa Envolvida</option>
-        </select>
-
+        <div class="row">
+          <div class="col-md-12">
+            <label for="type">Tipo de Associado:</label>
+            <select id="type" name="type" class="form-select" required>
+              <option value="partner" {{old('type') == 'partner' ? "selected" : ''}}>Sócio</option>
+              <option value="attorney" {{old('type') == 'attorney' ? "selected" : ''}}>Procurador</option>
+              <option value="personinvolved" {{old('type') == 'personinvolved' ? "selected" : ''}}>Pessoa Envolvida</option>
+            </select>
+          </div>
+        </div>
     </fieldset>
 
     <fieldset>
         <legend>Documentos</legend>
+        @if($tipoEmpresa == 'ltda' || $tipoEmpresa == 'eireli' || $tipoEmpresa == 'slu')
+          <label for="lastContract">Contrato social:</label>
+          <div class="form-group file-upload-wrapper">
+              <input type="file" id="lastContract" name="lastContract" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
+              </label>
+          </div>
+        @endif
 
-        <label for="lastContract">Contrato social:</label>
-        <div class="form-group file-upload-wrapper">
-            <input type="file" id="lastContract" name="lastContract" class="file-input">
-            <label for="file-input" class="file-label">
-              <span class="file-label-text">Escolha um arquivo...</span>
-            </label>
-        </div>
-        {{-- <input type="file" id="lastContract" name="lastContract" class="form-control" placeholder="Escolha um arquivo..."> --}}
+        @if($tipoEmpresa == 'mei' || $tipoEmpresa == 'individualEntrepreneur')
+          <label for="cnpjCard">Documento CNPJ:</label>
+          <div class="form-group file-upload-wrapper">
+              <input type="file" id="cnpjCard" name="cnpjCard" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
+              </label>
+          </div>
+        @endif
+        
+        @if($tipoEmpresa == 'association' || $tipoEmpresa == 'sa')
+          <label for="electionRecord">Ata de eleição da diretoria:</label>
+          <div class="form-group file-upload-wrapper">
+              <input type="file" id="electionRecord" name="electionRecord" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
+              </label>
+          </div>
+        @endif
 
-        <label for="cnpjCard">Documento CNPJ:</label>
-        <div class="form-group file-upload-wrapper">
-            <input type="file" id="cnpjCard" name="cnpjCard" class="file-input">
-            <label for="file-input" class="file-label">
-              <span class="file-label-text">Escolha um arquivo...</span>
-            </label>
-        </div>
-        {{-- <input type="file" id="cnpjCard" name="cnpjCard" class="form-control" placeholder="Escolha um arquivo..."> --}}
-
-        <label for="electionRecord">Ata de eleição da diretoria:</label>
-        <div class="form-group file-upload-wrapper">
-            <input type="file" id="electionRecord" name="electionRecord" class="file-input">
-            <label for="file-input" class="file-label">
-              <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
-            </label>
-        </div>
-        {{-- <input type="file" id="electionRecord" name="electionRecord" class="form-control" placeholder="Escolha um arquivo..."> --}}
-
-        <label for="statute">Estatuto:</label>
-        <div class="form-group file-upload-wrapper">
-            <input type="file" id="statute" name="statute" class="file-input">
-            <label for="file-input" class="file-label">
-              <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
-            </label>
-        </div>
-        {{-- <input type="file" id="statute" name="statute" class="form-control" placeholder="Escolha um arquivo..."> --}}
-
+        @if($tipoEmpresa == 'association' || $tipoEmpresa == 'sa')
+          <label for="statute">Estatuto:</label>
+          <div class="form-group file-upload-wrapper">
+              <input type="file" id="statute" name="statute" class="file-input">
+              <label for="file-input" class="file-label">
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
+              </label>
+          </div>
+        @endif
     </fieldset>
 
     <fieldset>
@@ -142,8 +166,7 @@
               <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
-        {{-- <input type="file" id="cnh_selfie" name="cnh_selfie" class="form-control" placeholder="Escolha um arquivo..."> --}}
-
+        
         <label for="cnh_picture">Foto da CNH digital ou física aberta (frente + verso):</label>
         <div class="form-group file-upload-wrapper">
             <input type="file" id="cnh_picture" name="cnh_picture" class="file-input">
@@ -151,8 +174,7 @@
               <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
-        {{-- <input type="file" id="cnh_picture" name="cnh_picture" class="form-control" placeholder="Escolha um arquivo..."> --}}
-
+        
         <hr />
         <h4>RG</h4>
 
@@ -163,8 +185,7 @@
               <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
-        {{-- <input type="file" id="rg_selfie" name="rg_selfie" class="form-control" placeholder="Escolha um arquivo..."> --}}
-
+        
         <label for="rg_front">Foto da frente do RG:</label>
         <div class="form-group file-upload-wrapper">
             <input type="file" id="rg_front" name="rg_front" class="file-input">
@@ -172,8 +193,7 @@
               <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
-        {{-- <input type="file" id="rg_front" name="rg_front" class="form-control" placeholder="Escolha um arquivo..."> --}}
-
+        
         <label for="rg_back">Foto do verso do RG:</label>
         <div class="form-group file-upload-wrapper">
             <input type="file" id="rg_back" name="rg_back" class="file-input">
@@ -181,8 +201,7 @@
               <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
-        {{-- <input type="file" id="rg_back" name="rg_back" class="form-control" placeholder="Escolha um arquivo..."> --}}
-
+        
     </fieldset>
 
     <button type="submit" class="btn btn-primary form-control mt-2 mb-5">

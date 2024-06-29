@@ -13,6 +13,7 @@ use App\Services\CartHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Mail\EnvioEmailApolice;
+use App\Mail\EnvioEmailContaBancaria;
 use App\ViewModels\LegalFields;
 use App\ViewModels\PersonFields;
 use App\ViewModels\Professional;
@@ -22,6 +23,7 @@ use App\Services\GalaxPayService;
 use App\ViewModels\LegalDocuments;
 use Illuminate\Support\Facades\DB;
 use App\Services\SubcontaDBService;
+use App\Subconta_Endereco;
 use App\ViewModels\LegalRGDocument;
 use App\ViewModels\PersonDocuments;
 use Illuminate\Support\Facades\Log;
@@ -434,7 +436,7 @@ class SiteController extends Controller
 
         if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
             return redirect()
-                    ->route('mandatory.documents', ['type' => $type, 'subconta_id' => $subconta_id]);
+                    ->route('mandatory.documents', ['type' => $type, 'subconta_id' => base64_encode($subconta_id)]);
         }
         else{
             return redirect()
@@ -445,14 +447,15 @@ class SiteController extends Controller
     }
 
     public function formMandatoryDocuments(string $type, Request $request){
-        $subconta_id = $request->get("subconta_id");
+        $subconta_id = base64_decode($request->get("subconta_id"));
         $type = strtolower($type);
-
         if($type == 'pf'){
             return view('site.form_mandatory_docs_bank_pf', ['subconta_id' => $subconta_id]);
         }
         else if($type == 'pj'){
-            return view('site.form_mandatory_docs_bank_pj', ['subconta_id' => $subconta_id]);
+            $subconta = Subconta::find($subconta_id);
+            $tipoEmpresa = $subconta->typeCompany;
+            return view('site.form_mandatory_docs_bank_pj', ['subconta_id' => $subconta_id, "tipoEmpresa" => $tipoEmpresa]);
         }
         else{
             abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
@@ -470,7 +473,8 @@ class SiteController extends Controller
             $fields = new PersonFields();
             $fields->motherName = removeSpecialCharacters($request['motherName']);
             $birthDate = date_create_from_format("d/m/Y", $request['birthDate']);
-            $fields->birthDate = date_format($birthDate, "Y-m-d");
+            if($birthDate)
+                $fields->birthDate = date_format($birthDate, "Y-m-d");
             $fields->monthlyIncome = removeSpecialCharacters($request['monthlyIncome']);
             $fields->about = $request['about'];
             $fields->socialMediaLink = $request['socialMediaLink'];
@@ -507,7 +511,8 @@ class SiteController extends Controller
             $associate->name = $request['name'];
             $associate->motherName = $request['motherName'];
             $birthDate = date_create_from_format("d/m/Y", $request['birthDate']);
-            $associate->birthDate = date_format($birthDate, "Y-m-d");
+            if($birthDate)
+                $associate->birthDate = date_format($birthDate, "Y-m-d");
             $associate->type = $request['type'];
 
             $legalDocuments = new LegalDocuments();
@@ -542,9 +547,10 @@ class SiteController extends Controller
 
         //Todo: Enviar para a página nova com os dados da conta criada.
         if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
-            session()->flash('mensagem', $responseViewModel->mensagem);
 
-            return redirect()->route("bank.created");
+            $this->enviarEmailSubconta($subconta_id);
+
+            return redirect()->route("bank.created")->with('mensagem', $responseViewModel->mensagem);
         }
         else{
             return redirect()
@@ -671,5 +677,25 @@ class SiteController extends Controller
         }
 
         return null;
+    }
+
+    private function enviarEmailSubconta($subconta_id){
+        try{
+            $subconta = Subconta::find($subconta_id);
+            $endereco = Subconta_Endereco::where('subconta_id', $subconta_id)->first();
+
+            Mail::to($subconta->emailContact)
+                ->send(new EnvioEmailContaBancaria($subconta, $endereco));
+        }catch(Exception $e){
+            $message = $e->getMessage();
+            Log::alert("[enviarEmailSubconta]: Erro ao enviar email para a conta com id: $subconta_id. Erro: $message");
+            throw $e;
+        }
+    }
+
+    public function test_email(Request $request, string $id){
+        $this->enviarEmailSubconta($id);
+
+        return response()->json('ok');
     }
 }

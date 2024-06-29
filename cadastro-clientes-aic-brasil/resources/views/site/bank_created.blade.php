@@ -45,8 +45,12 @@
             <div class="card">
                 <div class="card-body text-center my-2">
                     <h4>Sua conta foi criada com sucesso!</h4>
+                    <p>{{session('mensagem')}}</p>
                     <p>
                       Em seguida, te enviaremos os dados de acesso por e-mail.
+                    </p>
+                    <p>
+                      <a href="/">Voltar ao início</a>
                     </p>
                 </div>
             </div>
