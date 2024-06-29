@@ -544,7 +544,7 @@ class SiteController extends Controller
         if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
             session()->flash('mensagem', $responseViewModel->mensagem);
 
-            return redirect("/");
+            return redirect()->route("bank.created");
         }
         else{
             return redirect()
@@ -554,6 +554,10 @@ class SiteController extends Controller
         }
 
         return $responseViewModel;
+    }
+
+    public function bankCreated(Request $request){
+        return view("site.bank_created");
     }
 
     //Private methods
