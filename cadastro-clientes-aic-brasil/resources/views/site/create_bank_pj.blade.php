@@ -86,13 +86,7 @@
       <div class="col-md-6">
         <label for="typeCompany">Tipo de Empresa:</label>
         <select id="typeCompany" name="typeCompany" class="form-select" required>
-          <option value="ltda">LTDA</option>
-          <option value="eireli">EIRELI</option>
-          <option value="association">Associação</option>
-          <option value="individualEntrepeneur">Empresário Individual</option>
-          <option value="mei">MEI</option>
-          <option value="sa">SA</option>
-          <option value="slu">SLU</option>
+          {{printProfissoesAsOptions(old('typeCompany'))}}
         </select>
       </div>
       <div class="col-md-6">
@@ -142,9 +136,9 @@
         <div class="col-md-6">
           <label for="state">Estado:</label>
           {{-- <input type="text" id="state" name="state" class="form-control" value="{{old('state')}}" required> --}}
-          <select name="state" id="state" class="form-control" value="{{old('state')}}">
+          <select name="state" id="state" class="form-control">
             <option value=""></option>
-            {{printEstadosAsOptions()}}
+            {{printEstadosAsOptions(old('state'))}}
           </select>
         </div>
       </div>

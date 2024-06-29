@@ -111,9 +111,9 @@
         <div class="col-md-6">
           <label for="state">Estado:</label>
           {{-- <input type="text" id="state" name="state" class="form-control" value="{{old('state')}}" required> --}}
-          <select name="state" id="state" class="form-control" value="{{old('state')}}">
+          <select name="state" id="state" class="form-control">
             <option value=""></option>
-            {{printEstadosAsOptions()}}
+            {{printEstadosAsOptions(old('state'))}}
           </select>
         </div>
       </div>
@@ -125,14 +125,7 @@
           <div class="col-md-4">
             <label for="internalName">Profissão:</label>
             <select id="internalName" name="internalName" class="form-select" required>
-                <option value="lawyer">Advogado</option>
-                <option value="doctor">Médico</option>
-                <option value="accountant">Contador</option>
-                <option value="realtor">Corretor Imobiliário</option>
-                <option value="broker">Corretor</option>
-                <option value="physicalEducator">Educador Físico</option>
-                <option value="physiotherapist">Fisioterapeuta</option>
-                <option value="others">Outros</option>
+                {{printProfissoesAsOptions(old('internalName'))}}
             </select>
           </div>
           <div class="col-md-8">

@@ -375,8 +375,12 @@ class SiteController extends Controller
                 $subcontaService = new SubcontaDBService();
                 $result_id = $subcontaService->AddSubcontaPJ($bankAccountViewModel);
                 $subconta_id = $result_id;
-            }
 
+                if($subconta_id == 0){
+                    $responseViewModel->sucesso = 0;
+                    $responseViewModel->erros = ["Não foi possível salvar sua conta. Por favor entre em contato com o suporte."];
+                }
+            }
         }
         else if($type == 'pf'){
             $bankAccountViewModel = new PersonBankAccountViewModel();
@@ -417,6 +421,11 @@ class SiteController extends Controller
                 $subcontaService = new SubcontaDBService();
                 $result_id = $subcontaService->AddSubcontaPF($bankAccountViewModel);
                 $subconta_id = $result_id;
+
+                if($subconta_id == 0){
+                    $responseViewModel->sucesso = 0;
+                    $responseViewModel->erros = ["Não foi possível salvar sua conta. Por favor entre em contato com o suporte."];
+                }
             }
         }
         else{

@@ -46,3 +46,5 @@ CREATE TABLE subconta_profissional (
 ALTER TABLE subconta ADD COLUMN galaxPayId INT;
 ALTER TABLE subconta ADD COLUMN galaxId VARCHAR(255);
 ALTER TABLE subconta ADD COLUMN galaxHash VARCHAR(255);
+
+ALTER TABLE subconta_profissional MODIFY COLUMN inscription VARCHAR(255) NULL;

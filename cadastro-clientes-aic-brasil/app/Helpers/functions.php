@@ -80,7 +80,7 @@ function getRetorno($jsonResult){
     return isset($arrResult['retorno']) ? $arrResult['retorno'] : "";
 }
 
-function printEstadosAsOptions(){
+function printEstadosAsOptions($selected = ""){
     $estados = [
         'AC' => 'Acre',
         'AL' => 'Alagoas',
@@ -111,7 +111,8 @@ function printEstadosAsOptions(){
     ];
 
     foreach($estados as $sigla => $nome){
-        print "<option value='$sigla'>$nome</option>";
+        $selectedHtml = $selected == $sigla ? "selected" : '';
+        print "<option value='$sigla' $selectedHtml>$nome</option>";
     }
 }
 
@@ -300,4 +301,39 @@ function getFieldNameinPortuguese(string $field){
     ];
 
     return isset($fieldNames[$field]) ? $fieldNames[$field] : $field;
+}
+
+function printProfissoesAsOptions($selected = ""){
+    $profissoes = [
+        "lawyer" => "Advogado",
+        "doctor" => "Médico",
+        "accountant" => "Contador",
+        "realtor" => "Corretor Imobialiário",
+        "broker" => "Corretor",
+        "physicalEducator" => "Educador",
+        "physiotherapist" => "Fisioterapeuta",
+        "others" => "Outros",
+    ];
+
+    foreach($profissoes as $valor => $nome){
+        $selectedHtml = $selected == $valor ? "selected" : '';
+        print "<option value='$valor' $selectedHtml>$nome</option>";
+    }
+}
+
+function printTiposDeEmpresasAsOptions($selected = ""){
+    $tipos = [
+        "ltda" =>"LTDA",
+        "eireli" =>"EIRELI",
+        "association" =>"Associação",
+        "individualEntrepeneur" =>"Empresário Individual",
+        "mei" =>"MEI",
+        "sa" =>"SA",
+        "slu" => "SLU"
+    ];
+
+    foreach($tipos as $valor => $nome){
+        $selectedHtml = $selected == $valor ? "selected" : '';
+        print "<option value='$valor' $selectedHtml>$nome</option>";
+    }
 }

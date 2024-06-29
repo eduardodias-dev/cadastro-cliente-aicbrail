@@ -28,7 +28,7 @@
   <link href="/site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <link href="/dist/plugins/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/dist/plugins/datetimepicker/jquery.datetimepicker.min.css" />
-  <link href="/dist/plugins/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+  <link href="/dist/plugins/fontawesome-free/css/all.min.css" rel="stylesheet">
   <!-- Template Main CSS File -->
   <link href="/site/css/bankstyles.css" rel="stylesheet">
   <!-- =======================================================
@@ -82,9 +82,9 @@
 
         <label for="type">Tipo de Associado:</label>
         <select id="type" name="type" class="form-select" required>
-          <option value="partner">Sócio</option>
-          <option value="attorney">Procurador</option>
-          <option value="personinvolved">Pessoa Envolvida</option>
+          <option value="partner" {{old('type') == 'partner' ? "selected" : ''}}>Sócio</option>
+          <option value="attorney" {{old('type') == 'attorney' ? "selected" : ''}}>Procurador</option>
+          <option value="personinvolved" {{old('type') == 'personinvolved' ? "selected" : ''}}>Pessoa Envolvida</option>
         </select>
 
     </fieldset>
@@ -114,7 +114,7 @@
         <div class="form-group file-upload-wrapper">
             <input type="file" id="electionRecord" name="electionRecord" class="file-input">
             <label for="file-input" class="file-label">
-              <span class="file-label-text">Escolha um arquivo...</span>
+              <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
         {{-- <input type="file" id="electionRecord" name="electionRecord" class="form-control" placeholder="Escolha um arquivo..."> --}}
@@ -123,7 +123,7 @@
         <div class="form-group file-upload-wrapper">
             <input type="file" id="statute" name="statute" class="file-input">
             <label for="file-input" class="file-label">
-              <span class="file-label-text">Escolha um arquivo...</span>
+              <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
         {{-- <input type="file" id="statute" name="statute" class="form-control" placeholder="Escolha um arquivo..."> --}}
@@ -139,7 +139,7 @@
         <div class="form-group file-upload-wrapper">
             <input type="file" id="cnh_selfie" name="cnh_selfie" class="file-input">
             <label for="file-input" class="file-label">
-              <span class="file-label-text">Escolha um arquivo...</span>
+              <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
         {{-- <input type="file" id="cnh_selfie" name="cnh_selfie" class="form-control" placeholder="Escolha um arquivo..."> --}}
@@ -148,7 +148,7 @@
         <div class="form-group file-upload-wrapper">
             <input type="file" id="cnh_picture" name="cnh_picture" class="file-input">
             <label for="file-input" class="file-label">
-              <span class="file-label-text">Escolha um arquivo...</span>
+              <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
         {{-- <input type="file" id="cnh_picture" name="cnh_picture" class="form-control" placeholder="Escolha um arquivo..."> --}}
@@ -160,7 +160,7 @@
         <div class="form-group file-upload-wrapper">
             <input type="file" id="rg_selfie" name="rg_selfie" class="file-input">
             <label for="file-input" class="file-label">
-              <span class="file-label-text">Escolha um arquivo...</span>
+              <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
         {{-- <input type="file" id="rg_selfie" name="rg_selfie" class="form-control" placeholder="Escolha um arquivo..."> --}}
@@ -169,7 +169,7 @@
         <div class="form-group file-upload-wrapper">
             <input type="file" id="rg_front" name="rg_front" class="file-input">
             <label for="file-input" class="file-label">
-              <span class="file-label-text">Escolha um arquivo...</span>
+              <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
         {{-- <input type="file" id="rg_front" name="rg_front" class="form-control" placeholder="Escolha um arquivo..."> --}}
@@ -178,7 +178,7 @@
         <div class="form-group file-upload-wrapper">
             <input type="file" id="rg_back" name="rg_back" class="file-input">
             <label for="file-input" class="file-label">
-              <span class="file-label-text">Escolha um arquivo...</span>
+              <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
             </label>
         </div>
         {{-- <input type="file" id="rg_back" name="rg_back" class="form-control" placeholder="Escolha um arquivo..."> --}}

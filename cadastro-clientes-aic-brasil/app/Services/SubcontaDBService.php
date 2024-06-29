@@ -89,7 +89,7 @@ class SubcontaDBService
         catch(Exception $e)
         {
             DB::rollBack();
-            Log::error("Erro ao adicionar conta PJ\n: ".$e->getMessage());
+            Log::error("Erro ao adicionar conta PF\n: ".$e->getMessage());
 
         }
 

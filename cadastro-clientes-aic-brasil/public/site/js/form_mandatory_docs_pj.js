@@ -22,6 +22,6 @@ $(document).ready(function(){
     });
     $('.file-input').change(function(evt) {
         const fileName = evt.target.files[0]?.name || "Nenhum Arquivo selecionado";
-        $(this).parent().find('.file-label-text').html(`<span class="text-muted">Arquivo selecionado:</span> ${fileName}`)
+        $(this).parent().find('.file-label-text').html(`<span class="text-muted">Arquivo selecionado:</span> ${fileName} <i class="fas fa-check-circle"></i>`)
     });
 });

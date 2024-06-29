@@ -28,7 +28,7 @@
   <link href="/site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <link href="/dist/plugins/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/dist/plugins/datetimepicker/jquery.datetimepicker.min.css" />
-  <link href="/dist/plugins/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+  <link href="/dist/plugins/fontawesome-free/css/all.min.css" rel="stylesheet">
   <!-- Template Main CSS File -->
   <link href="/site/css/bankstyles.css" rel="stylesheet">
   <!-- =======================================================
@@ -97,7 +97,7 @@
             <div class="form-group file-upload-wrapper">
               <input type="file" id="cnh_selfie" name="cnh_selfie" class="file-input">
               <label for="file-input" class="file-label">
-                <span class="file-label-text">Escolha um arquivo...</span>
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
               </label>
             </div>
             {{-- <input type="file" id="cnh_selfie" name="cnh_selfie" class="form-control" > --}}
@@ -107,7 +107,7 @@
             <div class="form-group file-upload-wrapper">
               <input type="file" id="cnh_picture" name="cnh_picture" class="file-input">
               <label for="file-input" class="file-label">
-                <span class="file-label-text">Escolha um arquivo...</span>
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
               </label>
             </div>
             {{-- <input type="file" id="cnh_picture" name="cnh_picture" class="form-control" > --}}
@@ -117,7 +117,7 @@
             <div class="form-group file-upload-wrapper">
               <input type="file" id="cnh_address" name="cnh_address" class="file-input">
               <label for="file-input" class="file-label">
-                <span class="file-label-text">Escolha um arquivo...</span>
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
               </label>
             </div>
             {{-- <input type="file" id="cnh_address" name="cnh_address" class="form-control" > --}}
@@ -131,7 +131,7 @@
             <div class="form-group file-upload-wrapper">
               <input type="file" id="rg_selfie" name="rg_selfie" class="file-input">
               <label for="file-input" class="file-label">
-                <span class="file-label-text">Escolha um arquivo...</span>
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
               </label>
             </div>
             {{-- <input type="file" id="rg_selfie" name="rg_selfie" class="form-control" > --}}
@@ -141,7 +141,7 @@
             <div class="form-group file-upload-wrapper">
               <input type="file" id="rg_front" name="rg_front" class="file-input">
               <label for="file-input" class="file-label">
-                <span class="file-label-text">Escolha um arquivo...</span>
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
               </label>
             </div>
             {{-- <input type="file" id="rg_front" name="rg_front" class="form-control" > --}}
@@ -151,7 +151,7 @@
             <div class="form-group file-upload-wrapper">
               <input type="file" id="rg_back" name="rg_back" class="file-input">
               <label for="file-input" class="file-label">
-                <span class="file-label-text">Escolha um arquivo...</span>
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
               </label>
             </div>
             {{-- <input type="file" id="rg_back" name="rg_back" class="form-control" > --}}
@@ -161,7 +161,7 @@
               <label for="rg_address">Foto do comprovante de endereço:</label>
               <input type="file" id="rg_address" name="rg_address" class="file-input">
               <label for="file-input" class="file-label">
-                <span class="file-label-text">Escolha um arquivo...</span>
+                <span class="file-label-text"><i class="fas fa-file-upload"></i> Escolha um arquivo...</span>
               </label>
             </div>
             {{-- <input type="file" id="rg_address" name="rg_address" class="form-control" > --}}
