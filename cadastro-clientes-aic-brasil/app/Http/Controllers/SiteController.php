@@ -44,6 +44,7 @@ use App\ViewModels\PersonBankAccountViewModel;
 use App\ViewModels\LegalMandatoryDocumentsViewModel;
 use App\ViewModels\PersonMandatoryDocumentsViewModel;
 use App\ViewModels\ResponseViewModel;
+use Illuminate\Support\Str;
 
 class SiteController extends Controller
 {
@@ -350,7 +351,7 @@ class SiteController extends Controller
             $bankAccountViewModel->emailContact = $requestData['emailContact'];
             $bankAccountViewModel->responsibleDocument = removeSpecialCharacters($requestData['responsibleDocument']);
             $bankAccountViewModel->typeCompany = $requestData['typeCompany'];
-            $bankAccountViewModel->softDescriptor = $requestData['softDescriptor'];
+            $bankAccountViewModel->softDescriptor = Str::substr(Str::ascii($requestData['name']),0,17);
             $bankAccountViewModel->cnae = removeSpecialCharacters($requestData['cnae']);
 
             $bankAccountViewModel->logo = $this->getBase64Logo();
@@ -391,7 +392,7 @@ class SiteController extends Controller
             $bankAccountViewModel->document = removeSpecialCharacters($requestData['document']);
             $bankAccountViewModel->phone = removeSpecialCharacters($requestData['phone']);
             $bankAccountViewModel->emailContact = $requestData['emailContact'];
-            $bankAccountViewModel->softDescriptor = $requestData['softDescriptor'];
+            $bankAccountViewModel->softDescriptor = Str::substr(Str::ascii($requestData['name']),0,17);
 
             $bankAccountViewModel->logo = $this->getBase64Logo();
 
@@ -476,7 +477,7 @@ class SiteController extends Controller
             if($birthDate)
                 $fields->birthDate = date_format($birthDate, "Y-m-d");
             $fields->monthlyIncome = removeSpecialCharacters($request['monthlyIncome']);
-            $fields->about = $request['about'];
+            $fields->about = "Conta para pessoa física.";
             $fields->socialMediaLink = $request['socialMediaLink'];
 
             $personDocuments = new PersonDocuments();
@@ -689,7 +690,6 @@ class SiteController extends Controller
         }catch(Exception $e){
             $message = $e->getMessage();
             Log::alert("[enviarEmailSubconta]: Erro ao enviar email para a conta com id: $subconta_id. Erro: $message");
-            throw $e;
         }
     }
 

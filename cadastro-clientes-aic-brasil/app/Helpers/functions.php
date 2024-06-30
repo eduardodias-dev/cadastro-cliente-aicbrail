@@ -338,3 +338,21 @@ function printTiposDeEmpresasAsOptions($selected = ""){
         print "<option value='$valor' $selectedHtml>$nome</option>";
     }
 }
+
+function formatarTelefone($telefone)
+{
+    // Remove todos os caracteres não numéricos
+    $telefone = preg_replace('/\D/', '', $telefone);
+
+    // Verifica a quantidade de dígitos no telefone
+    if (strlen($telefone) === 11) {
+        // Celular: (XX) XXXXX-XXXX
+        return preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $telefone);
+    } elseif (strlen($telefone) === 10) {
+        // Fixo: (XX) XXXX-XXXX
+        return preg_replace('/(\d{2})(\d{4})(\d{4})/', '($1) $2-$3', $telefone);
+    } else {
+        // Número de telefone inválido
+        return 'Número inválido';
+    }
+}

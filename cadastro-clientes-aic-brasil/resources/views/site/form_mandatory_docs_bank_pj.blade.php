@@ -40,7 +40,7 @@
 </head>
 <body>
     <div class="flex justify-content-center text-center">
-        <img src="/site/img/logo_nova.png" height="80"></a>
+        <img src="/site/img/logo_nova.png" height="200"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA JURÍDICA - Envio dos Documentos Necessários</h4>
     @if ($errors->any())

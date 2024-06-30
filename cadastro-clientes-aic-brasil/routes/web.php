@@ -67,5 +67,10 @@ Route::get('forget-password', 'Auth\ForgotPasswordController@getEmail');
 Route::post('forget-password', 'Auth\ForgotPasswordController@postEmail');
 
 Route::get('bank/created', 'SiteController@bankCreated')->name('bank.created');
-Route::get('test/email/{id}', 'SiteController@test_email')->name('test.email');
+
+Route::get('/cep/{cep}', "CepController@getCepData");
+
+if (app()->environment('development')) {
+    Route::get('test/email/{id}', 'SiteController@test_email')->name('test.email');
+}
 

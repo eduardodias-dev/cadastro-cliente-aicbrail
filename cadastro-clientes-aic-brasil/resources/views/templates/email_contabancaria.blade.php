@@ -7,7 +7,7 @@
     <div style="border: 1px solid #6c97c3; border-radius: 10px; padding: 10px; text-align:left;margin-bottom: 10px;">
         <h4 style="padding-bottom: 0;">Dados do Cadastro:</h4>
         <b>Titular:</b> {{$subconta->name}} <br>
-        <b>Telefone:</b> {{$subconta->phone}} <br>
+        <b>Telefone:</b> {{formatarTelefone($subconta->phone)}} <br>
         <b>Endereço:</b> {{$endereco->street}}, {{$endereco->number}} {{$endereco->complement}} <br>
         <b>Cidade:</b> {{$endereco->city}}/{{$endereco->state}} <br>
         <b>CEP:</b> {{$endereco->zipCode}}

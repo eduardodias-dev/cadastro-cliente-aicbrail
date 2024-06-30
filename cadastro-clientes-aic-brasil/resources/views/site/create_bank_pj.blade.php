@@ -36,7 +36,7 @@
 </head>
 <body>
     <div class="flex justify-content-center text-center">
-        <img src="/site/img/logo_nova.png" height="80"></a>
+        <img src="/site/img/logo_nova.png" height="200"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA - PESSOA JURÍDICA</h4>
     <form method="post" action="{{route('create.bank.account.post', ['type' => 'pj'])}}" id="form_bank_pj">
@@ -101,7 +101,10 @@
           <label for="zipcode">CEP:</label>
           <input type="text" id="zipcode" name="zipcode" class="form-control" value="{{old('zipcode')}}" required>
         </div>
-        <div class="col-md-8 form-group d-flex align-items-end">
+        <div class="col-md-8 form-group d-flex align-items-end" style="padding-left: 0;">
+          <span style="padding: 0 10px 7px 0;">
+            <i class="fas fa-spinner fa-spin spinner" id="spinner" style="display:none;"></i>
+          </span>
           <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank" class="btn btn-outline-secondary">
             <i class="fa fa-question-circle"></i>
             Não sei meu CEP
@@ -143,12 +146,12 @@
         </div>
       </div>
     </fieldset>
-    <div class="row">
+    {{-- <div class="row">
       <div class="col-md-12">
         <label for="softDescriptor">Nome para exibição na Fatura:</label>
         <input type="text" id="softDescriptor" name="softDescriptor" class="form-control" value="{{old('softDescriptor')}}" required>
       </div>
-    </div>
+    </div> --}}
 
     <button type="submit" class="btn btn-primary form-control mt-2 mb-5">
         Enviar

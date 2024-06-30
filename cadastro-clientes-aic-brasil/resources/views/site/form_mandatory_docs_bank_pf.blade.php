@@ -40,7 +40,7 @@
 </head>
 <body>
     <div class="flex justify-content-center text-center">
-        <img src="/site/img/logo_nova.png" height="80"></a>
+        <img src="/site/img/logo_nova.png" height="200"></a>
     </div>
     <h4 class="text-center my-3">CRIAÇÃO DE CONTA PESSOA FÍSICA - Envio dos Documentos Necessários</h4>
     @if ($errors->any())
@@ -60,29 +60,24 @@
 
         <div class="row">
           <div class="col-md-6">
-            <label for="motherName">Nome da mãe:</label>
-            <input type="text" id="motherName" name="motherName" class="form-control" required value="{{old("motherName")}}">
-          </div>
-          <div class="col-md-6">
             <label for="birthDate">Data de Nascimento:</label>
             <input type="text" id="birthDate" name="birthDate" class="form-control" required value="{{old("birthDate")}}">
           </div>
-        </div>
-
-        <div class="row">
           <div class="col-md-6">
             <label for="monthlyIncome">Renda mensal:</label>
             <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-control" required value="{{old("monthlyIncome")}}">
           </div>
-          <div class="col-md-6">
-            <label for="socialMediaLink">Rede Social (Instagram, Tiktok, etc.):</label>
-            <input type="text" id="socialMediaLink" name="socialMediaLink" class="form-control" required value="{{old("socialMediaLink")}}">
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label for="motherName">Nome da mãe:</label>
+            <input type="text" id="motherName" name="motherName" class="form-control" required value="{{old("motherName")}}">
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-            <label for="about">Sobre o negócio:</label>
-            <textarea id="about" name="about" class="form-control">{{old("about")}}</textarea>
+            <label for="socialMediaLink">Rede Social (Instagram, Tiktok, Website, etc.):</label>
+            <input type="text" id="socialMediaLink" name="socialMediaLink" class="form-control" required value="{{old("socialMediaLink")}}">
           </div>
         </div>
     </fieldset>

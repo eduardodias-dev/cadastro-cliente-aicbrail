@@ -69,5 +69,47 @@ $(document).ready(function(){
                   dayOfWeek: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
               },
       }
-  });
+    });
+
+  $("#zipcode").blur(() => buscarCep());
+  
+  function buscarCep() {
+    var cep = $('#zipcode').val();
+    console.log(cep != undefined && cep != '')
+    if(cep != undefined && cep != ''){
+      $("#spinner").show();
+      $('#zipcode').prop('disabled', true);
+      $('#street').prop('disabled', true);
+      $('#neighborhood').prop('disabled', true);
+      $('#city').prop('disabled', true);
+      $('#state').prop('disabled', true);
+
+      $.ajax({
+          url: '/cep/' + cep,
+          method: 'GET',
+          dataType: 'json',
+          success: function(data) {
+              $('#zipcode').prop('disabled', false);
+              $("#spinner").hide();
+              if (data.error) {
+                  console.log('CEP não encontrado');
+              } else {
+                  $('#street').val(data.logradouro).prop('disabled', false);
+                  $('#neighborhood').val(data.bairro).prop('disabled', false);
+                  $('#city').val(data.localidade).prop('disabled', false);
+                  $('#state').val(data.uf).change().prop('disabled', false);
+              }
+          },
+          error: function() {
+              console.log('Erro ao buscar o CEP');
+              $("#spinner").hide();
+              $('#zipcode').prop('disabled', false);
+              $('#street').val(data.logradouro).prop('disabled', false);
+              $('#neighborhood').val(data.bairro).prop('disabled', false);
+              $('#city').val(data.localidade).prop('disabled', false);
+              $('#state').val(data.uf).change().prop('disabled', false);
+          }
+      });
+    }
+  }
 });
