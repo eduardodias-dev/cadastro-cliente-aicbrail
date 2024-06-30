@@ -244,25 +244,6 @@ function getDadosDaSessao($itemSessao, $chave){
     return '';
 }
 
-function getFilePathByArray(array $pathInArray){
-    $separator = DIRECTORY_SEPARATOR;
-    $generatedPath = implode($separator, $pathInArray);
-
-    return $generatedPath;
-}
-
-function getDadosDaSessao($itemSessao, $chave){
-    $dados = session()->get($itemSessao);
-
-    if(isset($dados)){
-        if(isset($dados[$chave])){
-            return $dados[$chave];
-        }
-    }
-
-    return '';
-}
-
 function formatCreateAccountErrors(string $error){
     $finalString = '';
 

@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SiteController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SiteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,7 +69,6 @@ Route::get('checkout/confirm', 'SiteController@checkout_confirm')->name('checkou
 Route::post('checkout/confirm', 'SiteController@checkout_post')->name('checkout.finalize');
 
 Route::get('/downloadapolice', [SiteController::class, 'download_apolice'])->name('download_apolice');
-
 Route::get('/planos', [SiteController::class, 'list_plans'])->name('planos');
 
 Route::get('forget-password', 'Auth\ForgotPasswordController@getEmail');
@@ -84,9 +83,6 @@ Route::get('bank/create-account/{type}', 'SiteController@createBankAccount')->na
 Route::post('bank/create-account/{type}', 'SiteController@createBankAccountPost')->name('create.bank.account.post');
 Route::get('bank/mandatory-documents/{type}', 'SiteController@formMandatoryDocuments')->name('mandatory.documents');
 Route::post('bank/mandatory-documents/{type}', 'SiteController@formMandatoryDocumentsPost')->name('mandatory.documents.post');
-
-Route::get('/downloadapolice', [SiteController::class, 'download_apolice'])->name('download_apolice');
-Route::get('/planos', [SiteController::class, 'list_plans'])->name('planos');
 
 Route::get('forget-password', 'Auth\ForgotPasswordController@getEmail');
 Route::post('forget-password', 'Auth\ForgotPasswordController@postEmail');
