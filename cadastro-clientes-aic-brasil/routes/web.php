@@ -16,7 +16,7 @@ use App\Http\Controllers\AdminController;
 |
 */
 
-Route::get('/', "SiteController@home");
+Route::get('/', "SiteController@home")->name('index');
 
 Route::prefix("admin")->middleware('auth')->group(function(){
     Route::get('', function () {
@@ -43,6 +43,12 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     Route::post('/afiliados/novo', [AdminController::class, 'novoAfiliado'])->name('afiliados.novo');
     Route::post('/afiliados/novo-codigo', [AdminController::class, 'novoCodigoAfiliado'])->name('afiliados.novoCodigo');
     Route::post('/afiliados/remover', [AdminController::class, 'removerAfiliado'])->name('afiliados.remover');
+    Route::get('/pacotes', [AdminController::class, 'pacotes'])->name('pacotes.list');
+    Route::get('/pacotes/{id}', [AdminController::class, 'pacotesById'])->name('pacotes.detail');
+    Route::get('/afiliados', [AdminController::class, 'afiliados'])->name('afiliados.list');
+    Route::post('/afiliados/novo', [AdminController::class, 'novoAfiliado'])->name('afiliados.novo');
+    Route::post('/afiliados/novo-codigo', [AdminController::class, 'novoCodigoAfiliado'])->name('afiliados.novoCodigo');
+    Route::post('/afiliados/remover', [AdminController::class, 'removerAfiliado'])->name('afiliados.remover');
 });
 
 Auth::routes();
@@ -54,8 +60,6 @@ Route::get('/vieworder', [SiteController::class, 'view_pacote'])->name('view.ord
 Route::post('/vieworder', [SiteController::class, 'view_order_post'])->name('view.order.post');
 
 Route::get('/pdf/{ordercode}/{sendEmail?}', 'HomeController@pdf');
-// Route::post('/viewContract/{ordercode}/{sendEmail?}/{showReport?}', 'SiteController@view_contract');
-//Route::post('transaction/update', 'SiteController@updateTransaction');
 Route::get('check/queue', 'JobsController@verificarFilaAssinaturas');
 Route::get('carrinho','SiteController@cart')->name('cart.index');
 Route::post('carrinho','SiteController@cart_add')->name('cart.add');
@@ -70,3 +74,28 @@ Route::get('/planos', [SiteController::class, 'list_plans'])->name('planos');
 
 Route::get('forget-password', 'Auth\ForgotPasswordController@getEmail');
 Route::post('forget-password', 'Auth\ForgotPasswordController@postEmail');
+Route::get('carrinho','SiteController@cart')->name('cart.index');
+Route::post('carrinho','SiteController@cart_add')->name('cart.add');
+Route::post('remover-carrinho','SiteController@cart_remove')->name('cart.remove');
+Route::get('limpar-carrinho','SiteController@cart_clear')->name('cart.clear');
+Route::get('checkout/confirm', 'SiteController@checkout_confirm')->name('checkout.confirm');
+Route::post('checkout/confirm', 'SiteController@checkout_post')->name('checkout.finalize');
+Route::get('bank/create-account/{type}', 'SiteController@createBankAccount')->name('create.bank.account');
+Route::post('bank/create-account/{type}', 'SiteController@createBankAccountPost')->name('create.bank.account.post');
+Route::get('bank/mandatory-documents/{type}', 'SiteController@formMandatoryDocuments')->name('mandatory.documents');
+Route::post('bank/mandatory-documents/{type}', 'SiteController@formMandatoryDocumentsPost')->name('mandatory.documents.post');
+
+Route::get('/downloadapolice', [SiteController::class, 'download_apolice'])->name('download_apolice');
+Route::get('/planos', [SiteController::class, 'list_plans'])->name('planos');
+
+Route::get('forget-password', 'Auth\ForgotPasswordController@getEmail');
+Route::post('forget-password', 'Auth\ForgotPasswordController@postEmail');
+
+Route::get('bank/created', 'SiteController@bankCreated')->name('bank.created');
+
+Route::get('/cep/{cep}', "CepController@getCepData");
+
+if (app()->environment('development')) {
+    Route::get('test/email/{id}', 'SiteController@test_email')->name('test.email');
+}
+

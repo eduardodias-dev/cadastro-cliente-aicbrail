@@ -7,22 +7,31 @@ use App\Pacote;
 use App\LogIntegracao;
 use App\FilaConfirmacaoPacote;
 use App\FilaConfirmacaoAssinatura;
+use App\Subconta;
+use App\ViewModels\BankAccountViewModel;
+use App\ViewModels\ResponseViewModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Services\GalaxPayConfigHelper;
 
 class GalaxPayService
 {
     const QTDE_DIAS_PRIMEIRO_PAGAMENTO = 3;
+    private $galaxPayConfigHelper;
+
+    public function __construct(GalaxPayConfigHelper $galaxPayConfigHelper){
+        $this->galaxPayConfigHelper = $galaxPayConfigHelper;
+    }
 
     public function CreateSubscription($pacote_id, $client_id, $type = 'card', $card_data = null)
     {
         $data = DB::select("SELECT * from v_pacote_integracao where id_pacote = ? AND id_cliente = ?", [$pacote_id, $client_id]);
         if(count($data) >= 1){
-            $configs = GalaxPayConfigHelper::GetGalaxPayServiceConfiguration();
+            $configs = $this->galaxPayConfigHelper->GetGalaxPayServiceConfiguration();
             $request_data = $this->BuildCreateSubscriptionRequest($data[0], $type, $card_data);
 
-            $token_object = GalaxPayConfigHelper::getToken("subscriptions.write");
+            $token_object = $this->galaxPayConfigHelper->getToken("subscriptions.write");
 
             $response = Http::withToken($token_object['access_token'])
                             ->post($configs['URL'].'/subscriptions', $request_data);
@@ -121,6 +130,115 @@ class GalaxPayService
             Log::warning("Não foi possível recuperar o link: ".$e->getMessage());
         }
         return null;
+    }
+
+    public function CreateBankSubAccount(BankAccountViewModel $data) : ResponseViewModel{
+        $configs = $this->galaxPayConfigHelper->GetGalaxPayServiceConfiguration();
+        $tokenObject = $this->galaxPayConfigHelper->getToken("company.write");
+
+        $response = Http::withToken($tokenObject['access_token'])
+                    ->post($configs['URL']."/company/subaccount", (array) $data);
+
+        $responseViewModel = new ResponseViewModel();
+
+        if($response->successful()){
+            $objectResponse = $response->json();
+            
+            $responseViewModel->sucesso = 1;
+            $responseViewModel->mensagem = "Conta criada com sucesso!";
+            $responseViewModel->dados = array(
+                "galaxPayId" => $objectResponse["Company"]["galaxPayId"],
+                "galaxId" => $objectResponse["Company"]["ApiAuth"]["galaxId"],
+                "galaxHash" => $objectResponse["Company"]["ApiAuth"]["galaxHash"],
+            );
+        }
+        else{
+            $status_code = $response->status();
+            $responseViewModel->sucesso = 0;
+
+            if($status_code == 400){
+                $errorObject = $response->json()['error'];
+                $responseViewModel->mensagem = $errorObject['message']."\n";
+                $detalhesErro = array();
+
+                array_push($detalhesErro, $errorObject['message']);
+                if(isset($errorObject['details'])){
+                    foreach($errorObject['details'] as $key => $detailArray){
+                        $detail = implode("\n", $detailArray);
+                        array_push($detalhesErro, "$key: $detail");
+                    }
+                }
+
+                $responseViewModel->erros = $detalhesErro;
+            }
+            else
+            {
+                $responseViewModel->mensagem = "Ocorreu um erro inesperado ao criar a subconta, por favor entre em contato com o suporte.";
+            }
+        }
+
+        $log_integracao = new LogIntegracao();
+        $log_integracao->acao = "Criação de subconta";
+        $log_integracao->data_integracao = date('Y-m-d H:i:s');
+        $log_integracao->resultado = json_encode(["status" => $response->status(), "dados" => $response->json()]);
+
+        $log_integracao->save();
+
+        return $responseViewModel;
+    }
+
+    public function SendMandatoryDocuments(array $data, $subconta_id){
+        $subconta = Subconta::find($subconta_id);
+
+        $configs = $this->galaxPayConfigHelper->GetGalaxPayConfigurationWithSubaccountData($subconta->galaxId, $subconta->galaxHash);
+        $tokenObject = $this->galaxPayConfigHelper->getTokenFromSubaccount("company.write", $subconta->galaxId, $subconta->galaxHash);
+
+        // die(json_encode((array) $data));
+
+        $response = Http::withToken($tokenObject['access_token'])
+        ->post($configs['URL']."/company/mandatory-documents", (array) $data);
+
+        // die(json_encode((array) $data));
+        $responseViewModel = new ResponseViewModel();
+
+        if($response->successful()){
+            $responseViewModel->sucesso = 1;
+            $responseViewModel->mensagem = "Documentos enviados com sucesso!";
+        }
+        else{
+            $status_code = $response->status();
+            $responseViewModel->sucesso = 0;
+
+            if($status_code == 400){
+                // $responseViewModel->mensagem = $response->json()['error']['message'];
+                $errorObject = $response->json()['error'];
+                $responseViewModel->mensagem = $errorObject['message']."\n";
+                $detalhesErro = array();
+
+                array_push($detalhesErro, $errorObject['message']);
+                if(isset($errorObject['details'])){
+                    foreach($errorObject['details'] as $key => $detailArray){
+                        $detail = implode("\n", $detailArray);
+                        array_push($detalhesErro, "$key: $detail");
+                    }
+                }
+
+                $responseViewModel->erros = $detalhesErro;
+            }
+            else
+            {
+                $responseViewModel->mensagem = "Ocorreu um erro inesperado ao enviar os documentos, por favor entre em contato com o suporte.";
+            }
+        }
+
+        $log_integracao = new LogIntegracao();
+        $log_integracao->acao = "Envio Documentos obrigatórios de subconta";
+        $log_integracao->data_integracao = date('Y-m-d H:i:s');
+        $log_integracao->resultado = json_encode(["status" => $response->status(), "dados" => $response->json()]);
+
+        $log_integracao->save();
+
+        return $responseViewModel;
     }
 
 }

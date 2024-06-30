@@ -80,7 +80,7 @@ function getRetorno($jsonResult){
     return isset($arrResult['retorno']) ? $arrResult['retorno'] : "";
 }
 
-function printEstadosAsOptions(){
+function printEstadosAsOptions($selected = ""){
     $estados = [
         'AC' => 'Acre',
         'AL' => 'Alagoas',
@@ -111,7 +111,8 @@ function printEstadosAsOptions(){
     ];
 
     foreach($estados as $sigla => $nome){
-        print "<option value='$sigla'>$nome</option>";
+        $selectedHtml = $selected == $sigla ? "selected" : '';
+        print "<option value='$sigla' $selectedHtml>$nome</option>";
     }
 }
 
@@ -241,4 +242,136 @@ function getDadosDaSessao($itemSessao, $chave){
     }
 
     return '';
+}
+
+function getFilePathByArray(array $pathInArray){
+    $separator = DIRECTORY_SEPARATOR;
+    $generatedPath = implode($separator, $pathInArray);
+
+    return $generatedPath;
+}
+
+function getDadosDaSessao($itemSessao, $chave){
+    $dados = session()->get($itemSessao);
+
+    if(isset($dados)){
+        if(isset($dados[$chave])){
+            return $dados[$chave];
+        }
+    }
+
+    return '';
+}
+
+function formatCreateAccountErrors(string $error){
+    $finalString = '';
+
+    $pieces = explode(':', $error);
+    if(count($pieces) > 1){
+        $field = $pieces[0];
+        $message = $pieces[1];
+        
+        $fieldnames = explode('.', $field);
+
+        $finalString = getFieldNameinPortuguese(end($fieldnames)).': '.$message;
+    }
+    else{
+        $finalString = $error;
+    }
+
+    return $finalString;
+}
+
+function getFieldNameinPortuguese(string $field){
+    $fieldNames = [
+        "softDescriptor" => "Nome para exibição na Fatura",
+        "internalName" => "Profissão",
+        "inscription" => "Inscrição do profissional",
+        "name" => "Nome",
+        "document" => "Documento",
+        "phone" => "Telefone",
+        "emailContact" => "E-mail",
+        "zipcode" => "CEP",
+        "street" => "Rua",
+        "number" => "Número",
+        "complement" => "Complemento",
+        "neighborhood" => "Bairro",
+        "city" => "Cidade",
+        "state" => "Estado",
+        "nameDisplay" => "Nome para Exibição",
+        "responsibleDocument" => "Documento do Responsável",
+        "typeCompany" => "Tipo de Empresa",
+        "cnae" => "CNAE",
+        "motherName" => "Nome da mãe",
+        "birthDate" => "Data de nascimento",
+        "monthlyIncome" => "Renda mensal",
+        "about" => "Sobre o negócio",
+        "socialMediaLink" => "Rede social",
+        "type" => "Tipo de Associado",
+        "lastContract" => "Contrato social",
+        "cnpjCard" => "Documento CNPJ",
+        "electionRecord" => "Ata de eleição da diretoria",
+        "statute" => "Estatuto",
+        "selfie" => "Selfie",
+        "picture" => "Foto da CNH",
+        "front" => "Foto da frente do RG",
+        "back" => "Foto do verso do RG",
+        "address" => "Comprovante de Endereço"
+    ];
+
+    return isset($fieldNames[$field]) ? $fieldNames[$field] : $field;
+}
+
+function printProfissoesAsOptions($selected = ""){
+    $profissoes = [
+        "" => "",
+        "lawyer" => "Advogado",
+        "doctor" => "Médico",
+        "accountant" => "Contador",
+        "realtor" => "Corretor Imobialiário",
+        "broker" => "Corretor",
+        "physicalEducator" => "Educador",
+        "physiotherapist" => "Fisioterapeuta",
+        "others" => "Outros",
+    ];
+
+    foreach($profissoes as $valor => $nome){
+        $selectedHtml = $selected == $valor ? "selected" : '';
+        print "<option value='$valor' $selectedHtml>$nome</option>";
+    }
+}
+
+function printTiposDeEmpresasAsOptions($selected = ""){
+    $tipos = [
+        "ltda" =>"LTDA",
+        "eireli" =>"EIRELI",
+        "association" =>"Associação",
+        "individualEntrepreneur" =>"Empresário Individual",
+        "mei" =>"MEI",
+        "sa" =>"SA",
+        "slu" => "SLU"
+    ];
+
+    foreach($tipos as $valor => $nome){
+        $selectedHtml = $selected == $valor ? "selected" : '';
+        print "<option value='$valor' $selectedHtml>$nome</option>";
+    }
+}
+
+function formatarTelefone($telefone)
+{
+    // Remove todos os caracteres não numéricos
+    $telefone = preg_replace('/\D/', '', $telefone);
+
+    // Verifica a quantidade de dígitos no telefone
+    if (strlen($telefone) === 11) {
+        // Celular: (XX) XXXXX-XXXX
+        return preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $telefone);
+    } elseif (strlen($telefone) === 10) {
+        // Fixo: (XX) XXXX-XXXX
+        return preg_replace('/(\d{2})(\d{4})(\d{4})/', '($1) $2-$3', $telefone);
+    } else {
+        // Número de telefone inválido
+        return 'Número inválido';
+    }
 }

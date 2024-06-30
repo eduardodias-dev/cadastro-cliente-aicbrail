@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Plano;
 use Exception;
 use App\Pacote;
+use App\Subconta;
 use App\Assinatura;
 use \Mpdf\Mpdf as PDF;
 use App\LogIntegracao;
@@ -12,13 +13,38 @@ use App\Services\CartHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Mail\EnvioEmailApolice;
+use App\Mail\EnvioEmailContaBancaria;
+use App\ViewModels\LegalFields;
+use App\ViewModels\PersonFields;
+use App\ViewModels\Professional;
 use App\Services\CheckoutService;
+use App\Services\GalaxPayConfigHelper;
+use App\Services\GalaxPayService;
+use App\ViewModels\LegalDocuments;
 use Illuminate\Support\Facades\DB;
+use App\Services\SubcontaDBService;
+use App\Subconta_Endereco;
+use App\ViewModels\LegalRGDocument;
+use App\ViewModels\PersonDocuments;
 use Illuminate\Support\Facades\Log;
+use App\ViewModels\AddressViewModel;
+use App\ViewModels\CompanyDocuments;
+use App\ViewModels\LegalCNHDocument;
+use App\ViewModels\PersonRGDocument;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\ViewModels\CheckoutViewModel;
+use App\ViewModels\PersonalDocuments;
+use App\ViewModels\PersonCNHDocument;
+use App\ViewModels\AssociateViewModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\ViewModels\LegalBankAccountViewModel;
+use App\ViewModels\PersonBankAccountViewModel;
+use App\ViewModels\LegalMandatoryDocumentsViewModel;
+use App\ViewModels\PersonMandatoryDocumentsViewModel;
+use App\ViewModels\ResponseViewModel;
+use Illuminate\Support\Str;
 
 class SiteController extends Controller
 {
@@ -168,8 +194,6 @@ class SiteController extends Controller
         catch(Exception $e)
         {
             session()->flash('erros', $e->getMessage());
-
-            throw $e;
             Log::Debug(print_r($e->getMessage()));
 
             return redirect()
@@ -187,7 +211,7 @@ class SiteController extends Controller
         return view('site.checkout_confirm',['session_id' => $session_id, 'planos' => $planos, 'aid' => $aid]);
     }
 
-    public function view_order(Request $request){
+    public function view_order(){
         return view('site.vieworder');
     }
 
@@ -211,7 +235,6 @@ class SiteController extends Controller
             }
 
             $data['adicionais_assinatura'] = $grouped_array;
-            // die(json_encode($data['adicionais_assinatura']));
         }
 
         return view('site.order_partial', ['subscriptions' => $data, 'error' => $error]);
@@ -242,7 +265,6 @@ class SiteController extends Controller
                 $assinatura['adicionais_assinatura'] = $grouped_array;
                 array_push($subscriptions, $assinatura);
             }
-            // die(json_encode($data['adicionais_assinatura']));
         }
 
         return view('site.vieworder', ['codigo_pacote' => $ordercode, 'subscriptions' => $subscriptions, 'error' => $error, 'pacote' => $pacote]);
@@ -299,7 +321,251 @@ class SiteController extends Controller
         return view('site.list_plan', ['planos' => $planos, 'planosJuridicos' => $planosJuridicos]);
     }
 
+    public function createBankAccount(string $type, Request $request){
+        $type = strtolower($type);
 
+        if($type == 'pj'){
+            return view('site.create_bank_pj');
+        }
+        else if($type == 'pf'){
+            return view('site.create_bank_pf');
+        }
+        else{
+            abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
+        }
+    }
+
+    public function createBankAccountPost(string $type, Request $request){
+        $requestData = $request->input();
+        $service = new GalaxPayService(new GalaxPayConfigHelper());
+        $subconta_id = 0;
+        $responseViewModel = new ResponseViewModel();
+
+        if($type == 'pj'){
+            $bankAccountViewModel = new LegalBankAccountViewModel();
+
+            $bankAccountViewModel->name = $requestData['name'];
+            $bankAccountViewModel->document = removeSpecialCharacters($requestData['document']);
+            $bankAccountViewModel->nameDisplay = $requestData['nameDisplay'];
+            $bankAccountViewModel->phone = removeSpecialCharacters($requestData['phone']);
+            $bankAccountViewModel->emailContact = $requestData['emailContact'];
+            $bankAccountViewModel->responsibleDocument = removeSpecialCharacters($requestData['responsibleDocument']);
+            $bankAccountViewModel->typeCompany = $requestData['typeCompany'];
+            $bankAccountViewModel->softDescriptor = Str::substr(Str::ascii($requestData['name']),0,17);
+            $bankAccountViewModel->cnae = removeSpecialCharacters($requestData['cnae']);
+
+            $bankAccountViewModel->logo = $this->getBase64Logo();
+
+            $address = new AddressViewModel();
+            $address->zipCode = removeSpecialCharacters($requestData['zipcode']);
+            $address->street = $requestData['street'];
+            $address->number = $requestData['number'];
+            $address->complement = $requestData['complement'];
+            $address->neighborhood = $requestData['neighborhood'];
+            $address->city = $requestData['city'];
+            $address->state = $requestData['state'];
+
+            $bankAccountViewModel->Address = (array) $address;
+
+            $responseViewModel = $service->CreateBankSubAccount($bankAccountViewModel);
+            $result_id = 0;
+            //todo: save the account only when the integration is successful
+            if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
+                $bankAccountViewModel->galaxPayId = $responseViewModel->dados["galaxPayId"];
+                $bankAccountViewModel->galaxId = $responseViewModel->dados["galaxId"];
+                $bankAccountViewModel->galaxHash = $responseViewModel->dados["galaxHash"];
+                
+                $subcontaService = new SubcontaDBService();
+                $result_id = $subcontaService->AddSubcontaPJ($bankAccountViewModel);
+                $subconta_id = $result_id;
+
+                if($subconta_id == 0){
+                    $responseViewModel->sucesso = 0;
+                    $responseViewModel->erros = ["Não foi possível salvar sua conta. Por favor entre em contato com o suporte."];
+                }
+            }
+        }
+        else if($type == 'pf'){
+            $bankAccountViewModel = new PersonBankAccountViewModel();
+
+            $bankAccountViewModel->name = $requestData['name'];
+            $bankAccountViewModel->document = removeSpecialCharacters($requestData['document']);
+            $bankAccountViewModel->phone = removeSpecialCharacters($requestData['phone']);
+            $bankAccountViewModel->emailContact = $requestData['emailContact'];
+            $bankAccountViewModel->softDescriptor = Str::substr(Str::ascii($requestData['name']),0,17);
+
+            $bankAccountViewModel->logo = $this->getBase64Logo();
+
+            $address = new AddressViewModel();
+            $address->zipCode =removeSpecialCharacters($requestData['zipcode']);
+            $address->street = $requestData['street'];
+            $address->number = $requestData['number'];
+            $address->complement = $requestData['complement'];
+            $address->neighborhood = $requestData['neighborhood'];
+            $address->city = $requestData['city'];
+            $address->state = $requestData['state'];
+
+            $bankAccountViewModel->Address = (array) $address;
+
+            $professional = new Professional();
+            $professional->inscription = $requestData['inscription'];
+            $professional->internalName = $requestData['internalName'];
+
+            $bankAccountViewModel->Professional = (array) $professional;
+
+            $responseViewModel = $service->CreateBankSubAccount($bankAccountViewModel);
+            $result_id = 0;
+            //todo: save the account only when the integration is successful
+            if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
+                $bankAccountViewModel->galaxPayId = $responseViewModel->dados["galaxPayId"];
+                $bankAccountViewModel->galaxId = $responseViewModel->dados["galaxId"];
+                $bankAccountViewModel->galaxHash = $responseViewModel->dados["galaxHash"];
+                
+                $subcontaService = new SubcontaDBService();
+                $result_id = $subcontaService->AddSubcontaPF($bankAccountViewModel);
+                $subconta_id = $result_id;
+
+                if($subconta_id == 0){
+                    $responseViewModel->sucesso = 0;
+                    $responseViewModel->erros = ["Não foi possível salvar sua conta. Por favor entre em contato com o suporte."];
+                }
+            }
+        }
+        else{
+            abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
+        }
+
+        if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
+            return redirect()
+                    ->route('mandatory.documents', ['type' => $type, 'subconta_id' => base64_encode($subconta_id)]);
+        }
+        else{
+            return redirect()
+                    ->back()
+                    ->withErrors([$responseViewModel->erros])
+                    ->withInput();
+        }
+    }
+
+    public function formMandatoryDocuments(string $type, Request $request){
+        $subconta_id = base64_decode($request->get("subconta_id"));
+        $type = strtolower($type);
+        if($type == 'pf'){
+            return view('site.form_mandatory_docs_bank_pf', ['subconta_id' => $subconta_id]);
+        }
+        else if($type == 'pj'){
+            $subconta = Subconta::find($subconta_id);
+            $tipoEmpresa = $subconta->typeCompany;
+            return view('site.form_mandatory_docs_bank_pj', ['subconta_id' => $subconta_id, "tipoEmpresa" => $tipoEmpresa]);
+        }
+        else{
+            abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
+        }
+    }
+
+    public function formMandatoryDocumentsPost(string $type, Request $request){
+        $type = strtolower($type);
+        $subconta_id = $request['subconta_id'];
+
+        $responseViewModel = null;
+        if($type == 'pf'){
+            $mandatoryDocumentsViewModel = new PersonMandatoryDocumentsViewModel();
+
+            $fields = new PersonFields();
+            $fields->motherName = removeSpecialCharacters($request['motherName']);
+            $birthDate = date_create_from_format("d/m/Y", $request['birthDate']);
+            if($birthDate)
+                $fields->birthDate = date_format($birthDate, "Y-m-d");
+            $fields->monthlyIncome = removeSpecialCharacters($request['monthlyIncome']);
+            $fields->about = "Conta para pessoa física.";
+            $fields->socialMediaLink = $request['socialMediaLink'];
+
+            $personDocuments = new PersonDocuments();
+            $personDocuments->Personal = new PersonalDocuments();
+            $personDocuments->Personal->CNH = new PersonCNHDocument();
+            $personDocuments->Personal->CNH->selfie = $this->getBase64File($request->file('cnh_selfie'));
+            $personDocuments->Personal->CNH->picture = [ $this->getBase64File($request->file('cnh_picture')) ];
+            $personDocuments->Personal->CNH->address = $this->getBase64File($request->file('cnh_address'));
+
+            $personDocuments->Personal->RG = new PersonRGDocument();
+            $personDocuments->Personal->RG->selfie = $this->getBase64File($request->file('rg_selfie'));
+            $personDocuments->Personal->RG->front = $this->getBase64File($request->file('rg_front'));
+            $personDocuments->Personal->RG->back = $this->getBase64File($request->file('rg_back'));
+            $personDocuments->Personal->RG->address = $this->getBase64File($request->file('rg_address'));
+
+            $mandatoryDocumentsViewModel->Fields = $fields;
+            $mandatoryDocumentsViewModel->Documents = $personDocuments;
+
+            $service = new GalaxPayService(new GalaxPayConfigHelper());
+            $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, $subconta_id);
+        }
+        else if($type == 'pj'){
+            $mandatoryDocumentsViewModel = new LegalMandatoryDocumentsViewModel();
+
+            $fields = new LegalFields();
+            $fields->monthlyIncome = $request['monthlyIncome'];
+            $fields->about = $request['about'];
+            $fields->socialMediaLink = $request['socialMediaLink'];
+
+            $associate = new AssociateViewModel();
+            $associate->document = removeSpecialCharacters($request['document']);
+            $associate->name = $request['name'];
+            $associate->motherName = $request['motherName'];
+            $birthDate = date_create_from_format("d/m/Y", $request['birthDate']);
+            if($birthDate)
+                $associate->birthDate = date_format($birthDate, "Y-m-d");
+            $associate->type = $request['type'];
+
+            $legalDocuments = new LegalDocuments();
+
+            $legalDocuments->Company = new CompanyDocuments();
+            $legalDocuments->Company->lastContract = $this->getBase64File($request->file('lastContract'));
+            $legalDocuments->Company->cnpjCard = $this->getBase64File($request->file('cnpjCard'));
+            $legalDocuments->Company->electionRecord = $this->getBase64File($request->file('electionRecord'));
+            $legalDocuments->Company->statute = $this->getBase64File($request->file('statute'));
+
+            $legalDocuments->Personal = new PersonalDocuments();
+
+            $legalDocuments->Personal->CNH = new LegalCNHDocument();
+            $legalDocuments->Personal->CNH->selfie = $this->getBase64File($request->file('cnh_selfie'));
+            $legalDocuments->Personal->CNH->picture = [ $this->getBase64File($request->file('cnh_picture')) ];
+
+            $legalDocuments->Personal->RG = new LegalRGDocument();
+            $legalDocuments->Personal->RG->selfie = $this->getBase64File($request->file('rg_selfie'));
+            $legalDocuments->Personal->RG->front = $this->getBase64File($request->file('rg_front'));
+            $legalDocuments->Personal->RG->back = $this->getBase64File($request->file('rg_back'));
+
+            $mandatoryDocumentsViewModel->Fields = $fields;
+            $mandatoryDocumentsViewModel->Associate = array($associate);
+            $mandatoryDocumentsViewModel->Documents = $legalDocuments;
+
+            $service = new GalaxPayService(new GalaxPayConfigHelper());
+            $responseViewModel = $service->SendMandatoryDocuments((array)$mandatoryDocumentsViewModel, $subconta_id);
+        }
+        else {
+            abort(Response::HTTP_NOT_FOUND, "Página não encontrada.");
+        }
+
+        //Todo: Enviar para a página nova com os dados da conta criada.
+        if(isset($responseViewModel) && $responseViewModel->sucesso == 1){
+
+            $this->enviarEmailSubconta($subconta_id);
+
+            return redirect()->route("bank.created")->with('mensagem', $responseViewModel->mensagem);
+        }
+        else{
+            return redirect()
+                    ->back()
+                    ->withErrors([$responseViewModel->erros])
+                    ->withInput();
+        }
+
+        return $responseViewModel;
+    }
+
+    public function bankCreated(Request $request){
+        return view("site.bank_created");
+    }
 
     //Private methods
 
@@ -385,4 +651,51 @@ class SiteController extends Controller
         }
     }
 
+    private function getBase64Logo(){
+        $path = public_path('site/img/logo_aic_bank.jpeg');
+
+        if(File::exists($path)){
+
+            $imageData = file_get_contents($path);
+
+            $base64 = base64_encode($imageData);
+
+            return $base64;
+        }
+
+        return null;
+    }
+
+    private function getBase64File($fileInput){
+        if($fileInput != null && $fileInput){
+            $fileInput->store('uploads/mandatory_documents');
+
+            $fileContents = file_get_contents($fileInput->getRealPath());
+
+            $base64File = base64_encode($fileContents);
+
+            return $base64File;
+        }
+
+        return null;
+    }
+
+    private function enviarEmailSubconta($subconta_id){
+        try{
+            $subconta = Subconta::find($subconta_id);
+            $endereco = Subconta_Endereco::where('subconta_id', $subconta_id)->first();
+
+            Mail::to($subconta->emailContact)
+                ->send(new EnvioEmailContaBancaria($subconta, $endereco));
+        }catch(Exception $e){
+            $message = $e->getMessage();
+            Log::alert("[enviarEmailSubconta]: Erro ao enviar email para a conta com id: $subconta_id. Erro: $message");
+        }
+    }
+
+    public function test_email(Request $request, string $id){
+        $this->enviarEmailSubconta($id);
+
+        return response()->json('ok');
+    }
 }
