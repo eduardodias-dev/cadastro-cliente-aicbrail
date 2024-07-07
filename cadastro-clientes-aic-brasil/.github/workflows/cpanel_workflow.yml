@@ -1,0 +1,17 @@
+name: CD_Hostgator
+on: workflow_dispatch
+jobs:
+    copy-files:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get Code
+              uses: actions/checkout@v4
+            
+            - name: Connect To Server
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.HOSTGATOR_HOST }}
+                user: ${{ secrets.HOSTGATOR_USER }}
+                key: ${{ secrets.SSH_PRIVATE_KEY }}
+                port: 22
+                script: pwd
