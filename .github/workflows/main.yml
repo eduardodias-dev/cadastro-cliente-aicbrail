@@ -12,8 +12,6 @@ jobs:
               with:
                 host: ${{ secrets.HOSTGATOR_HOST }}
                 user: ${{ secrets.HOSTGATOR_USER }}
-                cipher: diffie-hellman-group-exchange-sha256
-                key: ${{ secrets.SSH_PRIVATE_KEY }}
-                passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
+                password: ${{ secrets.HOSTGATOR_PASS }}
                 port: 22
                 script: pwd
