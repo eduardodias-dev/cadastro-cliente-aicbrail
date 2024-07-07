@@ -13,5 +13,6 @@ jobs:
                 host: ${{ secrets.HOSTGATOR_HOST }}
                 user: ${{ secrets.HOSTGATOR_USER }}
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
+                passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
                 port: 22
                 script: pwd
