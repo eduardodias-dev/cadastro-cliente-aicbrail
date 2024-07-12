@@ -4,6 +4,24 @@ $(document).ready( function () {
     $('#table-afiliados').DataTable();
     $('#table-pacotes').DataTable();
     $('#table-plans').DataTable();
+    $('#table-visitas').DataTable({
+        ajax: {
+            url:'/admin/listar-visitas',
+            dataSrc:''
+        },
+        columns:[
+            {data: 'id'},
+            {data: 'codigo_imovel'},
+            {data: 'proprietario_imovel'},
+            {data: 'data_visita'},
+            {data: 'endereco_imovel'},
+            {data: 'compradores_visita'},
+            {data: null, render: (d) =>{
+                return d.id
+            }}
+        ]
+    });
+    $('#table-imoveis').DataTable();
 
     $('#btnSalvarNovoCodigoAfiliado').click(function(){
         $btn = $(this);

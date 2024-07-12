@@ -24,11 +24,6 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     });
     Route::get('/clients', [AdminController::class, 'clients'])->name('client.list');
     Route::get('/clients/{id}', [AdminController::class, 'clientById'])->name('client.detail');
-    // Route::get('/customers', [AdminController::class, 'customers'])->name('customer.list');
-    // Route::get('/customers/{id}', [AdminController::class, 'customerById'])->name('customer.detail');
-    // Route::get('/subscriptions', [AdminController::class, 'subscriptions'])->name('subscriptions.list');
-    // Route::get('/subscriptions/{id:int}', [AdminController::class, 'subscriptionById'])->name('subscription.detail');
-    // Route::post('/subscription/add', [AdminController::class, 'addSubscriptionById'])->name('subscription.add');
     Route::get('/plans', [AdminController::class, 'getPlans'])->name('plans.list');
     Route::post('/plans', [AdminController::class, 'addPlan'])->name('plans.add');
     Route::post('/plans/activate', [AdminController::class, 'activatePlan'])->name('plans.activate');
@@ -49,13 +44,16 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     Route::post('/afiliados/novo', [AdminController::class, 'novoAfiliado'])->name('afiliados.novo');
     Route::post('/afiliados/novo-codigo', [AdminController::class, 'novoCodigoAfiliado'])->name('afiliados.novoCodigo');
     Route::post('/afiliados/remover', [AdminController::class, 'removerAfiliado'])->name('afiliados.remover');
+    Route::get('/visita-imovel', [AdminController::class, 'visitas'])->name('visitas');
+    Route::get('/listar-visitas', [AdminController::class, 'listarVisitas'])->name('listar.visita');
+    Route::post('/visita-imovel', [AdminController::class, 'criarVisita'])->name('visita.criar');
+    Route::post('/visita-imovel/{id}', [AdminController::class, 'editarVisita'])->name('visita.editar');
 });
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/comprar-plano/{id_plano}', [SiteController::class, 'comprar_plano'])->name('site.comprar_plano');
-//Route::post('/checkout', [SiteController::class, 'checkout_post'])->name('checkout.post');
 Route::get('/vieworder', [SiteController::class, 'view_pacote'])->name('view.order');
 Route::post('/vieworder', [SiteController::class, 'view_order_post'])->name('view.order.post');
 

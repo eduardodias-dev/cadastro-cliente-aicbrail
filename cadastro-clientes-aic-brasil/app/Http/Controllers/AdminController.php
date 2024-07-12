@@ -207,4 +207,31 @@ class AdminController extends Controller
             return response()->json(["mensagem" => 'Erro ao remover Afiliado.', 'erro' => 1]);
         }
     }
+
+    public function visitas(Request $request){
+        return view('visitas.index');
+    }
+
+    public function listarVisitas(Request $request){
+        $lista = array(
+            array(
+                "id" => '1',
+                "codigo_imovel" => '1',
+                "proprietario_imovel" => '1',
+                "data_visita" => '1',
+                "endereco_imovel" => '1',
+                "compradores_visita" => '1'
+            )
+        );
+
+        return response()->json($lista);
+    }
+    
+    public function criarVisita(Request $request){
+
+    }
+
+    public function editarVisita(Request $request, $id){
+
+    }
 }
