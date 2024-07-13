@@ -2,7 +2,7 @@ CREATE TABLE imovel(
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome_proprietario VARCHAR(250) NOT NULL,
     cpf_proprietario VARCHAR(25) NOT NULL,
-    email_proprietario VARCHAR(25) NOT NULL,
+    email_proprietario VARCHAR(200) NOT NULL,
     zipCode VARCHAR(20) NOT NULL,
     street VARCHAR(255) NOT NULL,
     number VARCHAR(20) NOT NULL,
@@ -39,3 +39,4 @@ CREATE TABLE visita_comprador(
 
 ALTER TABLE imovel ADD COLUMN codigo_imovel VARCHAR(100) AFTER id;
 ALTER TABLE imovel ADD COLUMN descricao VARCHAR(400) AFTER email_proprietario;
+ALTER TABLE imovel MODIFY COLUMN email_proprietario VARCHAR(200) NOT NULL;

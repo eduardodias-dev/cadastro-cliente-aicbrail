@@ -18,18 +18,47 @@ $(document).ready( function () {
             {data: 'compradores_visita'},
             {data: null, render: (d) =>
             {
-                return `<button class="btn btn-outline-info ml-2" onclick="showModalNovoCodigo(this)">
+                return `<button class="btn btn-sm btn-outline-info ml-2" onclick="showModalNovoCodigo(this)">
                             <i class="fas fa-edit"></i>
-                            Novo Código
+                            Editar
                         </button>
-                        <button class="btn btn-outline-danger ml-2" onclick="showModalRemoverAfiliado(this)">
+                        <button class="btn btn-sm btn-outline-danger ml-2" onclick="showModalRemoverAfiliado(this)">
                             <i class="fas fa-trash"></i>
                             Remover
                         </button>`;
             }}
         ]
     });
-    $('#table-imoveis').DataTable();
+    $('#table-imoveis').DataTable({
+        ajax: {
+            url:'/admin/listar-imoveis',
+            dataSrc:'data'
+        },
+        columns:[
+            {data: 'id'},
+            {data: 'codigo_imovel'},
+            {data: "descricao"},
+            {data: 'nome_proprietario'},
+            {data: 'email_proprietario'},
+            {data: null, render: d => {
+                return d.street + " " + d.number+ " " + d.complement + " - " + d.neighborhood
+            }},
+            {data: null, render: d =>{
+                return d.city +"/"+d.state
+            }},
+            {data: null, render: (data, type, row, meta) =>
+            {
+                return `<button class="btn btn-sm btn-outline-info ml-2 btnRowEdit" data-id="${row.id}" data-index="${meta.row}" onclick="showModalEditarImovel(this)">
+                            <i class="fas fa-edit"></i>
+                            Editar
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger ml-2 btnRowRemove" data-id="${row.id}" data-index="${meta.row}" onclick="showModalRemoverImovel(this)">
+                            <i class="fas fa-trash"></i>
+                            Remover
+                        </button>`;
+            }}
+        ]
+    });
 
     $('#btnSalvarNovoCodigoAfiliado').click(function(){
         $btn = $(this);
@@ -62,19 +91,26 @@ $(document).ready( function () {
     $("#btnSalvarNovoImovel").click(()=>{
         let formData = $("#form-imovel").serialize();
         let token = $("[name=_token]").val();
+        
+        $modal = $('#modal-novo-imovel');
+        let id = $modal.find("[name=id]").val()
+        
         let btn = $(this);
         btn.prop("disabled", true);
         
+        let url = parseInt(id) != NaN ? `/admin/imovel/${id}` : "/admin/imovel";
+        let tableImovel = $('#table-imoveis').DataTable();
         $.ajax({
             method: "post",
-            action: "/admin/visita-imovel",
+            url: url,
             headers: {'X-CSRF-TOKEN': token},
             data: formData
         })
         .done((result) => {
             btn.prop("disabled", false);
             if(result.success){
-                $('#modal-novo-imovel').modal("hide");
+                $modal.modal("hide");
+                tableImovel.ajax.reload()
             }
             else{
                 console.error(result)
@@ -106,7 +142,7 @@ $(document).ready( function () {
               $("#spinner").hide();
               if (data.error) {
                   console.log('CEP não encontrado');
-              } else {
+            } else {
                   $('#street').val(data.logradouro).prop('disabled', false);
                   $('#neighborhood').val(data.bairro).prop('disabled', false);
                   $('#city').val(data.localidade).prop('disabled', false);
@@ -280,4 +316,68 @@ function showModalNovoImovel(button){
     $modal.find('input, select').val('');
 
     $modal.show();
+}
+
+function showModalEditarImovel(btn) {
+    let id = parseInt($(btn).data('id'));
+    $modal = $('#modal-novo-imovel').modal();
+    $modal.find('input, select').val('');
+
+    $.ajax({
+        method: "get",
+        url: `/admin/obter-imovel/${id}`
+    })
+    .done((result) => {
+        if(result.success){
+            for(let obj of Object.entries(result.data)){
+                let name = obj[0]
+                let value = obj[1]
+
+                $modal.find('.modal-body').find(`[name=${name}]`).val(value)
+            }
+        }
+    })
+    .fail((e)=>{
+        console.log(e)
+    })
+    
+};
+
+function showModalRemoverImovel(button){
+    $button = $(button);
+    $modal = $('#modal-remover-imovel').modal();
+
+    var id_imovel = $(button).data('id');
+    $modal.find('[name=id_imovel]').val(id_imovel);
+
+    $modal.show();
+}
+
+
+function salvarRemoverImovel(){
+    $modal = $('#modal-remover-imovel');
+
+    let id_imovel = $modal.find('[name=id_imovel]').val();
+
+    let token = $('[name="_token"]').val();
+    let tableImovel = $('#table-imoveis').DataTable();
+
+    $.ajax({
+        url: '/admin/imovel/remover',
+        data: {
+            id_imovel
+        },
+        headers: {'X-CSRF-TOKEN': token},
+        method: 'DELETE'
+    }).done(response => {
+        if(response.success){
+            $('#modal-remover-imovel').modal('hide');
+            tableImovel.ajax.reload();
+        }
+        else console.log(response);
+    })
+    .fail( function(err) {
+        console.log(err);
+    });
+
 }

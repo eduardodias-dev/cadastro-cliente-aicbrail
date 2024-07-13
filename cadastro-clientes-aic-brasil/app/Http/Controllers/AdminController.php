@@ -226,8 +226,40 @@ class AdminController extends Controller
 
         return response()->json($lista);
     }
+
+    public function listarImoveis(){
+        $imoveis = Imovel::all();
+
+        $result = [
+            "message" => "",
+            "success" => true,
+            "data" => $imoveis
+        ];
+
+        return response()->json($result);
+    }
     
+    public function obterImovel(Request $request, $id){
+        $imovel = Imovel::find($id);
+
+        $result = [
+            "message" => "",
+            "success" => true,
+            "data" => $imovel
+        ];
+
+        return response()->json($result);
+    }
+
     public function criarVisita(Request $request){
+
+    }
+
+    public function editarVisita(Request $request, $id){
+
+    }
+
+    public function criarImovel(Request $request){
         try{
             $data = $request->input();
         
@@ -264,12 +296,88 @@ class AdminController extends Controller
 
             return response()->json($result);
         }
-
-        
-
     }
 
-    public function editarVisita(Request $request, $id){
+    public function editarImovel(Request $request, $id){
+        try{
+            $data = $request->input();
+        
+            $imovel = Imovel::find($id);
 
+            if($imovel){
+                $imovel->nome_proprietario = $data["nome_proprietario"];
+                $imovel->cpf_proprietario = $data["cpf_proprietario"];
+                $imovel->email_proprietario = $data["email_proprietario"];
+                $imovel->codigo_imovel = $data["codigo_imovel"];
+                $imovel->descricao = $data["descricao"];
+                $imovel->zipCode = $data["zipCode"];
+                $imovel->street = $data["street"];
+                $imovel->number = $data["number"];
+                $imovel->complement = $data["complement"];
+                $imovel->neighborhood = $data["neighborhood"];
+                $imovel->city = $data["city"];
+                $imovel->state = $data["state"];
+        
+                $imovel->save();
+    
+                $result = [
+                    "message" => "Imóvel criado com sucesso!",
+                    "success" => true
+                ];
+            }
+            else{
+                $result = [
+                    "message" => "Imovel não encontrado.",
+                    "success" => false
+                ];
+            }
+
+            return response()->json($result);
+
+        }catch(Exception $e){
+            Log::warning($e->getMessage());
+
+            $result = [
+                "message" => "Não foi possível salvar o imóvel. Verifique o log",
+                "success" => false
+            ];
+
+            return response()->json($result);
+        }
+    }
+
+    public function removerImovel(Request $request){
+        $data = $request->input();
+        try{
+            
+            $imovel = Imovel::find($data['id_imovel']);
+
+            if($imovel){
+                $imovel->delete();
+    
+                $result = [
+                    "message" => "Imóvel removido com sucesso!",
+                    "success" => true
+                ];
+            }
+            else{
+                $result = [
+                    "message" => "Imovel não encontrado.",
+                    "success" => false
+                ];
+            }
+
+            return response()->json($result);
+
+        }catch(Exception $e){
+            Log::warning($e->getMessage());
+
+            $result = [
+                "message" => "Não foi possível remover o imóvel. Verifique o log",
+                "success" => false
+            ];
+
+            return response()->json($result);
+        }
     }
 }

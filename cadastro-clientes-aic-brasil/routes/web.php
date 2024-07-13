@@ -48,6 +48,11 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     Route::get('/listar-visitas', [AdminController::class, 'listarVisitas'])->name('listar.visita');
     Route::post('/visita-imovel', [AdminController::class, 'criarVisita'])->name('visita.criar');
     Route::post('/visita-imovel/{id}', [AdminController::class, 'editarVisita'])->name('visita.editar');
+    Route::get('/listar-imoveis', [AdminController::class, 'listarImoveis'])->name('listar.imoveis');
+    Route::get('/obter-imovel/{id}', [AdminController::class, 'obterImovel'])->name('obter.imovel');
+    Route::post('/imovel', [AdminController::class, 'criarImovel'])->name('imovel.criar');
+    Route::post('/imovel/{id}', [AdminController::class, 'editarImovel'])->name('imovel.editar');
+    Route::delete('/imovel/remover', [AdminController::class, 'removerImovel']);
 });
 
 Auth::routes();

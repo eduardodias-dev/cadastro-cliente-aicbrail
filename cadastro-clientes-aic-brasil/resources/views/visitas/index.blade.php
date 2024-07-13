@@ -74,14 +74,17 @@
                                 Novo Imóvel
                             </button>
                         </div>
-                        <div class="table-responsive">
+                        <div class="table-responsive w-100">
                             <table class="table table-striped table-bordered" id="table-imoveis" class="display">
                                 <thead>
                                     <tr class="table-info">
                                         <th>Id</th>
                                         <th>Codigo Imóvel</th>
+                                        <th>Descrição</th>
                                         <th>Proprietário</th>
+                                        <th>E-Mail</th>
                                         <th>Endereço</th>
+                                        <th>Cidade</th>
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
@@ -107,6 +110,7 @@
             <form method="POST" id="form-imovel">
               @csrf
               <div class="row">
+                <input type="hidden" name="id" />
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Proprietário</label>
@@ -204,24 +208,24 @@
           </div>
         </div>
     </div>
-    <div class="modal fade" id="modal-remover-afiliado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-remover-imovel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="staticBackdropLabel">Remover Afiliado</h1>
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Remover Imóvel</h1>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <input type="hidden" name="id_afiliado" />
-                    <h5>Confirma a exclusão do afiliado?</h5>
+                    <input type="hidden" name="id_imovel" />
+                    <h5>Confirma a exclusão do imóvel?</h5>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnSalvarRemoverAfiliado">Salvar</button>
+                <button type="button" class="btn btn-primary" id="btnSalvarRemoverImovel" onclick="salvarRemoverImovel()">Confirmar</button>
             </div>
           </div>
         </div>
