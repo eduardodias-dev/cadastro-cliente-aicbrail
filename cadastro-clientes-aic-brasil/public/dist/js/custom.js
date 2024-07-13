@@ -16,8 +16,16 @@ $(document).ready( function () {
             {data: 'data_visita'},
             {data: 'endereco_imovel'},
             {data: 'compradores_visita'},
-            {data: null, render: (d) =>{
-                return d.id
+            {data: null, render: (d) =>
+            {
+                return `<button class="btn btn-outline-info ml-2" onclick="showModalNovoCodigo(this)">
+                            <i class="fas fa-edit"></i>
+                            Novo Código
+                        </button>
+                        <button class="btn btn-outline-danger ml-2" onclick="showModalRemoverAfiliado(this)">
+                            <i class="fas fa-trash"></i>
+                            Remover
+                        </button>`;
             }}
         ]
     });
@@ -46,6 +54,77 @@ $(document).ready( function () {
             $btn.prop('disabled', false);
         });
     });
+
+    $("#btnNovoImovel").click(showModalNovoImovel);
+
+    $("#zipCode").blur(() => buscarCep());
+
+    $("#btnSalvarNovoImovel").click(()=>{
+        let formData = $("#form-imovel").serialize();
+        let token = $("[name=_token]").val();
+        let btn = $(this);
+        btn.prop("disabled", true);
+        
+        $.ajax({
+            method: "post",
+            action: "/admin/visita-imovel",
+            headers: {'X-CSRF-TOKEN': token},
+            data: formData
+        })
+        .done((result) => {
+            btn.prop("disabled", false);
+            if(result.success){
+                $('#modal-novo-imovel').modal("hide");
+            }
+            else{
+                console.error(result)
+            }
+        })
+        .fail((e)=>{
+            btn.prop("disabled", false);
+            console.log(e)
+        })
+    });
+  
+  function buscarCep() {
+    var cep = $('#zipCode').val();
+    console.log(cep != undefined && cep != '')
+    if(cep != undefined && cep != ''){
+      $("#spinner").show();
+      $('#zipCode').prop('disabled', true);
+      $('#street').prop('disabled', true);
+      $('#neighborhood').prop('disabled', true);
+      $('#city').prop('disabled', true);
+      $('#state').prop('disabled', true);
+
+      $.ajax({
+          url: '/cep/' + cep,
+          method: 'GET',
+          dataType: 'json',
+          success: function(data) {
+              $('#zipCode').prop('disabled', false);
+              $("#spinner").hide();
+              if (data.error) {
+                  console.log('CEP não encontrado');
+              } else {
+                  $('#street').val(data.logradouro).prop('disabled', false);
+                  $('#neighborhood').val(data.bairro).prop('disabled', false);
+                  $('#city').val(data.localidade).prop('disabled', false);
+                  $('#state').val(data.uf).change().prop('disabled', false);
+              }
+          },
+          error: function() {
+              console.log('Erro ao buscar o CEP');
+              $("#spinner").hide();
+              $('#zipCode').prop('disabled', false);
+              $('#street').val(data.logradouro).prop('disabled', false);
+              $('#neighborhood').val(data.bairro).prop('disabled', false);
+              $('#city').val(data.localidade).prop('disabled', false);
+              $('#state').val(data.uf).change().prop('disabled', false);
+          }
+      });
+    }
+  }
 } );
 
 function filter(tableId, columnIndex){
@@ -193,4 +272,12 @@ function copiarLink(button){
     document.execCommand('copy');
     tempTextarea.remove();
     alert(url);
+}
+
+function showModalNovoImovel(button){
+    $button = $(button);
+    $modal = $('#modal-novo-imovel').modal();
+    $modal.find('input, select').val('');
+
+    $modal.show();
 }

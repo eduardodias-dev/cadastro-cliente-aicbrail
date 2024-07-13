@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Afiliados extends Model
+class ImovelVisita extends Model
 {
     //
     protected $table = "imovel_visita";

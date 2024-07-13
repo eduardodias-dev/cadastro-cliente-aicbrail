@@ -37,6 +37,5 @@ CREATE TABLE visita_comprador(
 );
 
 
-ALTER TABLE imovel_visita ADD COLUMN status VARCHAR(15) AFTER data_visita;
 ALTER TABLE imovel ADD COLUMN codigo_imovel VARCHAR(100) AFTER id;
 ALTER TABLE imovel ADD COLUMN descricao VARCHAR(400) AFTER email_proprietario;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Pacote;
-use App\Cliente;
+use App\Imovel;
 use App\Afiliados;
 use App\LogIntegracao;
 use App\CodigoAfiliados;
@@ -228,6 +228,44 @@ class AdminController extends Controller
     }
     
     public function criarVisita(Request $request){
+        try{
+            $data = $request->input();
+        
+            $imovel = new Imovel();
+            $imovel->nome_proprietario = $data["nome_proprietario"];
+            $imovel->cpf_proprietario = $data["cpf_proprietario"];
+            $imovel->email_proprietario = $data["email_proprietario"];
+            $imovel->codigo_imovel = $data["codigo_imovel"];
+            $imovel->descricao = $data["descricao"];
+            $imovel->zipCode = $data["zipCode"];
+            $imovel->street = $data["street"];
+            $imovel->number = $data["number"];
+            $imovel->complement = $data["complement"];
+            $imovel->neighborhood = $data["neighborhood"];
+            $imovel->city = $data["city"];
+            $imovel->state = $data["state"];
+    
+            $imovel->save();
+
+            $result = [
+                "message" => "Imóvel criado com sucesso!",
+                "success" => true
+            ];
+
+            return response()->json($result);
+
+        }catch(Exception $e){
+            Log::warning($e->getMessage());
+
+            $result = [
+                "message" => "Não foi possível criar o imóvel. Verifique o log",
+                "success" => false
+            ];
+
+            return response()->json($result);
+        }
+
+        
 
     }
 
