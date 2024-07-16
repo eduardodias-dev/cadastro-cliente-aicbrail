@@ -44,10 +44,13 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     Route::post('/afiliados/novo', [AdminController::class, 'novoAfiliado'])->name('afiliados.novo');
     Route::post('/afiliados/novo-codigo', [AdminController::class, 'novoCodigoAfiliado'])->name('afiliados.novoCodigo');
     Route::post('/afiliados/remover', [AdminController::class, 'removerAfiliado'])->name('afiliados.remover');
+    
     Route::get('/visita-imovel', [AdminController::class, 'visitas'])->name('visitas');
     Route::get('/listar-visitas', [AdminController::class, 'listarVisitas'])->name('listar.visita');
-    Route::post('/visita-imovel', [AdminController::class, 'criarVisita'])->name('visita.criar');
-    Route::post('/visita-imovel/{id}', [AdminController::class, 'editarVisita'])->name('visita.editar');
+    Route::post('/visita', [AdminController::class, 'criarVisita'])->name('visita.criar');
+    Route::post('/visita/{id}', [AdminController::class, 'editarVisita'])->name('visita.editar');
+    Route::delete('/visita/remover', [AdminController::class, 'removerVisita']);
+    
     Route::get('/listar-imoveis', [AdminController::class, 'listarImoveis'])->name('listar.imoveis');
     Route::get('/obter-imovel/{id}', [AdminController::class, 'obterImovel'])->name('obter.imovel');
     Route::post('/imovel', [AdminController::class, 'criarImovel'])->name('imovel.criar');

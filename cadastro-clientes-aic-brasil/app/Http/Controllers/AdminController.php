@@ -8,6 +8,7 @@ use App\Imovel;
 use App\Afiliados;
 use App\LogIntegracao;
 use App\CodigoAfiliados;
+use App\ImovelVisita;
 use Illuminate\Http\Request;
 use App\Services\IPlanoDBService;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ use App\Services\IClienteDBService;
 use Illuminate\Support\Facades\Log;
 use App\Services\Integration\IClientSenderIntegrationService;
 use App\Services\Integration\IClientReceiverIntegrationService;
+use App\VisitaComprador;
 
 class AdminController extends Controller
 {
@@ -213,18 +215,28 @@ class AdminController extends Controller
     }
 
     public function listarVisitas(Request $request){
-        $lista = array(
-            array(
-                "id" => '1',
-                "codigo_imovel" => '1',
-                "proprietario_imovel" => '1',
-                "data_visita" => '1',
-                "endereco_imovel" => '1',
-                "compradores_visita" => '1'
-            )
-        );
+        $lista = ImovelVisita::with(['imovel', 'compradores'])->get()->map(function($visita){
+            $imovel = $visita->imovel;
+            //die(print_r($imovel));
+            $compradores = $visita->compradores;
 
-        return response()->json($lista);
+            return [
+                "id" => $visita->id,
+                "codigo_imovel" => $imovel->codigo_imovel,
+                "proprietario_imovel" => $imovel->nome_proprietario,
+                "data_visita" => $visita->data_visita,
+                "endereco_imovel" => $imovel->street,
+                "compradores_visita" => $compradores
+            ];
+        });
+
+        $result = [
+            "message" => "",
+            "success"=> true,
+            "data"=> $lista
+        ];
+
+        return response()->json($result);
     }
 
     public function listarImoveis(){
@@ -252,7 +264,43 @@ class AdminController extends Controller
     }
 
     public function criarVisita(Request $request){
+        try{
+            $data = $request->input();
+        
+            $visita = new ImovelVisita();
+            $visita->imovel_id = $data["imovel_id"];
+            $visita->data_visita = date_create_from_format("d/m/Y", $data["data_visita"]);
+            $visita->status = "Pendente";
 
+            $visita_id = $visita->save();
+
+            $comprador = new VisitaComprador();
+
+            $comprador->nome = $data["nome"];
+            $comprador->cpf = $data["cpf"];
+            $comprador->rg = $data["rg"];
+            $comprador->email = $data["email"];
+            $comprador->visita_id = $visita_id;
+
+            $comprador->save();
+
+            $result = [
+                "message" => "Visita criada com sucesso!",
+                "success" => true
+            ];
+
+            return response()->json($result);
+
+        }catch(Exception $e){
+            Log::warning($e->getMessage());
+
+            $result = [
+                "message" => "Não foi possível criar a visita. Verifique o log",
+                "success" => false
+            ];
+
+            return response()->json($result);
+        }
     }
 
     public function editarVisita(Request $request, $id){

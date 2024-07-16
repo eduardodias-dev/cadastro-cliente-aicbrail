@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Imovel;
+use App\VisitaComprador;
 
 class ImovelVisita extends Model
 {
@@ -16,4 +18,12 @@ class ImovelVisita extends Model
     const CREATED_AT = 'criado_em';
     const UPDATED_AT = 'atualizado_em';
     protected $guarded = [];
+
+    public function imovel(){
+        return $this->belongsTo(Imovel::class);
+    }
+
+    public function compradores(){
+        return $this->hasMany(VisitaComprador::class, "visita_id", "id");
+    }
 }

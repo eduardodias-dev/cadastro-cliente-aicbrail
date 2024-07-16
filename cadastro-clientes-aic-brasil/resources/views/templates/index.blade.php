@@ -182,9 +182,13 @@
 <script src="/dist/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="/dist/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
 <script src="/dist/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="/dist/plugins/inputmask/jquery.inputmask.min.js"></script>
+<script src="/dist/plugins/datetimepicker/jquery.datetimepicker.full.js"></script>
 <script src="/dist/js/custom.js"></script>
 {{--
 @stack('script_pagina') --}}
+
+@stack('scripts')
 
 </body>
 </html>
