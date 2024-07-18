@@ -224,8 +224,9 @@ class AdminController extends Controller
                 "id" => $visita->id,
                 "codigo_imovel" => $imovel->codigo_imovel,
                 "proprietario_imovel" => $imovel->nome_proprietario,
-                "data_visita" => $visita->data_visita,
-                "endereco_imovel" => $imovel->street,
+                "data_visita" => getDateInBRFormat($visita->data_visita),
+                "endereco_imovel" => $imovel->street . " " . $imovel->number . " " . $imovel->complement . " - " .$imovel->neighborhood
+                                    ." - " .$imovel->city . "/" .$imovel->state,
                 "compradores_visita" => $compradores
             ];
         });
@@ -263,6 +264,30 @@ class AdminController extends Controller
         return response()->json($result);
     }
 
+    public function obterVisita($id){
+        $visita = ImovelVisita::with("imovel")->find($id);
+        
+        $comprador = VisitaComprador::where(["visita_id" => $visita->id])->first();
+
+        $visita = [
+            "id" => $visita->id,
+            "imovel_id" => $visita->imovel->id,
+            "nome" => $comprador->nome,
+            "cpf" => $comprador->cpf,
+            "rg" => $comprador->rg,
+            "email" => $comprador->email,
+            "data_visita" => getDateInBRFormat($visita->data_visita)
+        ];
+
+        $resultado = [
+            "message" => "Visita encontrada com sucesso!",
+            "success" => true,
+            "data" => $visita
+        ];
+
+        return response()->json($resultado);
+    }
+
     public function criarVisita(Request $request){
         try{
             $data = $request->input();
@@ -272,7 +297,7 @@ class AdminController extends Controller
             $visita->data_visita = date_create_from_format("d/m/Y", $data["data_visita"]);
             $visita->status = "Pendente";
 
-            $visita_id = $visita->save();
+            $visita->save();
 
             $comprador = new VisitaComprador();
 
@@ -280,7 +305,7 @@ class AdminController extends Controller
             $comprador->cpf = $data["cpf"];
             $comprador->rg = $data["rg"];
             $comprador->email = $data["email"];
-            $comprador->visita_id = $visita_id;
+            $comprador->visita_id = $visita->id;
 
             $comprador->save();
 
@@ -304,7 +329,84 @@ class AdminController extends Controller
     }
 
     public function editarVisita(Request $request, $id){
+        try{
+            $data = $request->input();
+        
+            $visita = ImovelVisita::find($data["id"]);
+            $visita->imovel_id = $data["imovel_id"];
+            $visita->data_visita = date_create_from_format("d/m/Y", $data["data_visita"]);
+            // $visita->status = "Pendente";
 
+            $visita->save();
+
+            $comprador = isset($visita->compradores) && !empty($visita->compradores) ? $visita->compradores[0] : null;
+
+            if($comprador){
+                $comprador->nome = $data["nome"];
+                $comprador->cpf = $data["cpf"];
+                $comprador->rg = $data["rg"];
+                $comprador->email = $data["email"];
+    
+                $comprador->save();
+            }
+
+            $result = [
+                "message" => "Visita atualizada com sucesso!",
+                "success" => true
+            ];
+
+            return response()->json($result);
+
+        }catch(Exception $e){
+            Log::warning($e->getMessage());
+
+            $result = [
+                "message" => "Não foi possível criar a visita. Verifique o log",
+                "success" => false
+            ];
+
+            return response()->json($result);
+        }
+    }
+
+    public function removerVisita(Request $request){
+        $data = $request->input();
+        try{
+            
+            $visita = ImovelVisita::find($data['id_visita']);
+
+            if($visita){
+
+                $visita->compradores()->each(function($c) {
+                    $c->delete();
+                });
+
+                $visita->delete();
+    
+                $result = [
+                    "message" => "Visita removida com sucesso!",
+                    "success" => true
+                ];
+            }
+            else{
+                $result = [
+                    "message" => "Visita não encontrada.",
+                    "success" => false
+                ];
+            }
+
+            return response()->json($result);
+
+        }catch(Exception $e){
+            Log::warning($e->getMessage());
+
+            $result = [
+                "message" => "Não foi possível remover a visita. Verifique o log",
+                "success" => false
+            ];
+
+            return response()->json($result);
+        }
     }
 
     public function criarImovel(Request $request){

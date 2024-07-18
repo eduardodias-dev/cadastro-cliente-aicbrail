@@ -47,6 +47,7 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     
     Route::get('/visita-imovel', [AdminController::class, 'visitas'])->name('visitas');
     Route::get('/listar-visitas', [AdminController::class, 'listarVisitas'])->name('listar.visita');
+    Route::get('/obter-visita/{id}', [AdminController::class, 'obterVisita']);
     Route::post('/visita', [AdminController::class, 'criarVisita'])->name('visita.criar');
     Route::post('/visita/{id}', [AdminController::class, 'editarVisita'])->name('visita.editar');
     Route::delete('/visita/remover', [AdminController::class, 'removerVisita']);

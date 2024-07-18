@@ -97,20 +97,20 @@
       <div class="modal-dialog modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="staticBackdropLabel">Remover Imóvel</h1>
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Remover Visita</h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
               <div class="row">
-                  <input type="hidden" name="id_imovel" />
-                  <h5>Confirma a exclusão do imóvel?</h5>
+                  <input type="hidden" name="id_visita" />
+                  <h5>Confirma a exclusão da visita?</h5>
               </div>
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" id="btnSalvarRemoverImovel" onclick="salvarRemoverImovel()">Confirmar</button>
+              <button type="button" class="btn btn-primary" id="btnSalvarRemoverVisita" onclick="salvarRemoverVisita()">Confirmar</button>
           </div>
         </div>
       </div>

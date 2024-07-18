@@ -101,6 +101,8 @@ function showModalEditarVisita(btn) {
     $modal = $('#modal-nova-visita').modal();
     $modal.find('input, select').val('');
 
+    carregarImoveis();
+
     $.ajax({
         method: "get",
         url: `/admin/obter-visita/${id}`
@@ -111,7 +113,7 @@ function showModalEditarVisita(btn) {
                 let name = obj[0]
                 let value = obj[1]
 
-                $modal.find('.modal-body').find(`[name=${name}]`).val(value)
+                $modal.find('.modal-body').find(`[name=${name}]`).val(value).change()
             }
         }
     })
@@ -140,7 +142,7 @@ function salvarRemoverVisita(){
     let tableVisita = $('#table-visitas').DataTable();
 
     $.ajax({
-        url: '/admin/visitas/remover',
+        url: '/admin/visita/remover',
         data: {
             id_visita
         },
@@ -148,7 +150,7 @@ function salvarRemoverVisita(){
         method: 'DELETE'
     }).done(response => {
         if(response.success){
-            $('#modal-remover-visitas').modal('hide');
+            $('#modal-remover-visita').modal('hide');
             tableVisita.ajax.reload();
         }
         else console.log(response);
