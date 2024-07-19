@@ -147,6 +147,14 @@
                     </p>
                 </a>
             </li>
+            <li class="nav-item ">
+              <a href="{{route('visitas')}}" class="nav-link {{ request()->is('visitas') ? 'active' : '' }}">
+                  <i class="nav-icon far fa-users-alt"></i>
+                  <p>
+                      Visitas
+                  </p>
+              </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
