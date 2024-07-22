@@ -267,16 +267,13 @@ class AdminController extends Controller
     public function obterVisita($id){
         $visita = ImovelVisita::with("imovel")->find($id);
         
-        $comprador = VisitaComprador::where(["visita_id" => $visita->id])->first();
+        $compradores = VisitaComprador::where(["visita_id" => $visita->id])->get();
 
         $visita = [
             "id" => $visita->id,
             "imovel_id" => $visita->imovel->id,
-            "nome" => $comprador->nome,
-            "cpf" => $comprador->cpf,
-            "rg" => $comprador->rg,
-            "email" => $comprador->email,
-            "data_visita" => getDateInBRFormat($visita->data_visita)
+            "data_visita" => getDateInBRFormat($visita->data_visita),
+            "compradores"=> $compradores
         ];
 
         $resultado = [
@@ -299,15 +296,24 @@ class AdminController extends Controller
 
             $visita->save();
 
-            $comprador = new VisitaComprador();
+            $compradores = [ 
+                "nomes" => $data["comprador_nome"],
+                "cpfs" => $data["comprador_cpf"],
+                "rgs" => $data["comprador_rg"],
+                "emails" => $data["comprador_email"]
+            ];
+            
+            for($ind = 0; $ind < count($data["comprador_nome"]); $ind++){
+                
+                $compradorDB = new VisitaComprador();
+                $compradorDB->nome = $compradores["nomes"][$ind];
+                $compradorDB->cpf = $compradores["cpfs"][$ind];
+                $compradorDB->rg = $compradores["rgs"][$ind];
+                $compradorDB->email = $compradores["emails"][$ind];
 
-            $comprador->nome = $data["nome"];
-            $comprador->cpf = $data["cpf"];
-            $comprador->rg = $data["rg"];
-            $comprador->email = $data["email"];
-            $comprador->visita_id = $visita->id;
-
-            $comprador->save();
+                $compradorDB->visita_id = $visita->id;
+                $compradorDB->save();
+            }
 
             $result = [
                 "message" => "Visita criada com sucesso!",
@@ -335,20 +341,42 @@ class AdminController extends Controller
             $visita = ImovelVisita::find($data["id"]);
             $visita->imovel_id = $data["imovel_id"];
             $visita->data_visita = date_create_from_format("d/m/Y", $data["data_visita"]);
-            // $visita->status = "Pendente";
+            $visita->status = "Pendente";
 
             $visita->save();
 
-            $comprador = isset($visita->compradores) && !empty($visita->compradores) ? $visita->compradores[0] : null;
+            $compradores = [ 
+                "ids" => $data["comprador_id"],
+                "nomes" => $data["comprador_nome"],
+                "cpfs" => $data["comprador_cpf"],
+                "rgs" => $data["comprador_rg"],
+                "emails" => $data["comprador_email"]
+            ];
+            
+            $compradoresVisita = VisitaComprador::where("visita_id", $visita->id)->get();
 
-            if($comprador){
-                $comprador->nome = $data["nome"];
-                $comprador->cpf = $data["cpf"];
-                $comprador->rg = $data["rg"];
-                $comprador->email = $data["email"];
-    
-                $comprador->save();
-            }
+            foreach($compradoresVisita as $c){
+                if(!in_array($c->id, $data["comprador_id"])){
+                    $c->delete();
+                }
+            }   
+            
+            for($ind = 0; $ind < count($data["comprador_nome"]); $ind++){
+
+                if($compradores["ids"][$ind] == 0){
+                    $compradorDB = new VisitaComprador();
+                }else{
+                    $compradorDB = VisitaComprador::find($compradores["ids"][$ind]);
+                }
+
+                $compradorDB->nome = $compradores["nomes"][$ind];
+                $compradorDB->cpf = $compradores["cpfs"][$ind];
+                $compradorDB->rg = $compradores["rgs"][$ind];
+                $compradorDB->email = $compradores["emails"][$ind];
+
+                $compradorDB->visita_id = $visita->id;
+                $compradorDB->save();
+            }         
 
             $result = [
                 "message" => "Visita atualizada com sucesso!",
@@ -361,7 +389,7 @@ class AdminController extends Controller
             Log::warning($e->getMessage());
 
             $result = [
-                "message" => "Não foi possível criar a visita. Verifique o log",
+                "message" => "Não foi possível editar a visita. Verifique o log",
                 "success" => false
             ];
 
@@ -417,7 +445,7 @@ class AdminController extends Controller
             $imovel->nome_proprietario = $data["nome_proprietario"];
             $imovel->cpf_proprietario = $data["cpf_proprietario"];
             $imovel->email_proprietario = $data["email_proprietario"];
-            $imovel->codigo_imovel = $data["codigo_imovel"];
+            $imovel->codigo_imovel = "-";
             $imovel->descricao = $data["descricao"];
             $imovel->zipCode = $data["zipCode"];
             $imovel->street = $data["street"];
@@ -429,6 +457,10 @@ class AdminController extends Controller
     
             $imovel->save();
 
+            $imovel->codigo_imovel = $this->gerarCodigoImovel($imovel);
+
+            $imovel->save();
+            
             $result = [
                 "message" => "Imóvel criado com sucesso!",
                 "success" => true
@@ -529,5 +561,9 @@ class AdminController extends Controller
 
             return response()->json($result);
         }
+    }
+
+    private function gerarCodigoImovel($imovel){
+        return str_pad($imovel->id, 6, "0", STR_PAD_LEFT);
     }
 }

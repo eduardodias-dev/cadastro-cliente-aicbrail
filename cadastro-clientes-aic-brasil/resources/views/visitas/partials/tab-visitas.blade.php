@@ -16,7 +16,7 @@
                       <th>Proprietário</th>
                       <th>Data</th>
                       <th>Endereço</th>
-                      <th>Compradores</th>
+                      <th>Promitentes Compradores</th>
                       <th>Ações</th>
                   </tr>
               </thead>
@@ -39,8 +39,9 @@
         <div class="modal-body">
           <form method="POST" id="form-visita">
             @csrf
+            <input type="hidden" name="id" />
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-8">
                 <div class="form-group">
                   <label for="">Imóvel:</label>
                   <select name="imovel_id" id="selectImoveis" class="form-control">
@@ -48,40 +49,24 @@
                   </select>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <input type="hidden" name="id" />
               <div class="col-md-4">
-                  <div class="form-group">
-                      <label>Comprador</label>
-                      <input type="text" name="nome" id="" class="form-control">
-                  </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                    <label>CPF</label>
-                    <input type="text" name="cpf" id="" class="form-control">
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                    <label>RG</label>
-                    <input type="text" name="rg" id="" class="form-control">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                    <label>E-mail</label>
-                    <input type="email" name="email" id="" class="form-control">
-                </div>        
-              </div>
-              <div class="col-md-6">
                 <div class="form-group">
                     <label>Data da Visita</label>
                     <input type="text" name="data_visita" id="data_visita" class="form-control">
                 </div>        
+              </div>
+            </div>
+            <hr />
+            <fieldset class="fieldset-compradores">
+              <legend>Promitentes Compradores</legend>
+              
+            </fieldset>
+            <div class="row justify-content-end">
+              <div class="col-md-3 text-right">
+                <button type="button" class="btn btn-outline-primary ml-2 mb-2" id="btnNovoComprador">
+                  <i class="fas fa-plus"></i>
+                  Adicionar
+                </button>
               </div>
             </div>
           </form>
@@ -116,6 +101,40 @@
       </div>
   </div>
 
+  <div class="row" id="template-compradores" style="display:none">
+    <div class="col-md-3">
+        <input type="hidden" name="comprador_id[]">
+        <div class="form-group">
+            <label>Nome</label>
+            <input type="text" name="comprador_nome[]" class="form-control">
+        </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+          <label>CPF</label>
+          <input type="text" name="comprador_cpf[]" class="form-control campo_cpf">
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+          <label>RG</label>
+          <input type="text" name="comprador_rg[]" class="form-control">
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" name="comprador_email[]" class="form-control">
+      </div>        
+    </div>
+    <div class="col-md-1 d-flex">
+      <div class="align-self-center mt-3">
+        <button class="btn btn-sm btn-outline-danger ml-2 btnRemoverComprador" onclick="removerComprador(this)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>        
+    </div>
+  </div>
   @push('scripts')
     <script src="/dist/js/tab-visitas.js"></script>
   @endpush

@@ -11,7 +11,7 @@ $(document).ready( function () {
             {data: 'nome_proprietario'},
             {data: 'email_proprietario'},
             {data: null, render: d => {
-                return d.street + " " + d.number+ " " + d.complement + " - " + d.neighborhood
+                return d.street + " " + d.number+ " " + (d.complement ? d.complement : "") + " - " + d.neighborhood
             }},
             {data: null, render: d =>{
                 return d.city +"/"+d.state
@@ -110,20 +110,28 @@ $(document).ready( function () {
 
     $('[name=cpf_proprietario]').inputmask('999.999.999-99');
     $('[name=zipCode]').inputmask('99999-999');
+
 });
 
 function showModalNovoImovel(button){
     $button = $(button);
     $modal = $('#modal-novo-imovel').modal();
+    $modal.find('.modal-title').text('Novo Imóvel');
     $modal.find('input, select').val('');
 
+    $modal.find('input[name=codigo_imovel]').prop("disabled", true);
+    $modal.find('input[name=codigo_imovel]').closest('.form-group').hide();
     $modal.show();
 }
 
 function showModalEditarImovel(btn) {
     let id = parseInt($(btn).data('id'));
     $modal = $('#modal-novo-imovel').modal();
+    $modal.find('.modal-title').text('Editar Imóvel');
     $modal.find('input, select').val('');
+
+    $modal.find('input[name=codigo_imovel]').prop("disabled", true);
+    $modal.find('input[name=codigo_imovel]').closest('.form-group').show();
 
     $.ajax({
         method: "get",

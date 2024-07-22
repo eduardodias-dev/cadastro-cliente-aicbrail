@@ -19,11 +19,9 @@ $(document).ready( function () {
             {
                     return `<button class="btn btn-sm btn-outline-info ml-2 btnRowEdit" data-id="${row.id}" data-index="${meta.row}" onclick="showModalEditarVisita(this)">
                                 <i class="fas fa-edit"></i>
-                                Editar
                             </button>
                             <button class="btn btn-sm btn-outline-danger ml-2 btnRowRemove" data-id="${row.id}" data-index="${meta.row}" onclick="showModalRemoverVisita(this)">
                                 <i class="fas fa-trash"></i>
-                                Remover
                             </button>`;
             }}
         ]
@@ -43,6 +41,7 @@ $(document).ready( function () {
         
         let url = parseInt(id) != NaN ? `/admin/visita/${id}` : "/admin/visita";
         let tableVisita = $('#table-visitas').DataTable();
+
         $.ajax({
             method: "post",
             url: url,
@@ -83,14 +82,33 @@ $(document).ready( function () {
 
     $('#data_visita').inputmask('99/99/9999');
     $('[name=cpf]').inputmask('999.999.999-99');
+    $('.campo_cpf').inputmask('999.999.999-99');
+
+    $("#btnNovoComprador").click(()=>adicionarComprador());
 
 });
+
+function adicionarComprador(where = ".fieldset-compradores"){
+    $copy = $("#template-compradores").clone(true);
+    $copy.addClass("campos-compradores");
+    $copy.removeAttr("id");
+    $copy.find('input, select, textarea').val("");
+    $copy.find("input[name='comprador_id[]']").val(0);
+    $copy.show()
+    
+    $(where).append($copy);
+
+    return $copy;
+}
 
 function showModalNovaVisita(button){
     $button = $(button);
     $modal = $('#modal-nova-visita').modal();
+    $modal.find('.modal-title').text('Nova Visita');
+    $modal.find(".campos-compradores").remove();
     $modal.find('input, select').val('');
-
+    
+    adicionarComprador()
     carregarImoveis();
 
     $modal.show();
@@ -99,7 +117,10 @@ function showModalNovaVisita(button){
 function showModalEditarVisita(btn) {
     let id = parseInt($(btn).data('id'));
     $modal = $('#modal-nova-visita').modal();
+    $modal.find('.modal-title').text('Editar Visita');
     $modal.find('input, select').val('');
+    $modal.find(".campos-compradores").remove();
+    adicionarComprador();
 
     carregarImoveis();
 
@@ -114,6 +135,21 @@ function showModalEditarVisita(btn) {
                 let value = obj[1]
 
                 $modal.find('.modal-body').find(`[name=${name}]`).val(value).change()
+            }
+
+            if(result.data.compradores){
+                $modal.find(".campos-compradores").remove();
+                let compradores = result.data.compradores
+                
+                for(let comprador of compradores){
+                    $campos = adicionarComprador();
+
+                    $campos.find("input[name='comprador_id[]']").val(comprador.id);
+                    $campos.find("input[name='comprador_nome[]']").val(comprador.nome);
+                    $campos.find("input[name='comprador_cpf[]']").val(comprador.cpf);
+                    $campos.find("input[name='comprador_rg[]']").val(comprador.rg);
+                    $campos.find("input[name='comprador_email[]']").val(comprador.email);
+                }
             }
         }
     })
@@ -177,7 +213,7 @@ function carregarImoveis(){
             for(let i in items){
                 $op = $('<option>');
                 $op.val(result.data[i].id);
-                $op.text(`${result.data[i].id} - ${result.data[i].street} ${result.data[i].number} - ${result.data[i].neighborhood} - ${result.data[i].city}/${result.data[i].state}`);
+                $op.text(`${result.data[i].codigo_imovel} - ${result.data[i].street} ${result.data[i].number} - ${result.data[i].neighborhood} - ${result.data[i].city}/${result.data[i].state}`);
 
                 $select.append($op)
             }
@@ -186,4 +222,8 @@ function carregarImoveis(){
     .fail(e => {
         console.log(e);
     })
+}
+
+function removerComprador(btn){
+    $(btn).closest(".campos-compradores").remove();
 }
