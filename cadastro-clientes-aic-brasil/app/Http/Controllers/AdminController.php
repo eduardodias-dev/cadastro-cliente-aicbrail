@@ -563,6 +563,9 @@ class AdminController extends Controller
         }
     }
 
+    public function ficha(Request $request){
+        return view('templates.ficha_imovel');
+    }
     private function gerarCodigoImovel($imovel){
         return str_pad($imovel->id, 6, "0", STR_PAD_LEFT);
     }
