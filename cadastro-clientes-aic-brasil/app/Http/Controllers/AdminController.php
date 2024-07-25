@@ -14,8 +14,7 @@ use App\Services\IPlanoDBService;
 use Illuminate\Support\Facades\DB;
 use App\Services\IClienteDBService;
 use Illuminate\Support\Facades\Log;
-use App\Services\Integration\IClientSenderIntegrationService;
-use App\Services\Integration\IClientReceiverIntegrationService;
+use App\Services\VisitaImovelService;
 use App\VisitaComprador;
 
 class AdminController extends Controller
@@ -564,8 +563,11 @@ class AdminController extends Controller
     }
 
     public function ficha(Request $request){
-        return view('templates.ficha_imovel');
+        VisitaImovelService::gerarArquivoFichaVisitaImovel(10);
+
+        return 'ok';
     }
+
     private function gerarCodigoImovel($imovel){
         return str_pad($imovel->id, 6, "0", STR_PAD_LEFT);
     }

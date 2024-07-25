@@ -18,7 +18,7 @@
 </style>
 <body style="font-family: Arial, Helvetica, sans-serif; border: 2px solid black; padding: 10px;">
     <div style="text-align: center; width: 100%;">
-        <img src="/site/img/LOGO-AIC-BRASIL.png" height="80" />
+        <img src="{{ storage_path('app/public/LOGO-AIC-BRASIL.png') }}" height="80" />
     </div>
     <h3 style="font-weight: 400; text-align:center;">TERMO DE VISITA E VISTORIA</h3>
     <table>
@@ -40,14 +40,18 @@
         </thead>
         <tbody>
             <tr>
-                <td style="width: 50%;"><b>28/07/2024</b></td>
+                <td style="width: 50%;"><b>{{$visita['data']}}</b></td>
                 <td style="width: 50%;">17:00</td>
             </tr>
             <tr>
                 <td colspan="2" style="text-align:left !important;">
                     <b>EMPREENDIMENTO, SÍTIO (ZONA RURAL):</b><br><br>
-                        • RUA MARIA CARIOCA no.196, CHARNECA, SÍTIO(S)/ZONA RURAL, 
-                        BETIM|MG CEP no.32636250;
+                        {{$imovel['street'] . " " .
+                         $imovel['number'] . " " . 
+                         $imovel['complement'] . " - " .
+                         $imovel['neighborhood']." - " .
+                         $imovel['city'] . "/" .
+                         $imovel['state']}}
                 </td>
             </tr>
         </tbody>
@@ -72,14 +76,12 @@
                 <td><b>NOME</b></td>
                 <td><b>CPF</b></td>
             </tr>
+            @foreach($compradores as $comprador)
             <tr>
-                <td>JOÃO TESTE</td>
-                <td>111.222.333-44</td>
+                <td>{{$comprador['nome']}}</td>
+                <td>{{$comprador['cpf']}}</td>
             </tr>
-            <tr>
-                <td>MARIA TESTE</td>
-                <td>111.222.333-44</td>
-            </tr>
+            @endforeach
         </tbody>
     </table>
     <table style="margin-top: 10px;">
@@ -94,12 +96,8 @@
                 <td><b>CPF</b></td>
             </tr>
             <tr>
-                <td>JOÃO TESTE</td>
-                <td>111.222.333-44</td>
-            </tr>
-            <tr>
-                <td>MARIA TESTE</td>
-                <td>111.222.333-44</td>
+                <td>{{strtoupper($imovel['nome_proprietario'])}}</td>
+                <td>{{strtoupper($imovel['cpf_proprietario'])}}</td>
             </tr>
         </tbody>
     </table>
