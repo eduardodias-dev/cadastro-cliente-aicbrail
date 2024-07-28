@@ -7,7 +7,7 @@
     <div style="border: 1px solid #6c97c3; border-radius: 10px; padding: 10px; text-align:left;margin-bottom: 10px;">
         <h4 style="padding-bottom: 0;">Informações da Visita:</h4>
         <b>Endereço:</b> {{$visita_imovel['endereco']}} <br>
-        <b>Data:</b> {{getDateTimeInBRFormat($visita_imovel['data_visita'])}} <br>
+        <b>Data:</b> {{getDateTimeInBRFormat($visita_imovel['data_visita'], "UTC")}} <br>
     </div>
     <div style="background-color: #ddd; border-radius: 10px; padding: 10px;text-align: left;">
         Quaisquer dúvida não deixe de entrar em contato pelos canais:

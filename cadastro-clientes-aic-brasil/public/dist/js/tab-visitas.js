@@ -17,12 +17,16 @@ $(document).ready( function () {
             }},
             {data: null, render: (data, type, row, meta) =>
             {
-                    return `<button class="btn btn-sm btn-outline-info ml-2 btnRowEdit" data-id="${row.id}" data-index="${meta.row}" onclick="showModalEditarVisita(this)">
+                    return `<button class="btn btn-sm btn-outline-info ml-2 btnRowEdit" title="Editar" data-id="${row.id}" data-index="${meta.row}" onclick="showModalEditarVisita(this)">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-sm btn-outline-danger ml-2 btnRowRemove" data-id="${row.id}" data-index="${meta.row}" onclick="showModalRemoverVisita(this)">
+                            <button class="btn btn-sm btn-outline-danger ml-2 btnRowRemove" title="Remover" data-id="${row.id}" data-index="${meta.row}" onclick="showModalRemoverVisita(this)">
                                 <i class="fas fa-trash"></i>
-                            </button>`;
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary ml-2 btnRowSendEmail" title="Enviar por email" data-id="${row.id}" data-index="${meta.row}" onclick="showModalEnviarEmailVisita(this)">
+                                <i class="fas fa-envelope"></i>
+                            </button>`
+                            ;
             }}
         ]
     });
@@ -64,8 +68,8 @@ $(document).ready( function () {
         })
     });
 
-    $("[name=data_visita]").datetimepicker({
-        format:'d/m/Y',
+$("[name=data_visita]").datetimepicker({
+        format:'d/m/Y H:i',
         lang:'pt-BR',
         i18n:{
             'pt-BR': { //Português(Brasil)
@@ -80,7 +84,7 @@ $(document).ready( function () {
         }
       });
 
-    $('#data_visita').inputmask('99/99/9999');
+    $('#data_visita').inputmask('99/99/9999 99:99');
     $('[name=cpf]').inputmask('999.999.999-99');
     $('.campo_cpf').inputmask('999.999.999-99');
 
@@ -177,6 +181,8 @@ function salvarRemoverVisita(){
     let token = $('[name="_token"]').val();
     let tableVisita = $('#table-visitas').DataTable();
 
+    $("#btnSalvarRemoverVisita").prop("disabled", true);
+
     $.ajax({
         url: '/admin/visita/remover',
         data: {
@@ -185,6 +191,8 @@ function salvarRemoverVisita(){
         headers: {'X-CSRF-TOKEN': token},
         method: 'DELETE'
     }).done(response => {
+        $("#btnSalvarRemoverVisita").prop("disabled", false);
+
         if(response.success){
             $('#modal-remover-visita').modal('hide');
             tableVisita.ajax.reload();
@@ -192,6 +200,8 @@ function salvarRemoverVisita(){
         else console.log(response);
     })
     .fail( function(err) {
+        $("#btnSalvarRemoverVisita").prop("disabled", false);
+
         console.log(err);
     });
 
@@ -226,4 +236,45 @@ function carregarImoveis(){
 
 function removerComprador(btn){
     $(btn).closest(".campos-compradores").remove();
+}
+
+function showModalEnviarEmailVisita(button){
+    $button = $(button);
+    $modal = $('#modal-enviar-email-visita').modal();
+
+    var id_visita = $(button).data('id');
+    $modal.find('[name=id_visita]').val(id_visita);
+
+    $modal.show();
+}
+
+function enviarEmailVisita(){
+    $modal = $('#modal-enviar-email-visita');
+
+    let id_visita = $modal.find('[name=id_visita]').val();
+
+    let token = $('[name="_token"]').val();
+    let tableVisita = $('#table-visitas').DataTable();
+
+    $("#btnEnviarEmailVisita").prop("disabled", true);
+    $.ajax({
+        url: '/admin/enviar-email-visita',
+        data: {
+            id_visita
+        },
+        headers: {'X-CSRF-TOKEN': token},
+        method: 'POST'
+    }).done(response => {
+        $("#btnEnviarEmailVisita").prop("disabled", false);
+
+        if(response.success){
+            $('#modal-enviar-email-visita').modal('hide');
+            tableVisita.ajax.reload();
+        }
+        else console.log(response);
+    })
+    .fail( function(err) {
+        $("#btnEnviarEmailVisita").prop("disabled", false);
+        console.log(err);
+    });
 }

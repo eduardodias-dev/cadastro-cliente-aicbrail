@@ -55,8 +55,11 @@ class VisitaImovelService{
             array_push($arrCompradores, ["nome" => $comprador->nome, "cpf" => $comprador->cpf]);
         }
 
+        $dataHoraVisita = getDateTimeInBRFormat($visita->data_visita, "UTC");
+
         $arrVisita = [
-            "data" => getDateInBRFormat($visita->data_visita)
+            "data" => explode(" ",$dataHoraVisita)[0],
+            "hora" => explode(" ",$dataHoraVisita)[1]
         ];
 
         $arrImovel = [

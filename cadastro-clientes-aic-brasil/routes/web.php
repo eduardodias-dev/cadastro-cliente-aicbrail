@@ -58,7 +58,7 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     Route::post('/imovel/{id}', [AdminController::class, 'editarImovel'])->name('imovel.editar');
     Route::delete('/imovel/remover', [AdminController::class, 'removerImovel']);
 
-    Route::get('imovel/ficha', [AdminController::class, 'ficha']);
+    Route::post('enviar-email-visita', [AdminController::class, 'enviarEmailVisita']);
 });
 
 Auth::routes();

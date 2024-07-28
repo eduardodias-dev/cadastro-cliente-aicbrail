@@ -16,6 +16,7 @@ use App\Services\IClienteDBService;
 use Illuminate\Support\Facades\Log;
 use App\Services\VisitaImovelService;
 use App\VisitaComprador;
+use DateTimeZone;
 
 class AdminController extends Controller
 {
@@ -223,7 +224,7 @@ class AdminController extends Controller
                 "id" => $visita->id,
                 "codigo_imovel" => $imovel->codigo_imovel,
                 "proprietario_imovel" => $imovel->nome_proprietario,
-                "data_visita" => getDateInBRFormat($visita->data_visita),
+                "data_visita" => getDateTimeInBRFormat($visita->data_visita, "UTC"),
                 "endereco_imovel" => $imovel->street . " " . $imovel->number . " " . $imovel->complement . " - " .$imovel->neighborhood
                                     ." - " .$imovel->city . "/" .$imovel->state,
                 "compradores_visita" => $compradores
@@ -271,7 +272,7 @@ class AdminController extends Controller
         $visita = [
             "id" => $visita->id,
             "imovel_id" => $visita->imovel->id,
-            "data_visita" => getDateInBRFormat($visita->data_visita),
+            "data_visita" => getDateTimeInBRFormat($visita->data_visita, "UTC"),
             "compradores"=> $compradores
         ];
 
@@ -290,7 +291,8 @@ class AdminController extends Controller
         
             $visita = new ImovelVisita();
             $visita->imovel_id = $data["imovel_id"];
-            $visita->data_visita = date_create_from_format("d/m/Y", $data["data_visita"]);
+            $visita->data_visita = date_create_from_format("d/m/Y H:i", $data["data_visita"], new DateTimeZone('UTC'));
+
             $visita->status = "Pendente";
 
             $visita->save();
@@ -313,6 +315,8 @@ class AdminController extends Controller
                 $compradorDB->visita_id = $visita->id;
                 $compradorDB->save();
             }
+
+            VisitaImovelService::gerarArquivoFichaVisitaImovel($visita->id);
 
             $result = [
                 "message" => "Visita criada com sucesso!",
@@ -339,7 +343,7 @@ class AdminController extends Controller
         
             $visita = ImovelVisita::find($data["id"]);
             $visita->imovel_id = $data["imovel_id"];
-            $visita->data_visita = date_create_from_format("d/m/Y", $data["data_visita"]);
+            $visita->data_visita = date_create_from_format("d/m/Y H:i", $data["data_visita"], new DateTimeZone('UTC'));
             $visita->status = "Pendente";
 
             $visita->save();
@@ -388,7 +392,7 @@ class AdminController extends Controller
             Log::warning($e->getMessage());
 
             $result = [
-                "message" => "Não foi possível editar a visita. Verifique o log",
+                "message" => "Não foi possível editar a visita. Verifique o log.",
                 "success" => false
             ];
 
@@ -562,10 +566,28 @@ class AdminController extends Controller
         }
     }
 
-    public function ficha(Request $request){
-        VisitaImovelService::gerarArquivoFichaVisitaImovel(10);
+    public function enviarEmailVisita(Request $request){
+        try{
+            $data = $request->input();
+            VisitaImovelService::gerarArquivoFichaVisitaImovel($data['id_visita']);
+    
+            $result = [
+                "message" => "Email enviado com sucesso!",
+                "success" => true
+            ];
 
-        return 'ok';
+            return response()->json($result);
+
+        }catch(Exception $e){
+            Log::warning($e->getMessage());
+
+            $result = [
+                "message" => "Não foi possível enviar o email. Verifique o log",
+                "success" => false
+            ];
+
+            return response()->json($result);
+        }
     }
 
     private function gerarCodigoImovel($imovel){

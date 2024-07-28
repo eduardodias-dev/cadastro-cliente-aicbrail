@@ -68,10 +68,10 @@ function getDateInBRFormat(string $date){
     return date_format($date->setTimezone(new DateTimeZone("GMT-03:00")), 'd/m/Y');
 }
 
-function getDateTimeInBRFormat(string $date){
+function getDateTimeInBRFormat(string $date, $timeZone = "GMT-03:00"){
     $date = date_create($date);
 
-    return date_format($date->setTimezone(new DateTimeZone("GMT-03:00")), 'd/m/Y H:i:s');
+    return date_format($date->setTimezone(new DateTimeZone($timeZone)), 'd/m/Y H:i:s');
 }
 
 function getRetorno($jsonResult){

@@ -42,7 +42,7 @@ class EnvioEmailFichaImovel extends Mailable
         
         $obj->subject("AIC BRASIL - Agendamento de Visita a Imóvel")
             ->view('templates.email_fichaimovel')
-            ->bcc(['eduardo.dias092@outlook.com'])
+            ->bcc(['eduardo.dias092@outlook.com', 'aicbrasill@gmail.com'])
             ->with([
                 'visita_imovel' => [
                     'data_visita'=> $this->visita_imovel->data_visita,

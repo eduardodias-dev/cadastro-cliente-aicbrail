@@ -135,6 +135,28 @@
       </div>        
     </div>
   </div>
+  <div class="modal fade" id="modal-enviar-email-visita" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Enviar Email Visita</h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <input type="hidden" name="id_visita" />
+                <h5>Confirma o reenvio do email da visita?</h5>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="btnEnviarEmailVisita" onclick="enviarEmailVisita()">Confirmar</button>
+        </div>
+      </div>
+    </div>
+</div>
   @push('scripts')
     <script src="/dist/js/tab-visitas.js"></script>
   @endpush
