@@ -16,7 +16,7 @@
         width: 33.3%;
     }
 </style>
-<body style="font-family: Arial, Helvetica, sans-serif; border: 2px solid black; padding: 10px;">
+<body style="font-family: Arial, Helvetica, sans-serif; border: 2px solid black; padding: 25px;">
     <div style="text-align: center; width: 100%;">
         <img src="{{ storage_path('app/public/LOGO-AIC-BRASIL.png') }}" height="80" />
     </div>
@@ -41,7 +41,7 @@
         <tbody>
             <tr>
                 <td style="width: 50%;"><b>{{$visita['data']}}</b></td>
-                <td style="width: 50%;">17:00</td>
+                <td style="width: 50%;">{{$visita['hora']}}</td>
             </tr>
             <tr>
                 <td colspan="2" style="text-align:left !important;">

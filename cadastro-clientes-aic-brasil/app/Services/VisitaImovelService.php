@@ -47,8 +47,12 @@ class VisitaImovelService{
         $mpdfConfig = [
             'timeout' => 300, // ajusta o tempo de timeout
         ];
+
+        $templatePath = storage_path("app/public/template_fichaimovel.pdf");
         $mpdf = new PDF($mpdfConfig);
 
+        $mpdf->SetDocTemplate($templatePath, true);
+        $mpdf->AddPage();
         $arrCompradores = [];
 
         foreach($compradores as $comprador){
@@ -79,11 +83,13 @@ class VisitaImovelService{
             'compradores' => $arrCompradores
         ])->render();
 
-        // die($html);
-        // $html = "<h1>Teste</h1>";
-
+        
+        $mpdf->SetFooter('{PAGENO}');
+        $mpdf->defaultfooterfontsize=10;
+        $mpdf->defaultfooterfontstyle='B';
+        $mpdf->defaultfooterline=1;
+        
         $mpdf->WriteHTML($html);
-
         Storage::disk('public')->put($filename, $mpdf->Output($filename, 'S'));
 
         return $filename;
