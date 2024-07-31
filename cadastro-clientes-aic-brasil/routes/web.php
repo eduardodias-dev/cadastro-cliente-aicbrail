@@ -48,15 +48,15 @@ Route::prefix("admin")->middleware('auth')->group(function(){
     Route::get('/visita-imovel', [AdminController::class, 'visitas'])->name('visitas');
     Route::get('/listar-visitas', [AdminController::class, 'listarVisitas'])->name('listar.visita');
     Route::get('/obter-visita/{id}', [AdminController::class, 'obterVisita']);
-    Route::post('/visita', [AdminController::class, 'criarVisita'])->name('visita.criar');
-    Route::post('/visita/{id}', [AdminController::class, 'editarVisita'])->name('visita.editar');
-    Route::delete('/visita/remover', [AdminController::class, 'removerVisita']);
+    Route::post('/criar-visita', [AdminController::class, 'criarVisita'])->name('visita.criar');
+    Route::post('/editar-visita/{id}', [AdminController::class, 'editarVisita'])->name('visita.editar');
+    Route::delete('/remover-visita', [AdminController::class, 'removerVisita']);
     
     Route::get('/listar-imoveis', [AdminController::class, 'listarImoveis'])->name('listar.imoveis');
     Route::get('/obter-imovel/{id}', [AdminController::class, 'obterImovel'])->name('obter.imovel');
-    Route::post('/imovel', [AdminController::class, 'criarImovel'])->name('imovel.criar');
-    Route::post('/imovel/{id}', [AdminController::class, 'editarImovel'])->name('imovel.editar');
-    Route::delete('/imovel/remover', [AdminController::class, 'removerImovel']);
+    Route::post('/criar-imovel', [AdminController::class, 'criarImovel'])->name('imovel.criar');
+    Route::post('/editar-imovel/{id}', [AdminController::class, 'editarImovel'])->name('imovel.editar');
+    Route::delete('/remover-imovel', [AdminController::class, 'removerImovel']);
 
     Route::post('enviar-email-visita', [AdminController::class, 'enviarEmailVisita']);
 });

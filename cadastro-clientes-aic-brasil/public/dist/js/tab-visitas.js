@@ -43,7 +43,7 @@ $(document).ready( function () {
         let btn = $(this);
         btn.prop("disabled", true);
         
-        let url = parseInt(id) != NaN ? `/admin/visita/${id}` : "/admin/visita";
+        let url = parseInt(id) != NaN ? `/admin/editar-visita/${id}` : "/admin/criar-visita";
         let tableVisita = $('#table-visitas').DataTable();
 
         $.ajax({
@@ -184,7 +184,7 @@ function salvarRemoverVisita(){
     $("#btnSalvarRemoverVisita").prop("disabled", true);
 
     $.ajax({
-        url: '/admin/visita/remover',
+        url: '/admin/remover-visita',
         data: {
             id_visita
         },
