@@ -44,7 +44,8 @@ $(document).ready( function () {
         let btn = $(this);
         btn.prop("disabled", true);
         
-        let url = parseInt(id) != NaN ? `/admin/editar-imovel/${id}` : "/admin/criar-imovel";
+        let url = parseInt(id) != NaN && parseInt(id) > 0
+            ? `/admin/editar-imovel/${id}` : "/admin/criar-imovel";
         let tableImovel = $('#table-imoveis').DataTable();
         $.ajax({
             method: "post",
